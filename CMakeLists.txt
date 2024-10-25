@@ -40,7 +40,7 @@ FetchContent_MakeAvailable(SFML)
 
 
 
-add_executable(Vour main_square.cpp)
+add_executable(Vour src/top.cpp)
 # # Link SDL2 library
 # target_link_libraries(Vour PRIVATE SDL2::SDL2 SDL2::SDL2main)
 
@@ -58,13 +58,14 @@ endif()
 
 # Glob all .sv files in the rtl directory
 file(GLOB RTL_SOURCE_FILES rtl/*.sv)
-# # Ensure top_square.sv is at the top and not duplicated
-list(REMOVE_ITEM RTL_SOURCE_FILES ${CMAKE_SOURCE_DIR}/rtl/top_square.sv)
-list(INSERT RTL_SOURCE_FILES 0 ${CMAKE_SOURCE_DIR}/rtl/top_square.sv)
+# # Ensure top.sv is at the top and not duplicated
+list(REMOVE_ITEM RTL_SOURCE_FILES ${CMAKE_SOURCE_DIR}/rtl/top.sv)
+list(INSERT RTL_SOURCE_FILES 0 ${CMAKE_SOURCE_DIR}/rtl/top.sv)
 
 
 verilate(Vour SOURCES ${RTL_SOURCE_FILES}
-  # TOP_MODULE top_square
+  TOP_MODULE top
   OPT_FAST
   THREADS
+  VERILATOR_ARGS -O3 --x-initial fast --noassert --x-assign fast --threads 10
 )

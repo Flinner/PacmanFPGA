@@ -1,4 +1,4 @@
-#include "Vtop_square.h"
+#include "Vtop.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <stdio.h>
@@ -30,6 +30,9 @@ int main(int argc, char *argv[]) {
   sprite.setTexture(texture);
   sf::Vector2u windowSize = window.getSize();
 
+  // Clock to measure fps
+  sf::Clock clock;
+
   // Calculate the scaling factors to stretch the texture to the entire window
   float scaleX = static_cast<float>(windowSize.x) / H_RES;
   float scaleY = static_cast<float>(windowSize.y) / V_RES;
@@ -43,42 +46,41 @@ int main(int argc, char *argv[]) {
   printf("Simulation running. Press 'Q' in simulation window to quit.\n\n");
 
   // initialize Verilog module
-  Vtop_square *top = new Vtop_square;
+  Vtop *top = new Vtop;
 
   // reset
-  top->sim_rst = 1;
-  top->clk_pix = 0;
+  top->CPU_RESETN = 0;
+  top->CLK100MHZ = 0;
   top->eval();
-  top->clk_pix = 1;
+  top->CLK100MHZ = 1;
   top->eval();
-  top->sim_rst = 0;
-  top->clk_pix = 0;
+  top->CPU_RESETN = 1;
+  top->CLK100MHZ = 0;
   top->eval();
 
-  // initialize frame rate
-  // uint64_t start_ticks = SDL_GetPerformanceCounter();
   uint64_t frame_count = 0;
 
   // main loop
   while (window.isOpen()) {
     // cycle the clock
-    top->clk_pix = 1;
+    top->CLK100MHZ = 1;
     top->eval();
-    top->clk_pix = 0;
+    top->CLK100MHZ = 0;
     top->eval();
 
     // update pixel if not in blanking interval
-    if (top->sdl_de) {
-      // Pixel *p = &screenbuffer[top->sdl_sy * H_RES + top->sdl_sx];
+    if (top->display_enabled) {
       // R, G, B, A
-      pixels[(top->sdl_sy * H_RES + top->sdl_sx) * 4 + 0] = top->sdl_r;
-      pixels[(top->sdl_sy * H_RES + top->sdl_sx) * 4 + 1] = top->sdl_g;
-      pixels[(top->sdl_sy * H_RES + top->sdl_sx) * 4 + 2] = top->sdl_b;
-      pixels[(top->sdl_sy * H_RES + top->sdl_sx) * 4 + 3] = 0xFF;
+      // << 4 because in .sv it is [3:0], while pixel is expected to be Uint8
+      pixels[(top->sy * H_RES + top->sx) * 4 + 0] = top->VGA_R << 4;
+      pixels[(top->sy * H_RES + top->sx) * 4 + 1] = top->VGA_G << 4;
+      pixels[(top->sy * H_RES + top->sx) * 4 + 2] = top->VGA_B << 4;
+      pixels[(top->sy * H_RES + top->sx) * 4 + 3] = 0xFF;
+      ;
     }
 
     // update texture once per frame (in blanking)
-    if (top->sdl_sy == V_RES && top->sdl_sx == 0) {
+    if (top->sy == V_RES && top->sx == 0) {
       texture.update(pixels);
 
       while (window.pollEvent(event)) {
@@ -94,10 +96,6 @@ int main(int argc, char *argv[]) {
       }
       std::cout << "frame:" << frame_count << std::endl;
 
-      // SDL_UpdateTexture(sdl_texture, NULL, screenbuffer, H_RES *
-      // sizeof(Pixel)); SDL_RenderClear(sdl_renderer);
-      // SDL_RenderCopy(sdl_renderer, sdl_texture, NULL, NULL);
-      // SDL_RenderPresent(sdl_renderer);
       window.clear();
       window.draw(sprite);
       window.display();
@@ -105,12 +103,14 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  // calculate frame rate
-  // uint64_t end_ticks = SDL_GetPerformanceCounter();
-  // double duration =
-  //     ((double)(end_ticks - start_ticks)) / SDL_GetPerformanceFrequency();
-  // double fps = (double)frame_count / duration;
-  // printf("Frames per second: %.1f\n", fps);
+  // Calculate the total elapsed time in seconds
+  float elapsedTime = clock.getElapsedTime().asSeconds();
+
+  // Calculate and print the average frame rate (FPS)
+  if (elapsedTime > 0) {
+    float fps = frame_count / elapsedTime;
+    std::cout << "Average FPS: " << fps << std::endl;
+  }
 
   std::cout << "END!\n";
   top->final(); // simulation done

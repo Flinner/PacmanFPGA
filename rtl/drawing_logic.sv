@@ -41,30 +41,69 @@ module drawing_logic #(
     B,
     input logic pix_clk,
     clk,
+    rst,
+    frame_stb,
     input logic [H_ADDR_WIDTH-1:0] sx,
     input logic [V_ADDR_WIDTH-1:0] sy,
     input logic display_enabled
 );
 
 
-  // localparam SQ_SIDE = 50;
+  localparam SQ_SIDE = 50;
 
-  // logic [H_ADDR_WIDTH-1:0] SQ_x;
-  // logic [V_ADDR_WIDTH-1:0] SQ_y;
-  // logic square;
+  logic [H_ADDR_WIDTH-1:0] SQ_x;
+  logic [V_ADDR_WIDTH-1:0] SQ_y;
+  logic square;
 
-  // always_comb begin
-  //   SQ_x = H_VISIBLE_AREA / 2;  // 320
-  //   SQ_y = V_VISIBLE_AREA / 2;
-  // end
-  // //340-320 < 25? yes.
-  // assign square = (SQ_x - sx < SQ_SIDE/2 || sx - SQ_x < SQ_SIDE/2 ) &&
-  //       (SQ_y - sy < SQ_SIDE/2 || sy - SQ_y < SQ_SIDE/2 );
+  assign square = (sx > SQ_x && sx < SQ_x + SQ_SIDE) && (sy > SQ_y && sy < SQ_y + SQ_SIDE);
+
+  logic x_direction;
+  logic y_direction;
+  localparam x_sp = 3;
+  localparam y_sp = 5;
+
+  always_ff @(posedge clk)
+    if (rst) begin
+      SQ_x <= H_VISIBLE_AREA / 2;  // 320
+      SQ_y <= V_VISIBLE_AREA / 2;
+    end else if (frame_stb) begin
+
+      if (x_direction)  // moving left
+        if (SQ_x + SQ_SIDE + x_sp >= H_VISIBLE_AREA - 1) begin
+          SQ_x <= H_VISIBLE_AREA - SQ_SIDE;
+          x_direction <= 0;
+        end else begin
+          SQ_x <= SQ_x + x_sp;
+        end
+      else if (SQ_x < x_sp) begin  // moving right
+        SQ_x <= 0;
+        x_direction <= 1;
+      end else SQ_x <= SQ_x - x_sp;
+
+      if (y_direction)  // moving left
+        if (SQ_y + SQ_SIDE + y_sp >= V_VISIBLE_AREA - 1) begin
+          SQ_y <= V_VISIBLE_AREA - SQ_SIDE;
+          y_direction <= 0;
+        end else begin
+          SQ_y <= SQ_y + y_sp;
+        end
+      else if (SQ_y < y_sp) begin  // moving right
+        SQ_y <= 0;
+        y_direction <= 1;
+      end else SQ_y <= SQ_y - y_sp;
+
+      // if (y_direction)  //
+      //   SQ_y <= SQ_y + 10;
+      // else  //
+      //   SQ_y <= SQ_y - 10;
+
+
+    end
 
 
 
   always_comb begin
-    R = (sx[6] ? 'hF : '0) ^ (sy[6] ? 'hF : 'h0);
+    R = square ? 'hF : '0;
     G = R;
     B = R;
     if (!display_enabled) begin

@@ -54,6 +54,8 @@ module top (
 
 
   logic CLK25MHZ;
+  logic frame_stb;  // strobe each new frame
+
   // avoid double declartion
 `ifndef VERILATOR
   logic [H_ADDR_WIDTH-1:0] sx;
@@ -70,6 +72,7 @@ module top (
   );
 `endif
 
+  assign frame_stb = sy == sx && sx == 0;
 
   drawing_logic #(
       .H_VISIBLE_AREA(H_VISIBLE_AREA),
@@ -81,8 +84,10 @@ module top (
       .V_SYNC_PULSE  (V_SYNC_PULSE),
       .V_BACK_PORCH  (V_BACK_PORCH)
   ) drawing_logic (
-      .clk(),
+      .clk(CLK25MHZ),
       .pix_clk(),
+      .rst(~CPU_RESETN),
+      .frame_stb(frame_stb),
       .sx(sx),
       .sy(sy),
       .R(VGA_R),

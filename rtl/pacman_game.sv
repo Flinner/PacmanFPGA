@@ -30,7 +30,7 @@ module pacman_game #(
     output logic [3:0] R,
     output logic [3:0] G,
     output logic [3:0] B,
-    // there is an importnat distnction between `vga_pix_clk` and `game_pix_stb`
+    // there is an important distnction between `vga_pix_clk` and `game_pix_stb`
     // vga_pix_clk will "clock" on each physical vga pixel drawing
     // game_pix_stb will STROBE on each virtual game pixel
     // this is because the game is upscaled/downscaled, and its logic is

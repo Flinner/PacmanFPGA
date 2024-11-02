@@ -53,17 +53,16 @@ module pacman_game #(
   // end
 
 
+  // TODO: remove useless check, since we check the screen on the RGB anyway
   always_ff @(posedge vga_pix_clk)
     if (display_enabled & game_pix_stb) begin
-      R <= 4'hF;
-      G <= 4'hF;
-      B <= 4'hF;
+      R <= 'hF;
+      G <= 'hF;
+      B <= 'hF;
     end else begin
       R <= '0;
       G <= '0;
       B <= '0;
     end
-
-
 
 endmodule

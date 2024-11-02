@@ -81,11 +81,30 @@ module drawing_logic #(
   );
 
 
+  // "Modulating" the different colors
+  // this alows multiple windows to overlap, or not :)
+  logic [3:0] GAME_R, GAME_G, GAME_B;
+  logic [3:0] x_debug, y_debug;
+  assign x_debug = {4{sx[2:0] == 'b000}};
+  assign y_debug = {4{sy[2:0] == 'b000}};
+
+
+  always_comb
+    if (game_display_enabled) begin
+      R = GAME_R ^ x_debug;
+      G = GAME_G ^ y_debug;
+      B = GAME_B;
+    end else begin
+      R = x_debug;
+      G = y_debug;
+      B = '0;
+    end
+
   pacman_game pc_game (  /**AUTOINST*/
       // Outputs
-      .R(R),
-      .G(G),
-      .B(B),
+      .R(GAME_R),
+      .G(GAME_G),
+      .B(GAME_B),
       // Inputs
       .game_pix_stb(vga_pix_clk),
       .vga_pix_clk(vga_pix_clk),

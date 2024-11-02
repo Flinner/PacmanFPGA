@@ -19,10 +19,12 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+`include "rtl/params.sv"
+
 // This game only sees 224x288 display. It doesn't care about  /
 module pacman_game #(
-    localparam H_MAP_WIDTH = 224,
-    localparam V_MAP_HEIGHT = 288,
+    localparam H_MAP_WIDTH = params::pacman::H_VISIBLE_AREA,
+    localparam V_MAP_HEIGHT = params::pacman::V_VISIBLE_AREA,
     localparam MAP_F = "rtl/mem/map.mem"
 ) (
     output logic [3:0] R,

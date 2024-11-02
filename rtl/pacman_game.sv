@@ -21,7 +21,9 @@
 
 `include "rtl/params.sv"
 
-// This game only sees 224x288 display. It doesn't care about  /
+// This game only sees 224x288 display. It doesn't care about the rest,
+//  it is fine to give random output to save on logic
+// The game is 28*36 blocks
 module pacman_game #(
     localparam H_MAP_WIDTH = params::pacman::H_VISIBLE_AREA,
     localparam V_MAP_HEIGHT = params::pacman::V_VISIBLE_AREA,
@@ -46,19 +48,21 @@ module pacman_game #(
     input logic display_enabled
 );
 
-  // logic [1:0] MAP[0:28*36-1];
-  // initial begin
-  //   $display("Loading MAP from init file '%s'.", MAP_F);
-  //   $readmemb(MAP_F, MAP);
-  // end
+  logic [1:0] MAP[0:28*36-1];
+  initial begin
+    $display("Loading MAP from init file '%s'.", MAP_F);
+    $readmemb(MAP_F, MAP);
+  end
 
 
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_ff @(posedge vga_pix_clk)
-    if (display_enabled & game_pix_stb) begin
-      R <= 'hF;
-      G <= 'hF;
-      B <= 'hF;
+    /* verilator lint_off WIDTHEXPAND */
+    if (game_pix_stb) begin
+      R <= {2{MAP[(sx>>3)+(sy>>3)*28]}};  // TODO: change to 32!!
+      G <= 4'h0;
+      B <= 4'h0;
+      /* verilator lint_on WIDTHEXPAND */
     end else begin
       R <= '0;
       G <= '0;

@@ -57,9 +57,10 @@ module pacman_game #(
 
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_ff @(posedge vga_pix_clk)
+    //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
     /* verilator lint_off WIDTHEXPAND */
     if (game_pix_stb) begin
-      R <= {2{MAP[(sx>>3)+(sy>>3)*28]}};  // TODO: change to 32!!
+      R <= {2{MAP[(sx/8)+(sy/8)*28]}};  // TODO: change to 32!!
       G <= 4'h0;
       B <= 4'h0;
       /* verilator lint_on WIDTHEXPAND */

@@ -84,8 +84,8 @@ module top (
       .V_SYNC_PULSE  (V_SYNC_PULSE),
       .V_BACK_PORCH  (V_BACK_PORCH)
   ) drawing_logic (
-      .clk(CLK25MHZ),
-      .pix_clk(),
+      .clk(CLK100MHZ),  // unused for now
+      .pix_clk(CLK25MHZ),
       .rst(~CPU_RESETN),
       .frame_stb(frame_stb),
       .sx(sx),

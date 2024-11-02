@@ -62,7 +62,7 @@ module drawing_logic #(
   localparam x_sp = 3;
   localparam y_sp = 5;
 
-  always_ff @(posedge clk)
+  always_ff @(posedge pix_clk)
     if (rst) begin
       SQ_x <= H_VISIBLE_AREA / 2;  // 320
       SQ_y <= V_VISIBLE_AREA / 2;

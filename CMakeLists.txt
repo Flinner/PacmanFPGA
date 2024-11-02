@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.7) # not sure of version...
+set(CMAKE_CXX_STANDARD 20)
 project(VGA_SIMULATOR LANGUAGES CXX)
 find_package(verilator HINTS $ENV{VERILATOR_ROOT})
 
@@ -58,10 +59,9 @@ endif()
 
 # Glob all .sv files in the rtl directory
 file(GLOB RTL_SOURCE_FILES rtl/*.sv)
-# # Ensure top.sv is at the top and not duplicated
+# Ensure top.sv is at the top and not duplicated
 list(REMOVE_ITEM RTL_SOURCE_FILES ${CMAKE_SOURCE_DIR}/rtl/top.sv)
 list(INSERT RTL_SOURCE_FILES 0 ${CMAKE_SOURCE_DIR}/rtl/top.sv)
-
 
 verilate(Vour SOURCES ${RTL_SOURCE_FILES}
   TOP_MODULE top

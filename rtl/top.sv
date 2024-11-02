@@ -1,5 +1,16 @@
 `timescale 1ns / 1ps
 
+`ifdef VERILATOR
+// this removes many bugs!
+// vivado is shit, I hate it 
+// I hate it I hate it I hate it I hate it
+// I hate it I hate it I hate it I hate it
+// I hate it I hate it I hate it I hate it
+// I hate it I hate it I hate it I hate it
+// I hate it I hate it I hate it I hate it
+`default_nettype none
+`endif
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer:  
@@ -26,7 +37,7 @@ module top (
     output logic [H_ADDR_WIDTH-1:0] sx,
     output logic [V_ADDR_WIDTH-1:0] sy,
     output logic display_enabled,
-    output logic pix_clk,
+    output logic vga_pix_clk,
 `endif
     input logic CLK100MHZ,
     input logic CPU_RESETN,
@@ -85,7 +96,7 @@ module top (
       .V_BACK_PORCH  (V_BACK_PORCH)
   ) drawing_logic (
       .clk(CLK100MHZ),  // unused for now
-      .pix_clk(CLK25MHZ),
+      .vga_pix_clk(CLK25MHZ),
       .rst(~CPU_RESETN),
       .frame_stb(frame_stb),
       .sx(sx),
@@ -95,6 +106,7 @@ module top (
       .B(VGA_B),
       .display_enabled(display_enabled)
   );
+
 
 
   vga_signal_gen #(
@@ -107,7 +119,7 @@ module top (
       .V_SYNC_PULSE  (V_SYNC_PULSE),
       .V_BACK_PORCH  (V_BACK_PORCH)
   ) vga1 (
-      .pix_clk(CLK25MHZ),
+      .vga_pix_clk(CLK25MHZ),
       .rst(~CPU_RESETN),
       .display_enabled(display_enabled),
       .H_SYNC(VGA_HS),

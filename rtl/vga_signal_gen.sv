@@ -36,7 +36,7 @@ module vga_signal_gen #(
     localparam H_ADDR_WIDTH = $clog2(H_WHOLE_LINE),
     localparam V_ADDR_WIDTH = $clog2(V_WHOLE_LINE)
 ) (
-    input logic pix_clk,
+    input logic vga_pix_clk,
     rst,
     output logic H_SYNC,
     V_SYNC,
@@ -48,7 +48,7 @@ module vga_signal_gen #(
 
 
 
-  always_ff @(posedge pix_clk) begin
+  always_ff @(posedge vga_pix_clk) begin
 
     if (sx == H_WHOLE_LINE - 1) begin
       sx <= 0;

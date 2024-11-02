@@ -19,6 +19,9 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+`include "rtl/params.sv"
+
+
 
 module drawing_logic #(
     parameter H_VISIBLE_AREA = 640,
@@ -39,7 +42,7 @@ module drawing_logic #(
     output logic [3:0] R,
     G,
     B,
-    input logic pix_clk,
+    input logic vga_pix_clk,
     clk,
     rst,
     frame_stb,
@@ -48,68 +51,54 @@ module drawing_logic #(
     input logic display_enabled
 );
 
-
-  localparam SQ_SIDE = 50;
-
-  logic [H_ADDR_WIDTH-1:0] SQ_x;
-  logic [V_ADDR_WIDTH-1:0] SQ_y;
-  logic square;
-
-  assign square = (sx > SQ_x && sx < SQ_x + SQ_SIDE) && (sy > SQ_y && sy < SQ_y + SQ_SIDE);
-
-  logic x_direction;
-  logic y_direction;
-  localparam x_sp = 3;
-  localparam y_sp = 5;
-
-  always_ff @(posedge pix_clk)
-    if (rst) begin
-      SQ_x <= H_VISIBLE_AREA / 2;  // 320
-      SQ_y <= V_VISIBLE_AREA / 2;
-    end else if (frame_stb) begin
-
-      if (x_direction)  // moving left
-        if (SQ_x + SQ_SIDE + x_sp >= H_VISIBLE_AREA - 1) begin
-          SQ_x <= H_VISIBLE_AREA - SQ_SIDE;
-          x_direction <= 0;
-        end else begin
-          SQ_x <= SQ_x + x_sp;
-        end
-      else if (SQ_x < x_sp) begin  // moving right
-        SQ_x <= 0;
-        x_direction <= 1;
-      end else SQ_x <= SQ_x - x_sp;
-
-      if (y_direction)  // moving left
-        if (SQ_y + SQ_SIDE + y_sp >= V_VISIBLE_AREA - 1) begin
-          SQ_y <= V_VISIBLE_AREA - SQ_SIDE;
-          y_direction <= 0;
-        end else begin
-          SQ_y <= SQ_y + y_sp;
-        end
-      else if (SQ_y < y_sp) begin  // moving right
-        SQ_y <= 0;
-        y_direction <= 1;
-      end else SQ_y <= SQ_y - y_sp;
-
-      // if (y_direction)  //
-      //   SQ_y <= SQ_y + 10;
-      // else  //
-      //   SQ_y <= SQ_y - 10;
-
-
-    end
+  logic [$clog2(params::pacman::H_VISIBLE_AREA)-1:0] game_sx;
+  logic [$clog2(params::pacman::V_VISIBLE_AREA)-1:0] game_sy;
+  logic game_display_enabled;
+  logic game_pix_stb;
 
 
 
-  always_comb begin
-    R = square ? 'hF : '0;
-    G = R;
-    B = R;
-    if (!display_enabled) begin
-      R = '0;
-      G = '0;
-      B = '0;
-    end
-  end
+
+  display_window_mapper #(  /**AUTOINSTPARAM*/
+      // Parameters
+      // center the window on the screen
+      .H_WINDOW_OFFSET      ((H_VISIBLE_AREA - params::pacman::H_VISIBLE_AREA) / 2),
+      .V_WINDOW_OFFSET      ((V_VISIBLE_AREA - params::pacman::V_VISIBLE_AREA) / 2),
+      .H_VGA_ADDR_WIDTH     (H_ADDR_WIDTH),
+      .V_VGA_ADDR_WIDTH     (V_ADDR_WIDTH),
+      .H_WINDOW_VISIBLE_AREA(params::pacman::H_VISIBLE_AREA),
+      .V_WINDOW_VISIBLE_AREA(params::pacman::V_VISIBLE_AREA)
+  ) pacman_window_mapper (  /*AUTOINST*/
+      // Outputs
+      .window_sx     (game_sx),
+      .window_sy     (game_sy),
+      .window_enabled(game_display_enabled),
+      .game_pix_stb  (game_pix_stb),
+      // Inputs
+      .vga_pix_clk   (vga_pix_clk),
+      .vga_sx        (sx),
+      .vga_sy        (sy)
+  );
+
+
+  pacman_game pc_game (  /**AUTOINST*/
+      // Outputs
+      .R(R),
+      .G(G),
+      .B(B),
+      // Inputs
+      .game_pix_stb(vga_pix_clk),
+      .vga_pix_clk(vga_pix_clk),
+      .clk(clk),
+      .rst(rst),
+      .frame_stb(frame_stb),
+      .sx(game_sx),
+      .sy(game_sy),
+      .display_enabled(game_display_enabled)
+  );
+
+
+
+
+
 endmodule

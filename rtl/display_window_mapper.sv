@@ -50,15 +50,15 @@ module display_window_mapper #(
 
   // TODO: implement game_pix_stb
   // TODO: Check overflow and whatnot
-  always_ff @(posedge vga_pix_clk) begin
+  always_comb begin
     // Yes, verilator is useful, but I know what  I am doing :)
     // Overflow/Underflow/WidthExpansion/Trunction doesnt matter since we check against `window_enabled`
     /* verilator lint_off WIDTHEXPAND */  /* verilator lint_off WIDTHTRUNC */
-    window_sx <= vga_sx - H_WINDOW_OFFSET + 1;
-    window_sy <= vga_sy - V_WINDOW_OFFSET + 1;
-    window_enabled <= vga_sx - H_WINDOW_OFFSET < H_WINDOW_VISIBLE_AREA && vga_sy - V_WINDOW_OFFSET < V_WINDOW_VISIBLE_AREA - 1;
+    window_sx = vga_sx - H_WINDOW_OFFSET;
+    window_sy = vga_sy - V_WINDOW_OFFSET;
+    window_enabled = vga_sx - H_WINDOW_OFFSET < H_WINDOW_VISIBLE_AREA && vga_sy - V_WINDOW_OFFSET < V_WINDOW_VISIBLE_AREA - 1;
     // vga_sx > H_WINDOW_OFFSET && vga_sx + H_WINDOW_OFFSET < H_WINDOW_VISIBLE_AREA &&
     /* verilator lint_on WIDTHEXPAND */  /* verilator lint_on WIDTHTRUNC */
+   game_pix_stb = vga_pix_clk;
   end
-   assign game_pix_stb = vga_pix_clk;
 endmodule : display_window_mapper

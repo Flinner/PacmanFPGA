@@ -108,7 +108,7 @@ module pacman_game #(
   always_ff @(posedge vga_pix_clk) begin
     if (CLK60HZ) begin
       if (rst) begin
-        x_pac <= 72 + 8;
+        x_pac <= 72 + 8 * 3;
         y_pac <= 72 - 8;
       end else begin
         /* verilator lint_off WIDTHEXPAND */
@@ -134,19 +134,19 @@ module pacman_game #(
   end
 
 
-  always_ff @(posedge vga_pix_clk) begin
-    pixel_in_sprite <= (({1'b0,sx} >= x_pac && {1'b0,sx} < x_pac + SPRITE_WIDTH) &&
+  always_comb begin
+    pixel_in_sprite = (({1'b0,sx} >= x_pac && {1'b0,sx} < x_pac + SPRITE_WIDTH) &&
                        (sy >= y_pac && sy < y_pac + SPRITE_HEIGHT));
 
     if (pixel_in_sprite) begin
-      R_PAC <= color[11:8];
-      G_PAC <= color[7:4];
-      B_PAC <= color[3:0];
+      R_PAC = color[11:8];
+      G_PAC = color[7:4];
+      B_PAC = color[3:0];
     end else begin
       //square = (sx >= x1_pac && sx<x2_pac) && (sy >= y1 && sy< y2);
-      R_PAC <= 4'h0;  // Default red component
-      G_PAC <= 4'h0;  // Default green component
-      B_PAC <= 4'h0;  // Default blue component
+      R_PAC = 4'h0;  // Default red component
+      G_PAC = 4'h0;  // Default green component
+      B_PAC = 4'h0;  // Default blue component
     end
   end
 
@@ -162,13 +162,13 @@ module pacman_game #(
 
 
   // TODO: remove useless check, since we check the screen on the RGB anyway
-  always_ff @(posedge vga_pix_clk) begin
+  always_comb begin
     //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
     /* verilator lint_off WIDTHEXPAND */
     // if (game_pix_stb) begin
-    R <= {2{MAP[(sx/8)+(sy/8)*32]}} | R_PAC;  // TODO: change to 32!!
-    G <= 4'h0 | G_PAC;
-    B <= 4'h0 | B_PAC;
+    R = {2{MAP[(sx/8)+(sy/8)*32]}} | R_PAC;  // TODO: change to 32!!
+    G = 4'h0 | G_PAC;
+    B = 4'h0 | B_PAC;
     /* verilator lint_on WIDTHEXPAND */
     // end else begin
     //   R <= '0;

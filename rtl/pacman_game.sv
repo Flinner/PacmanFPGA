@@ -107,7 +107,7 @@ module pacman_game #(
 
 
 
-  always_ff @(posedge clk) begin
+  always_ff @(posedge vga_pix_clk) begin
     if (CLK60HZ) begin
       if (rst) begin
         x_pac <= 72 + 8;
@@ -136,7 +136,7 @@ module pacman_game #(
   end
 
 
-  always_ff @(posedge clk) begin
+  always_ff @(posedge vga_pix_clk) begin
     pixel_in_sprite <= (({1'b0,sx} >= x_pac && {1'b0,sx} < x_pac + SPRITE_WIDTH) &&
                        (sy >= y_pac && sy < y_pac + SPRITE_HEIGHT));
 

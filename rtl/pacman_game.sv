@@ -97,12 +97,10 @@ module pacman_game #(
     /* verilator lint_on WIDTHTRUNC */
     // 8 is MAP_BLOCK_SIZE
     // this gives the next tile if you moved in the given direction
-    MAP_UP    = MAP[x_pac/8+((y_pac-1)/8)*28] != 0;
-    MAP_DOWN  = MAP[x_pac/8+((y_pac+1)/8)*28] != 0;
-    MAP_RIGHT = MAP[(x_pac)/8 + 1+(y_pac/8)*28] != 0;
-    MAP_LEFT  = MAP[(x_pac)/8 - 1+(y_pac/8)*28] != 0;
-
-
+    MAP_UP    <= MAP[x_pac/8+((y_pac-1)/8)*32] != 0;
+    MAP_DOWN  <= MAP[x_pac/8+((y_pac+1)/8)*32] != 0;
+    MAP_RIGHT <= MAP[(x_pac)/8 + 1+(y_pac/8)*32] != 0;
+    MAP_LEFT  <= MAP[(x_pac)/8 - 1+(y_pac/8)*32] != 0;
   end
 
 
@@ -156,7 +154,7 @@ module pacman_game #(
   ///////////////////////
   // MAP DRAWING LOGIC //
   ///////////////////////
-  logic [1:0] MAP[0:28*36-1];
+  logic [1:0] MAP[0:32*36-1];
   initial begin
     $display("Loading MAP from init file '%s'.", MAP_F);
     $readmemb(MAP_F, MAP);
@@ -164,18 +162,18 @@ module pacman_game #(
 
 
   // TODO: remove useless check, since we check the screen on the RGB anyway
-  always_ff @(posedge vga_pix_clk)
+  always_ff @(posedge vga_pix_clk) begin
     //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
     /* verilator lint_off WIDTHEXPAND */
-    if (game_pix_stb) begin
-      R <= {2{MAP[(sx/8)+(sy/8)*28]}} | R_PAC;  // TODO: change to 32!!
-      G <= 4'h0 | G_PAC;
-      B <= 4'h0 | B_PAC;
-      /* verilator lint_on WIDTHEXPAND */
-    end else begin
-      R <= '0;
-      G <= '0;
-      B <= '0;
-    end
+    // if (game_pix_stb) begin
+    R <= {2{MAP[(sx/8)+(sy/8)*32]}} | R_PAC;  // TODO: change to 32!!
+    G <= 4'h0 | G_PAC;
+    B <= 4'h0 | B_PAC;
+    /* verilator lint_on WIDTHEXPAND */
+    // end else begin
+    //   R <= '0;
+    //   G <= '0;
+    //   B <= '0;
+  end
 
 endmodule

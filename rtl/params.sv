@@ -24,9 +24,9 @@
 package params;
   class pacman;
     // The pacman game is 224x288 pixels.
-    // which is divided into 28x36 blocks on a map.
+    // which is divided into 256x36 blocks on a map.
     // NOTE: THIS IS DOUBLE DIFNED
-    parameter H_VISIBLE_AREA = 224;
+    parameter H_VISIBLE_AREA = 256;
     parameter V_VISIBLE_AREA = 288;
   endclass : pacman
 

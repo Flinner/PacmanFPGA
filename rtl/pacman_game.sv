@@ -19,7 +19,9 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+`ifdef VERILATOR
 `include "rtl/params.sv"
+`endif
 
 // This game only sees 224x288 display. It doesn't care about the rest,
 //  it is fine to give random output to save on logic
@@ -29,7 +31,12 @@ module pacman_game #(
     localparam H_MAP_WIDTH = params::pacman::H_VISIBLE_AREA,
     localparam V_MAP_HEIGHT = params::pacman::V_VISIBLE_AREA,
     localparam MAP_BLOCK_SIZE = 8,
+    // probably there is a way to make verilator path finding match vivado, not worth the effort to investigate
+`ifdef VERILATOR
     localparam MAP_F = "rtl/mem/map.mem",
+`else
+    localparam MAP_F = "mem/map.mem",
+`endif
 
     // PACMAN PARAMS
     parameter SPRITE_WIDTH  = 8,

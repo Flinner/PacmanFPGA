@@ -91,8 +91,8 @@ module drawing_logic #(
 
   always_comb
     if (game_display_enabled) begin
-      R = GAME_R ^ x_debug;
-      G = GAME_G ^ y_debug;
+      R = GAME_R;  //| x_debug;
+      G = GAME_G;  // | y_debug;
       B = GAME_B;
     end else begin
       R = x_debug;

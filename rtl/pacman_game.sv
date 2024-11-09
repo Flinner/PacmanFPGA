@@ -92,7 +92,7 @@ module pacman_game #(
   logic MAP_RIGHT;
   logic MAP_LEFT;
 
-  always_comb begin
+  always_ff @(posedge vga_pix_clk) begin
     /* verilator lint_off WIDTHTRUNC */
     /* verilator lint_on WIDTHTRUNC */
     // 8 is MAP_BLOCK_SIZE

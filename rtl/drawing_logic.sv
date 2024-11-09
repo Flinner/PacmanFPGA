@@ -48,6 +48,10 @@ module drawing_logic #(
     frame_stb,
     input logic [H_ADDR_WIDTH-1:0] sx,
     input logic [V_ADDR_WIDTH-1:0] sy,
+    input logic BTNU,
+    input logic BTND,
+    input logic BTNR,
+    input logic BTNL,
     input logic display_enabled
 );
 
@@ -68,7 +72,7 @@ module drawing_logic #(
       .V_VGA_ADDR_WIDTH     (V_ADDR_WIDTH),
       .H_WINDOW_VISIBLE_AREA(params::pacman::H_VISIBLE_AREA),
       .V_WINDOW_VISIBLE_AREA(params::pacman::V_VISIBLE_AREA)
-  ) pacman_window_mapper (  /*AUTOINST*/
+  ) pacman_window_mapper (  /**AUTOINST*/
       // Outputs
       .window_sx     (game_sx),
       .window_sy     (game_sy),
@@ -92,7 +96,7 @@ module drawing_logic #(
   always_comb
     if (game_display_enabled) begin
       R = GAME_R;  //| x_debug;
-      G = GAME_G;  // | y_debug;
+      G = GAME_G;  //| y_debug;
       B = GAME_B;
     end else begin
       R = x_debug;
@@ -113,6 +117,10 @@ module drawing_logic #(
       .frame_stb(frame_stb),
       .sx(game_sx),
       .sy(game_sy),
+      .BTNU(BTNU),
+      .BTND(BTND),
+      .BTNR(BTNR),
+      .BTNL(BTNL),
       .display_enabled(game_display_enabled)
   );
 

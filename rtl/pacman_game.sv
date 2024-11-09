@@ -25,9 +25,16 @@
 //  it is fine to give random output to save on logic
 // The game is 28*36 blocks
 module pacman_game #(
+    // MAP PARAMS
     localparam H_MAP_WIDTH = params::pacman::H_VISIBLE_AREA,
     localparam V_MAP_HEIGHT = params::pacman::V_VISIBLE_AREA,
-    localparam MAP_F = "rtl/mem/map.mem"
+    localparam MAP_BLOCK_SIZE = 8,
+    localparam MAP_F = "rtl/mem/map.mem",
+
+    // PACMAN PARAMS
+    parameter SPRITE_WIDTH  = 8,
+    parameter SPRITE_HEIGHT = 8
+
 ) (
     output logic [3:0] R,
     output logic [3:0] G,
@@ -45,9 +52,105 @@ module pacman_game #(
     input logic frame_stb,
     input logic [$clog2(H_MAP_WIDTH)-1:0] sx,
     input logic [$clog2(V_MAP_HEIGHT)-1:0] sy,
+    input logic BTNU,
+    input logic BTND,
+    input logic BTNR,
+    input logic BTNL,
     input logic display_enabled
 );
 
+  logic CLK60HZ;
+  assign CLK60HZ = frame_stb;
+
+  ///////////////////////
+  // PACMAN USER LOGIC //
+  ///////////////////////
+  logic [8:0] x_pac;
+  logic [8:0] x_pac_next;
+  logic [8:0] y_pac;
+  logic [8:0] y_pac_next;
+  // PACMAN COLOR
+  logic [11:0] color;
+  logic [3:0] R_PAC;
+  logic [3:0] G_PAC;
+  logic [3:0] B_PAC;
+
+
+
+  logic pixel_in_sprite;
+  logic [10:0] pixel_index;
+  assign color = 12'hFFF;
+
+  logic [4:0] grid_x_pacman;
+  logic [5:0] grid_y_pacman;
+  // will hit if kept moving up...
+  logic       MAP_UP;
+  logic       MAP_DOWN;
+  logic       MAP_RIGHT;
+  logic       MAP_LEFT;
+
+  always_comb begin
+    /* verilator lint_off WIDTHTRUNC */
+    /* verilator lint_on WIDTHTRUNC */
+    // 8 is MAP_BLOCK_SIZE
+    // this gives the next tile if you moved in the given direction
+    MAP_UP    = MAP[x_pac/8+((y_pac-1)/8)*28] != 0;
+    MAP_DOWN  = MAP[x_pac/8+((y_pac+1)/8)*28] != 0;
+    MAP_RIGHT = MAP[(x_pac)/8 + 1+(y_pac/8)*28] != 0;
+    MAP_LEFT  = MAP[(x_pac)/8 - 1+(y_pac/8)*28] != 0;
+
+
+  end
+
+
+
+  always_ff @(posedge CLK60HZ) begin
+    if (rst) begin
+      x_pac <= 72 + 8;
+      y_pac <= 72 - 8;
+    end else begin
+      /* verilator lint_off WIDTHEXPAND */
+      if (BTNU && MAP_UP == 0) begin
+        /* verilator lint_on WIDTHEXPAND */
+        y_pac <= y_pac - 1;
+        // v_flip <= 0;
+      end
+      if (BTND && MAP_DOWN == 0) begin
+        y_pac <= y_pac + 1'b1;
+        // v_flip <= 1;
+      end
+      if (BTNR && MAP_RIGHT == 0) begin
+        x_pac <= x_pac + 1'b1;
+        // h_flip <= 0;
+      end
+      if (BTNL && MAP_LEFT == 0) begin
+        x_pac <= x_pac - 1'b1;
+        // h_flip <= 1;
+      end
+    end
+  end
+
+
+  always_comb begin
+    pixel_in_sprite = (({1'b0,sx} >= x_pac && {1'b0,sx} < x_pac + SPRITE_WIDTH) &&
+                       (sy >= y_pac && sy < y_pac + SPRITE_HEIGHT));
+
+    if (pixel_in_sprite) begin
+      R_PAC = color[11:8];
+      G_PAC = color[7:4];
+      B_PAC = color[3:0];
+    end else begin
+      //square = (sx >= x1_pac && sx<x2_pac) && (sy >= y1 && sy< y2);
+      R_PAC = 4'h0;  // Default red component
+      G_PAC = 4'h0;  // Default green component
+      B_PAC = 4'h0;  // Default blue component
+    end
+  end
+
+
+  ///////////////////////
+  // MAP DRAWING LOGIC //
+  ///////////////////////
   logic [1:0] MAP[0:28*36-1];
   initial begin
     $display("Loading MAP from init file '%s'.", MAP_F);
@@ -60,9 +163,9 @@ module pacman_game #(
     //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
     /* verilator lint_off WIDTHEXPAND */
     if (game_pix_stb) begin
-      R <= {2{MAP[(sx/8)+(sy/8)*28]}};  // TODO: change to 32!!
-      G <= 4'h0;
-      B <= 4'h0;
+      R <= {2{MAP[(sx/8)+(sy/8)*28]}} | R_PAC;  // TODO: change to 32!!
+      G <= 4'h0 | G_PAC;
+      B <= 4'h0 | B_PAC;
       /* verilator lint_on WIDTHEXPAND */
     end else begin
       R <= '0;

@@ -1,5 +1,6 @@
 #include "Vtop.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/Window/Event.hpp>
 #include <iostream>
 #include <stdio.h>
 #include <verilated.h>
@@ -89,6 +90,30 @@ int main(int argc, char *argv[]) {
         // window closed
         case sf::Event::Closed:
           window.close();
+          break;
+        // Key pressed
+        case sf::Event::KeyPressed:
+          top->BTNU = 0;
+          top->BTNR = 0;
+          top->BTNL = 0;
+          top->BTND = 0;
+          if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            top->BTNU = 1;
+            std::cout << "W key pressed\n";
+          }
+          if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            top->BTNL = 1;
+            std::cout << "A key pressed\n";
+          }
+          if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+            top->BTND = 1;
+            std::cout << "S key pressed\n";
+          }
+          if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            top->BTNR = 1;
+            std::cout << "D key pressed\n";
+          }
+
           break;
         default:
           break;

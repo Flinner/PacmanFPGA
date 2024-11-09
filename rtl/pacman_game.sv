@@ -98,9 +98,10 @@ module pacman_game #(
     // 8 is MAP_BLOCK_SIZE
     // this gives the next tile if you moved in the given direction
     MAP_UP    <= MAP[x_pac/8+((y_pac-1)/8)*32] != 0;
-    MAP_DOWN  <= MAP[x_pac/8+((y_pac+1)/8)*32] != 0;
+    // we add +2 for some reason idk, after some testing I got this. I don't want to think
+    MAP_DOWN  <= MAP[x_pac/8+((y_pac+2)/8)*32] != 0;
     MAP_RIGHT <= MAP[(x_pac)/8 + 1+(y_pac/8)*32] != 0;
-    MAP_LEFT  <= MAP[(x_pac)/8 - 1+(y_pac/8)*32] != 0;
+    MAP_LEFT  <= MAP[(x_pac)/8 - 2+(y_pac/8)*32] != 0;
   end
 
 

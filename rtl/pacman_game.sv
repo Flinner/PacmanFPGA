@@ -98,7 +98,7 @@ module pacman_game #(
     // 8 is MAP_BLOCK_SIZE
     // this gives the next tile if you moved in the given direction
     MAP_UP    <= MAP[x_pac/8+((y_pac-1)/8)*32] != 0;
-    MAP_DOWN  <= MAP[x_pac/8+((y_pac)/8)*32+32] != 0;
+    MAP_DOWN  <= MAP[x_pac/8+((y_pac)/8)*32+32] != 0 && MAP[(x_pac)/8+((y_pac)/8)*32+32] != 0;
     MAP_RIGHT <= MAP[(x_pac)/8 + 1+(y_pac/8)*32] != 0;
     MAP_LEFT  <= MAP[(x_pac-1)/8+(y_pac/8)*32] != 0;
   end
@@ -108,8 +108,8 @@ module pacman_game #(
   always_ff @(posedge vga_pix_clk) begin
     if (CLK60HZ) begin
       if (rst) begin
-        x_pac <= 72 + 8 * 3;
-        y_pac <= 72 - 8;
+        x_pac <= 8 * 3;
+        y_pac <= 8;
       end else begin
         /* verilator lint_off WIDTHEXPAND */
         if (BTNU && MAP_UP == 0) begin

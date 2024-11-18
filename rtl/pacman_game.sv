@@ -103,29 +103,35 @@ module pacman_game #(
     MAP_LEFT  <= MAP[(x_pac-1)/8+(y_pac/8)*32] != 0;
   end
 
+  // if x (the pacman sprite) is perfectly aligned, then moving in y direction will never clip walls
+  // perfectly aligned when lower bits are zero...
+  logic x_aligned = x_pac[2:0] == '0;
+  logic y_aligned = y_pac[2:0] == '0;
+
+
 
 
   always_ff @(posedge vga_pix_clk) begin
     if (CLK60HZ) begin
       if (rst) begin
-        x_pac <= 8 * 3;
-        y_pac <= 8;
+        x_pac <= 8 * 1;
+        y_pac <= 8 * 4;
       end else begin
         /* verilator lint_off WIDTHEXPAND */
-        if (BTNU && MAP_UP == 0) begin
+        if (BTNU && MAP_UP == 0 && x_aligned) begin
           /* verilator lint_on WIDTHEXPAND */
           y_pac <= y_pac - 1;
           // v_flip <= 0;
         end
-        if (BTND && MAP_DOWN == 0) begin
+        if (BTND && MAP_DOWN == 0 && x_aligned) begin
           y_pac <= y_pac + 1'b1;
           // v_flip <= 1;
         end
-        if (BTNR && MAP_RIGHT == 0) begin
+        if (BTNR && MAP_RIGHT == 0 && y_aligned) begin
           x_pac <= x_pac + 1'b1;
           // h_flip <= 0;
         end
-        if (BTNL && MAP_LEFT == 0) begin
+        if (BTNL && MAP_LEFT == 0 && y_aligned) begin
           x_pac <= x_pac - 1'b1;
           // h_flip <= 1;
         end

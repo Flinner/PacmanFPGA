@@ -98,7 +98,7 @@ module pacman_game #(
     // 8 is MAP_BLOCK_SIZE
     // this gives the next tile if you moved in the given direction
     MAP_UP    = MAP[x_pac/8+((y_pac-1)/8)*32] != 0;
-    MAP_DOWN  = MAP[x_pac/8+((y_pac)/8)*32+32] != 0 && MAP[(x_pac)/8+((y_pac)/8)*32+32] != 0;
+    MAP_DOWN  = MAP[x_pac/8+((y_pac)/8)*32+32] != 0;
     MAP_RIGHT = MAP[(x_pac)/8 + 1+(y_pac/8)*32] != 0;
     MAP_LEFT  = MAP[(x_pac-1)/8+(y_pac/8)*32] != 0;
   end
@@ -109,33 +109,50 @@ module pacman_game #(
   logic y_aligned = y_pac[2:0] == '0;
 
 
+  typedef enum {
+    UP,
+    RIGHT,
+    LEFT,
+    DOWN
+  } direction_t;
 
 
+  direction_t curr_direction;
+  direction_t next_direction;
+
+
+  always_ff @(posedge vga_pix_clk) begin
+    /**/ if (BTNU) next_direction <= UP;
+    else if (BTND) next_direction <= DOWN;
+    else if (BTNR) next_direction <= RIGHT;
+    else if (BTNL) next_direction <= LEFT;
+  end
+
+  always_comb begin
+    unique case (next_direction)
+      UP: if (MAP_UP == 0 && x_aligned) curr_direction = UP;
+      DOWN: if (MAP_DOWN == 0 && x_aligned) curr_direction = DOWN;
+      RIGHT: if (MAP_RIGHT == 0 && y_aligned) curr_direction = RIGHT;
+      LEFT: if (MAP_LEFT == 0 && y_aligned) curr_direction = LEFT;
+    endcase
+  end
+
+  always_ff @(posedge vga_pix_clk) begin
+  end
   always_ff @(posedge vga_pix_clk) begin
     if (CLK60HZ) begin
       if (rst) begin
         x_pac <= 8 * 1;
         y_pac <= 8 * 4;
-      end else begin
-        /* verilator lint_off WIDTHEXPAND */
-        if (BTNU && MAP_UP == 0 && x_aligned) begin
-          /* verilator lint_on WIDTHEXPAND */
-          y_pac <= y_pac - 1;
-          // v_flip <= 0;
-        end
-        if (BTND && MAP_DOWN == 0 && x_aligned) begin
-          y_pac <= y_pac + 1'b1;
-          // v_flip <= 1;
-        end
-        if (BTNR && MAP_RIGHT == 0 && y_aligned) begin
-          x_pac <= x_pac + 1'b1;
-          // h_flip <= 0;
-        end
-        if (BTNL && MAP_LEFT == 0 && y_aligned) begin
-          x_pac <= x_pac - 1'b1;
-          // h_flip <= 1;
-        end
-      end
+        next_direction <= RIGHT;
+      end else
+        unique case (curr_direction)
+          UP: if (MAP_UP == 0 && x_aligned) y_pac <= y_pac - 1;
+          DOWN: if (MAP_DOWN == 0 && x_aligned) y_pac <= y_pac + 1'b1;
+          RIGHT: if (MAP_RIGHT == 0 && y_aligned) x_pac <= x_pac + 1'b1;
+          LEFT: if (MAP_LEFT == 0 && y_aligned) x_pac <= x_pac - 1'b1;
+
+        endcase
     end
   end
 

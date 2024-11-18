@@ -154,19 +154,22 @@ module pacman_game #(
   ///////////////////////
   // MAP DRAWING LOGIC //
   ///////////////////////
-  logic [1:0] MAP[0:32*36-1];
+  logic [2:0] MAP[0:32*36-1];
   initial begin
     $display("Loading MAP from init file '%s'.", MAP_F);
     $readmemb(MAP_F, MAP);
   end
 
 
+  logic [2:0] map_location;
+  assign map_location = MAP[(sx/8)+(sy/8)*32];
+
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_comb begin
     //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
     /* verilator lint_off WIDTHEXPAND */
     // if (game_pix_stb) begin
-    R = {2{MAP[(sx/8)+(sy/8)*32]}} | R_PAC;  // TODO: change to 32!!
+    R = {map_location, 1'b0} | R_PAC;  // TODO: change to 32!!
     G = 4'h0 | G_PAC;
     B = 4'h0 | B_PAC;
     /* verilator lint_on WIDTHEXPAND */

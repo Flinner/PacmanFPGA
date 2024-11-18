@@ -162,17 +162,17 @@ module pacman_game #(
 
 
   logic [2:0] map_location;
+  //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
+  /* verilator lint_off WIDTHEXPAND */
   assign map_location = MAP[(sx/8)+(sy/8)*32];
+  /* verilator lint_on WIDTHEXPAND */
 
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_comb begin
-    //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
-    /* verilator lint_off WIDTHEXPAND */
     // if (game_pix_stb) begin
     R = {map_location, 1'b0} | R_PAC;  // TODO: change to 32!!
     G = 4'h0 | G_PAC;
     B = 4'h0 | B_PAC;
-    /* verilator lint_on WIDTHEXPAND */
     // end else begin
     //   R <= '0;
     //   G <= '0;

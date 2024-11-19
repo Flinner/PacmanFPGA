@@ -15,7 +15,8 @@
 // 
 // Revision:
 // Revision 0.01 - File Created
-// Additional Comments:
+// Additional Comments: This module is pipelined at stage 2,
+//                      not that it matters, due to abstraction.
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -52,22 +53,41 @@ module pacman_game #(
     // this is because the game is upscaled/downscaled, and its logic is
     // decoupled from the physical vga display
     input logic vga_pix_clk,
-    input logic game_pix_stb,
+    input logic game_pix_stb,  // 1 stage pipeline
     input logic clk,
     input logic rst,
     // this strobes on each new frame. i.e, sx==sy==00
-    input logic frame_stb,
-    input logic [$clog2(H_MAP_WIDTH)-1:0] sx,
-    input logic [$clog2(V_MAP_HEIGHT)-1:0] sy,
+    input logic frame_stb,  // 1 stage pipeline
+    input logic [$clog2(H_MAP_WIDTH)-1:0] sx,  // 1 stage pipeline
+    input logic [$clog2(V_MAP_HEIGHT)-1:0] sy,  // 1 stage pipeline
     input logic BTNU,
     input logic BTND,
     input logic BTNR,
     input logic BTNL,
-    input logic display_enabled
+    input logic display_enabled  // 1 stage pipeline
 );
 
+  //////////////////////
+  // PIPELINING START //
+  //////////////////////
+  logic [$clog2(H_MAP_WIDTH)-1:0] sx1;
+  logic [$clog2(V_MAP_HEIGHT)-1:0] sy1;
+  logic display_enabled1;  // 1 stage pipelined
+  logic frame_stb1;  // 1 stage pipelined
+  logic game_pix_stb1;  // 1 stage pipelined
+  always_ff @(posedge vga_pix_clk) begin
+    sx1 <= sx;
+    sy1 <= sy;
+    display_enabled1 <= display_enabled;
+    frame_stb1 <= frame_stb;
+    game_pix_stb1 <= game_pix_stb;
+  end
+
+  ////////////////////
+  // PIPELINING END //
+  ////////////////////
   logic CLK60HZ;
-  assign CLK60HZ = frame_stb;
+  assign CLK60HZ = frame_stb1;
 
   ///////////////////////
   // PACMAN USER LOGIC //
@@ -157,15 +177,15 @@ module pacman_game #(
 
 
   always_comb begin
-    pixel_in_sprite = (({1'b0,sx} >= x_pac && {1'b0,sx} < x_pac + SPRITE_WIDTH) &&
-                       (sy >= y_pac && sy < y_pac + SPRITE_HEIGHT));
+    pixel_in_sprite = (({1'b0,sx1} >= x_pac && {1'b0,sx1} < x_pac + SPRITE_WIDTH) &&
+                       (sy1 >= y_pac && sy1 < y_pac + SPRITE_HEIGHT));
 
     if (pixel_in_sprite) begin
       R_PAC = color[11:8];
       G_PAC = color[7:4];
       B_PAC = color[3:0];
     end else begin
-      //square = (sx >= x1_pac && sx<x2_pac) && (sy >= y1 && sy< y2);
+      //square = (sx1 >= x1_pac && sx1<x2_pac) && (sy1 >= y1 && sy1< y2);
       R_PAC = 4'h0;  // Default red component
       G_PAC = 4'h0;  // Default green component
       B_PAC = 4'h0;  // Default blue component
@@ -186,12 +206,12 @@ module pacman_game #(
   logic [3:0] map_location;
   //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
   /* verilator lint_off WIDTHEXPAND */
-  assign map_location = MAP[(sx/8)+(sy/8)*32];
+  assign map_location = MAP[(sx1/8)+(sy1/8)*32];
   /* verilator lint_on WIDTHEXPAND */
 
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_comb begin
-    // if (game_pix_stb) begin
+    // if (game_pix_stb1) begin
     R = map_location | R_PAC;  // TODO: change to 32!!
     G = 4'h0 | G_PAC;
     B = 4'h0 | B_PAC;

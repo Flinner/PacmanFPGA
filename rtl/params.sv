@@ -30,7 +30,7 @@ package params;
     parameter V_VISIBLE_AREA = 288;
   endclass : pacman
   class vga;
-    parameter PIPELINE_STAGES = 1;  // 7 choosen based on my hunch
+    parameter PIPELINE_STAGES = 2;  // 7 choosen based on my hunch
   endclass : vga
 endpackage : params
 

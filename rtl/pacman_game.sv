@@ -130,15 +130,13 @@ module pacman_game #(
 
   always_comb begin
     unique case (next_direction)
-      UP: if (MAP_UP == 0 && x_aligned) curr_direction = UP;
-      DOWN: if (MAP_DOWN == 0 && x_aligned) curr_direction = DOWN;
+      UP:    if (MAP_UP    == 0 && x_aligned) curr_direction = UP;
+      DOWN:  if (MAP_DOWN  == 0 && x_aligned) curr_direction = DOWN;
       RIGHT: if (MAP_RIGHT == 0 && y_aligned) curr_direction = RIGHT;
-      LEFT: if (MAP_LEFT == 0 && y_aligned) curr_direction = LEFT;
+      LEFT:  if (MAP_LEFT  == 0 && y_aligned) curr_direction = LEFT;
     endcase
   end
 
-  always_ff @(posedge vga_pix_clk) begin
-  end
   always_ff @(posedge vga_pix_clk) begin
     if (CLK60HZ) begin
       if (rst) begin
@@ -147,10 +145,10 @@ module pacman_game #(
         next_direction <= RIGHT;
       end else
         unique case (curr_direction)
-          UP: if (MAP_UP == 0 && x_aligned) y_pac <= y_pac - 1;
-          DOWN: if (MAP_DOWN == 0 && x_aligned) y_pac <= y_pac + 1'b1;
+          UP:    if (MAP_UP    == 0 && x_aligned) y_pac <= y_pac - 1'b1;
+          DOWN:  if (MAP_DOWN  == 0 && x_aligned) y_pac <= y_pac + 1'b1;
           RIGHT: if (MAP_RIGHT == 0 && y_aligned) x_pac <= x_pac + 1'b1;
-          LEFT: if (MAP_LEFT == 0 && y_aligned) x_pac <= x_pac - 1'b1;
+          LEFT:  if (MAP_LEFT  == 0 && y_aligned) x_pac <= x_pac - 1'b1;
 
         endcase
     end

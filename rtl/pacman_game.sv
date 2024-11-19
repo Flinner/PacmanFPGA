@@ -138,19 +138,20 @@ module pacman_game #(
   end
 
   always_ff @(posedge vga_pix_clk) begin
-    if (CLK60HZ) begin
-      if (rst) begin
-        x_pac <= 8 * 1;
-        y_pac <= 8 * 4;
-        next_direction <= RIGHT;
-      end else
-        unique case (curr_direction)
-          UP:    if (MAP_UP    == 0 && x_aligned) y_pac <= y_pac - 1'b1;
-          DOWN:  if (MAP_DOWN  == 0 && x_aligned) y_pac <= y_pac + 1'b1;
-          RIGHT: if (MAP_RIGHT == 0 && y_aligned) x_pac <= x_pac + 1'b1;
-          LEFT:  if (MAP_LEFT  == 0 && y_aligned) x_pac <= x_pac - 1'b1;
+    // $display("CLK60HZ: %d, RST: %d", CLK60HZ, rst);
+    if (rst) begin
+      x_pac <= 8 * 1;
+      y_pac <= 8 * 4;
+      // $display("x_pac: %d, y_pac: %d", x_pac, y_pac);
+      next_direction <= RIGHT;
+    end else if (CLK60HZ) begin
+      unique case (curr_direction)
+        UP:    if (MAP_UP    == 0 && x_aligned) y_pac <= y_pac - 1'b1;
+        DOWN:  if (MAP_DOWN  == 0 && x_aligned) y_pac <= y_pac + 1'b1;
+        RIGHT: if (MAP_RIGHT == 0 && y_aligned) x_pac <= x_pac + 1'b1;
+        LEFT:  if (MAP_LEFT  == 0 && y_aligned) x_pac <= x_pac - 1'b1;
 
-        endcase
+      endcase
     end
   end
 

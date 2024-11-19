@@ -9,6 +9,7 @@
 // I hate it I hate it I hate it I hate it
 // I hate it I hate it I hate it I hate it
 `default_nettype none
+`include "rtl/params.sv"
 `endif
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -67,9 +68,15 @@ module top (
   localparam H_ADDR_WIDTH = $clog2(H_WHOLE_LINE);
   localparam V_ADDR_WIDTH = $clog2(V_WHOLE_LINE);
 
+  // we give sx and sy ahead of time to pipeline!
+  localparam PIPELINE_STAGES = params::vga::PIPELINE_STAGES;
+  logic [H_ADDR_WIDTH-1:0] sx_aot;  // aot=Ahead Of Time!
+  logic [V_ADDR_WIDTH-1:0] sy_aot;
+  logic display_enabled_aot;
 
   logic CLK25MHZ;
-  logic frame_stb;  // strobe each new frame
+  // logic frame_stb;  // strobe each new frame
+  logic frame_stb_aot;  // strobe each new frame
 
   // avoid double declartion
 `ifndef VERILATOR
@@ -87,7 +94,8 @@ module top (
   );
 `endif
 
-  assign frame_stb = sy == sx && sx == 0;
+  // assign frame_stb = sy == sx && sx == 0;
+  assign frame_stb_aot = sy_aot == sx_aot && sx_aot == 0;
 
   drawing_logic #(
       .H_VISIBLE_AREA(H_VISIBLE_AREA),
@@ -102,9 +110,9 @@ module top (
       .clk(CLK100MHZ),  // unused for now
       .vga_pix_clk(CLK25MHZ),
       .rst(~CPU_RESETN),
-      .frame_stb(frame_stb),
-      .sx(sx),
-      .sy(sy),
+      .frame_stb(frame_stb_aot),
+      .sx(sx_aot),
+      .sy(sy_aot),
       .BTNU(BTNU),
       .BTNL(BTNL),
       .BTNR(BTNR),
@@ -112,9 +120,24 @@ module top (
       .R(VGA_R),
       .G(VGA_G),
       .B(VGA_B),
-      .display_enabled(display_enabled)
+      .display_enabled(display_enabled_aot)
   );
 
+  always_comb begin
+    if (sx + PIPELINE_STAGES > H_WHOLE_LINE - 1) begin
+      // sx-PIPELINE_STAGE<0, but with overflow...
+      // this path means we should increase sy
+      sx_aot = PIPELINE_STAGES - (H_WHOLE_LINE - sx);
+      if (sy + 1 > V_WHOLE_LINE - 1) sy_aot = 0;
+      else sy_aot = sy + 1;
+    end else begin
+      sx_aot = sx + PIPELINE_STAGES;
+      sy_aot = sy;
+    end
+    // $display("x_a,x: %d, %d, y_: %d, %d", sx_aot, sx, sy_aot, sy);
+    // $display("x_a: %d, y_: %d", sx_aot, sy_aot);
+  end
+  always_comb display_enabled_aot = (sx_aot < H_VISIBLE_AREA && sy_aot < V_VISIBLE_AREA);
 
 
   vga_signal_gen #(

@@ -49,12 +49,14 @@ int main(int argc, char *argv[]) {
   // initialize Verilog module
   Vtop *top = new Vtop;
 
-  // reset
-  top->CPU_RESETN = 0;
-  top->CLK100MHZ = 0;
-  top->eval();
-  top->CLK100MHZ = 1;
-  top->eval();
+  // reset 10 times just in case my pipelining fucks things up...
+  for (int i = 0; i < 10; i++) {
+    top->CPU_RESETN = 0;
+    top->CLK100MHZ = 0;
+    top->eval();
+    top->CLK100MHZ = 1;
+    top->eval();
+  }
   top->CPU_RESETN = 1;
   top->CLK100MHZ = 0;
   top->eval();

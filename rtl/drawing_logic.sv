@@ -45,17 +45,36 @@ module drawing_logic #(
     G,
     B,
     input logic vga_pix_clk,
-    clk,
-    rst,
-    frame_stb,
-    input logic [H_ADDR_WIDTH-1:0] sx,
-    input logic [V_ADDR_WIDTH-1:0] sy,
+    input logic clk,
+    input logic rst,
+    input logic frame_stb,  // 1 stage pipelined
+    input logic [H_ADDR_WIDTH-1:0] sx,  // 1 stage pipelined
+    input logic [V_ADDR_WIDTH-1:0] sy,  // 1 stage pipelined
+    input logic display_enabled,  // 1 stage pipelined
     input logic BTNU,
     input logic BTND,
     input logic BTNR,
-    input logic BTNL,
-    input logic display_enabled
+    input logic BTNL
 );
+
+  //////////////////////
+  // PIPELINING START //
+  //////////////////////
+  logic [H_ADDR_WIDTH-1:0] sx1;  // 1 stage pipelined
+  logic [V_ADDR_WIDTH-1:0] sy1;  // 1 stage pipelined
+  logic display_enabled1;  // 1 stage pipelined
+  logic frame_stb1;  // 1 stage pipelined
+  always_ff @(posedge vga_pix_clk) begin
+    sx1 <= sx;
+    sy1 <= sy;
+    display_enabled1 <= display_enabled;
+    frame_stb1 <= frame_stb;
+  end
+  ////////////////////
+  // PIPELINING END //
+  ////////////////////
+
+
 
   logic [$clog2(params::pacman::H_VISIBLE_AREA)-1:0] game_sx;
   logic [$clog2(params::pacman::V_VISIBLE_AREA)-1:0] game_sy;
@@ -82,8 +101,8 @@ module drawing_logic #(
       .game_pix_stb  (game_pix_stb),
       // Inputs
       .vga_pix_clk   (vga_pix_clk),
-      .vga_sx        (sx),
-      .vga_sy        (sy)
+      .vga_sx        (sx1),
+      .vga_sy        (sy1)
   );
 
 
@@ -91,19 +110,19 @@ module drawing_logic #(
   // this alows multiple windows to overlap, or not :)
   logic [3:0] GAME_R, GAME_G, GAME_B;
   logic [3:0] x_debug, y_debug;
-  assign x_debug = {4{sx[2:0] == 'b000}};
-  assign y_debug = {4{sy[2:0] == 'b000}};
+  assign x_debug = {4{sx1[2:0] == 'b000}};
+  assign y_debug = {4{sy1[2:0] == 'b000}};
 
 
   always_comb
     if (game_display_enabled) begin
-      R = GAME_R;  //| x_debug;
-      G = GAME_G;  //| y_debug;
-      B = GAME_B;
+      R = GAME_R;
+      G = GAME_G | y_debug;
+      B = GAME_B | x_debug;
     end else begin
-      R = x_debug;
+      R = '0;
       G = y_debug;
-      B = '0;
+      B = x_debug;
     end
 
   pacman_game pc_game (  /**AUTOINST*/
@@ -116,7 +135,7 @@ module drawing_logic #(
       .vga_pix_clk(vga_pix_clk),
       .clk(clk),
       .rst(rst),
-      .frame_stb(frame_stb),
+      .frame_stb(frame_stb1),
       .sx(game_sx),
       .sy(game_sy),
       .BTNU(BTNU),

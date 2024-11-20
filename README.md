@@ -1,7 +1,14 @@
+# Simulation
+To Run VGA simulator (VERY SLOW, around 0.3 frames/second!):
+
 ```
 ❯ cmake -B build -G Ninja && ninja -C build && ./build/Vour
 ```
 
-Install this https://github.com/barbedo/vivado-git
+# Synthesis
 
-Tools, Run TCL Scripts
+
+Tools, Run TCL Scripts, Run `Pacman.tcl`
+
+# Working on this Project
+Install this https://github.com/barbedo/vivado-git

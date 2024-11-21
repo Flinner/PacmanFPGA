@@ -209,12 +209,27 @@ module pacman_game #(
   assign map_location = MAP[(sx1/8)+(sy1/8)*32];
   /* verilator lint_on WIDTHEXPAND */
 
+
+  // THIS IS TEMPORARY!!!!!
+  logic [3:0] RRRR;
+  logic [3:0] GGGG;
+  logic [3:0] BBBB;
+
+  sprite_map sprite_map (
+      sx[2:0],
+      sy[2:0],
+      map_location,
+      RRRR,
+      GGGG,
+      BBBB
+  );
+
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_comb begin
     // if (game_pix_stb1) begin
-    R = map_location | R_PAC;  // TODO: change to 32!!
-    G = 4'h0 | G_PAC;
-    B = 4'h0 | B_PAC;
+    R = RRRR | R_PAC;  // TODO: change to 32!!
+    G = '0 | G_PAC;
+    B = '0 | B_PAC;
     // end else begin
     //   R <= '0;
     //   G <= '0;

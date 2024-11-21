@@ -117,12 +117,12 @@ module drawing_logic #(
   always_comb
     if (game_display_enabled) begin
       R = GAME_R;
-      G = GAME_G | y_debug;
-      B = GAME_B | x_debug;
+      G = GAME_G;  //| y_debug;
+      B = GAME_B;  //| x_debug;
     end else begin
       R = '0;
-      G = y_debug;
-      B = x_debug;
+      G = '0;  //y_debug;
+      B = '0;  //x_debug;
     end
 
   pacman_game pc_game (  /**AUTOINST*/

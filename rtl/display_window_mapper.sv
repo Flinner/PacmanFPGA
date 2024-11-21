@@ -56,7 +56,7 @@ module display_window_mapper #(
     /* verilator lint_off WIDTHEXPAND */  /* verilator lint_off WIDTHTRUNC */
     window_sx = vga_sx - H_WINDOW_OFFSET;
     window_sy = vga_sy - V_WINDOW_OFFSET;
-    window_enabled = vga_sx - H_WINDOW_OFFSET < H_WINDOW_VISIBLE_AREA && vga_sy - V_WINDOW_OFFSET < V_WINDOW_VISIBLE_AREA - 1;
+    window_enabled = vga_sx - H_WINDOW_OFFSET < H_WINDOW_VISIBLE_AREA -1 && vga_sy - V_WINDOW_OFFSET < V_WINDOW_VISIBLE_AREA - 1;
     // vga_sx > H_WINDOW_OFFSET && vga_sx + H_WINDOW_OFFSET < H_WINDOW_VISIBLE_AREA &&
     /* verilator lint_on WIDTHEXPAND */  /* verilator lint_on WIDTHTRUNC */
     game_pix_stb = vga_pix_clk;

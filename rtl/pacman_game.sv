@@ -148,13 +148,14 @@ module pacman_game #(
     else if (BTNL) next_direction <= LEFT;
   end
 
-  always_comb begin
-    unique case (next_direction)
-      UP:    if (MAP_UP    == 0 && x_aligned) curr_direction = UP;
-      DOWN:  if (MAP_DOWN  == 0 && x_aligned) curr_direction = DOWN;
-      RIGHT: if (MAP_RIGHT == 0 && y_aligned) curr_direction = RIGHT;
-      LEFT:  if (MAP_LEFT  == 0 && y_aligned) curr_direction = LEFT;
+  always_ff @(posedge vga_pix_clk) begin
+    case (next_direction)
+      UP:    if (MAP_UP    == 0 && x_aligned) curr_direction <= UP;
+      DOWN:  if (MAP_DOWN  == 0 && x_aligned) curr_direction <= DOWN;
+      RIGHT: if (MAP_RIGHT == 0 && y_aligned) curr_direction <= RIGHT;
+      LEFT:  if (MAP_LEFT  == 0 && y_aligned) curr_direction <= LEFT;
     endcase
+    if (rst) curr_direction <= RIGHT;
   end
 
   always_ff @(posedge vga_pix_clk) begin
@@ -163,18 +164,17 @@ module pacman_game #(
       x_pac <= 8 * 1;
       y_pac <= 8 * 4;
       // $display("x_pac: %d, y_pac: %d", x_pac, y_pac);
-      next_direction <= RIGHT;
-    end else if (CLK60HZ) begin
-      unique case (curr_direction)
-        UP:    if (MAP_UP    == 0 && x_aligned) y_pac <= y_pac - 1'b1;
-        DOWN:  if (MAP_DOWN  == 0 && x_aligned) y_pac <= y_pac + 1'b1;
-        RIGHT: if (MAP_RIGHT == 0 && y_aligned) x_pac <= x_pac + 1'b1;
-        LEFT:  if (MAP_LEFT  == 0 && y_aligned) x_pac <= x_pac - 1'b1;
-
-      endcase
-    end
+    end  // else if (CLK60HZ) begin
+    // CLK60HZ is = 1 once per frame thus we add/sub 1 per frame!
+    // This avoids an if statment that results in gated clock warning!
+    unique case (curr_direction)
+      UP:    if (MAP_UP    == 0 && x_aligned) y_pac <= y_pac - {8'b0, CLK60HZ};
+      DOWN:  if (MAP_DOWN  == 0 && x_aligned) y_pac <= y_pac + {8'b0, CLK60HZ};
+      RIGHT: if (MAP_RIGHT == 0 && y_aligned) x_pac <= x_pac + {8'b0, CLK60HZ};
+      LEFT:  if (MAP_LEFT  == 0 && y_aligned) x_pac <= x_pac - {8'b0, CLK60HZ};
+    endcase
+    // end
   end
-
 
   always_comb begin
     pixel_in_sprite = (({1'b0,sx1} >= x_pac && {1'b0,sx1} < x_pac + SPRITE_WIDTH) &&

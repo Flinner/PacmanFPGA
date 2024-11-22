@@ -119,8 +119,8 @@ module pacman_game #(
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
       .frame_stb  (frame_stb1),
-      .sx         (sx[$clog2(H_MAP_WIDTH)-1:0]),
-      .sy         (sy[$clog2(V_MAP_HEIGHT)-1:0]),
+      .sx         (sx),
+      .sy         (sy),
       .BTNU       (BTNU),
       .BTND       (BTND),
       .BTNR       (BTNR),
@@ -191,33 +191,6 @@ module pacman_game #(
   logic [8:0] x_pink;
   logic [8:0] y_pink;
 
-
-  logic [3:0] R_red;
-  logic [3:0] G_red;
-  logic [3:0] B_red;
-
-
-  logic pixel_in_red_sprite;
-
-  logic [11:0] R_color;
-  assign R_color = 12'hE11;
-  always_comb begin
-    pixel_in_red_sprite = (({1'b0,sx1} >= x_red && {1'b0,sx1} < x_red + SPRITE_WIDTH) &&
-                       (sy1 >= y_red && sy1 < y_red + SPRITE_HEIGHT));
-
-    if (pixel_in_red_sprite) begin
-      R_red = R_color[11:8];
-      G_red = R_color[7:4];
-      B_red = R_color[3:0];
-    end else begin
-      //square = (sx1 >= x1_pac && sx1<x2_pac) && (sy1 >= y1 && sy1< y2);
-      R_red = 4'h0;  // Default red component
-      G_red = 4'h0;  // Default green component
-      B_red = 4'h0;  // Default blue component
-    end
-  end
-
-
   enemy_movement #(
       /**AUTOINSTPARAM*/
       // Parameters
@@ -241,9 +214,36 @@ module pacman_game #(
       .y_pac      (y_pac)
   );
 
+
+
   ////////////////////////
   // SPRITES AND COLORS //
   ////////////////////////
+
+  logic [3:0] R_enemy;
+  logic [3:0] G_enemy;
+  logic [3:0] B_enemy;
+
+
+  // Enemies!
+  enemy_sprite enemy_sprite (  /**AUTOINST*/
+      // Outputs
+      .R       (R_enemy),
+      .G       (G_enemy),
+      .B       (B_enemy),
+      // Inputs
+      .x_red   (x_red),
+      .y_red   (y_red),
+      .x_blue  (x_blue),
+      .y_blue  (y_blue),
+      .x_yellow(x_yellow),
+      .y_yellow(y_yellow),
+      .x_pink  (x_pink),
+      .y_pink  (y_pink),
+      .sx      (sx),
+      .sy      (sy)
+  );
+
 
   // PACMAN COLOR
   logic [11:0] color;
@@ -290,9 +290,9 @@ module pacman_game #(
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_comb begin
     // if (game_pix_stb1) begin
-    R = RRRR | R_PAC | R_red;  // TODO: change to 32!!
-    G = GGGG | G_PAC | G_red;
-    B = BBBB | B_PAC | B_red;
+    R = RRRR | R_PAC | R_enemy;  // TODO: change to 32!!
+    G = GGGG | G_PAC | G_enemy;
+    B = BBBB | B_PAC | B_enemy;
     // end else begin
     //   R <= '0;
     //   G <= '0;

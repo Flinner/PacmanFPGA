@@ -93,6 +93,7 @@ module top (
       .clk_in1 (CLK100MHZ)
   );
 `endif
+  // FIXME: Assert rst for a few cycles at start
 
   // assign frame_stb = sy == sx && sx == 0;
   assign frame_stb_aot = sy_aot == sx_aot && sx_aot == 0;

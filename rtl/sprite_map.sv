@@ -30,6 +30,7 @@ module sprite_map (
 
   always_comb begin
     G = '0;
+    B = '0;
     case (sprite_code)
       'b0000: R = 'b1111;
       'b0001: R = 'b1111;
@@ -43,7 +44,11 @@ module sprite_map (
         R = 'b0000;
         if ((sy == 4 || sy == 3) && (sx == 4 || sx == 3)) G = 'b1111;
         else G = '0;
-
+      end
+      'b1010: begin
+        R = 'b0000;
+        if ((sy < 6 && sy > 2) && (sx < 6 && sx > 2)) B = 'b1111;
+        else B = '0;
       end
       default: begin
         R = '0;

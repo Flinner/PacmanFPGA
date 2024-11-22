@@ -32,6 +32,11 @@ package params;
   class vga;
     parameter PIPELINE_STAGES = 2;  // 7 choosen based on my hunch
   endclass : vga
+  class map;
+    parameter empty_tile = 'b1000;
+    parameter cookie_tile = 'b1010;
+    parameter candy_tile = 'b1001;
+  endclass : map
 endpackage : params
 
 `endif

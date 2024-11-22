@@ -28,17 +28,32 @@ module sprite_map (
     output logic [3:0] B
 );
 
-  always_comb
+  always_comb begin
+    G = '0;
+    B = '0;
     case (sprite_code)
-      'b0000:  R = 'b1111;
-      'b0001:  R = 'b1111;
-      'b0010:  R = 'b1111;
-      'b0011:  R = 'b1111;
-      'b0100:  R = 'b1111;
-      'b0101:  R = 'b1111;
-      'b0110:  R = 'b1111;
-      'b0111:  R = 'b1111;
-      default: R = '0;
+      'b0000: R = 'b1111;
+      'b0001: R = 'b1111;
+      'b0010: R = 'b1111;
+      'b0011: R = 'b1111;
+      'b0100: R = 'b1111;
+      'b0101: R = 'b1111;
+      'b0110: R = 'b1111;
+      'b0111: R = 'b1111;
+      'b1001: begin
+        R = 'b0000;
+        if ((sy == 4 || sy == 3) && (sx == 4 || sx == 3)) G = 'b1111;
+        else G = '0;
+      end
+      'b1010: begin
+        R = 'b0000;
+        if ((sy < 6 && sy > 2) && (sx < 6 && sx > 2)) B = 'b1111;
+        else B = '0;
+      end
+      default: begin
+        R = '0;
+      end
     endcase
+  end
 
 endmodule : sprite_map

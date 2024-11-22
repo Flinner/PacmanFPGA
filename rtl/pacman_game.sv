@@ -162,7 +162,7 @@ module pacman_game #(
       .INITIAL_MEM_FILE(MAP_F)
   ) cookie_and_candy_memory (  /**AUTOINST*/
       // Outputs
-      .dout(map_pacman_location),
+      .dout(map_pacman_tile),
       // Inputs
       .clk (vga_pix_clk),
       .we  ('0),
@@ -178,11 +178,13 @@ module pacman_game #(
 
 
 
-  logic [3:0] map_drawing_location;
-  logic [3:0] map_pacman_location;
+  // this is the drawing beam's map tile
+  logic [3:0] map_drawing_tile;
+  // this is pacman's map tile
+  logic [3:0] map_pacman_tile;
   //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
   /* verilator lint_off WIDTHEXPAND */
-  assign map_drawing_location = MAP[(sx1/8)+(sy1/8)*32];
+  assign map_drawing_tile = MAP[(sx1/8)+(sy1/8)*32];
   /* verilator lint_on WIDTHEXPAND */
 
 
@@ -194,7 +196,7 @@ module pacman_game #(
   sprite_map sprite_map (
       sx[2:0],
       sy[2:0],
-      map_drawing_location,
+      map_drawing_tile,
       RRRR,
       GGGG,
       BBBB

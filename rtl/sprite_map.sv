@@ -41,7 +41,9 @@ module sprite_map (
       'b0111: R = 'b1111;
       'b1001: begin
         R = 'b0000;
-        G = 'b1111;
+        if ((sy == 4 || sy == 3) && (sx == 4 || sx == 3)) G = 'b1111;
+        else G = '0;
+
       end
       default: begin
         R = '0;

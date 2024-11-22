@@ -93,7 +93,7 @@ module pacman_game #(
   // MOVEMENT //
   //////////////
 
-  pacman_movement pacman_movement (  /*AUTOINST*/
+  pacman_movement pacman_movement (  /**AUTOINST*/
       // Outputs
       .x_pac      (x_pac),
       .y_pac      (y_pac),
@@ -109,6 +109,11 @@ module pacman_game #(
       .BTNL       (BTNL),
       .MAP        (MAP  /*[3:0].[0:32*36-1]*/)
   );
+
+  ////////////////////////////
+  // CANDY and POWER COOKIE //
+  ////////////////////////////
+
 
   ////////////////////////
   // SPRITES AND COLORS //
@@ -149,11 +154,35 @@ module pacman_game #(
     $readmemb(MAP_F, MAP);
   end
 
+  // Yes, I duplicate memory! The Above is readonly, this is read/write:
+  single_port_bram_with_rst #(  /**AUTOINSTPARAM*/
+      // Parameters
+      .DATA_WIDTH(4),
+      .DATA_DEPTH(32 * 36),
+      .INITIAL_MEM_FILE(MAP_F)
+  ) cookie_and_candy_memory (  /**AUTOINST*/
+      // Outputs
+      .dout(map_pacman_location),
+      // Inputs
+      .clk (vga_pix_clk),
+      .we  ('0),
+      .rst (rst),
+      /* verilator lint_off WIDTHEXPAND */
+      // PIPELINE - 1: this returns data one clk later
+      // I believe this is fine, since x_pac/y_pac change values at new frames
+      // by the time they change 100s of clks has passed
+      .addr((x_pac / 8) + (y_pac / 8) * 32),
+      /* verilator lint_on WIDTHEXPAND */
+      .di  ('0)
+  );
 
-  logic [3:0] map_location;
+
+
+  logic [3:0] map_drawing_location;
+  logic [3:0] map_pacman_location;
   //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
   /* verilator lint_off WIDTHEXPAND */
-  assign map_location = MAP[(sx1/8)+(sy1/8)*32];
+  assign map_drawing_location = MAP[(sx1/8)+(sy1/8)*32];
   /* verilator lint_on WIDTHEXPAND */
 
 
@@ -165,7 +194,7 @@ module pacman_game #(
   sprite_map sprite_map (
       sx[2:0],
       sy[2:0],
-      map_location,
+      map_drawing_location,
       RRRR,
       GGGG,
       BBBB
@@ -175,7 +204,7 @@ module pacman_game #(
   always_comb begin
     // if (game_pix_stb1) begin
     R = RRRR | R_PAC;  // TODO: change to 32!!
-    G = '0 | G_PAC;
+    G = GGGG | G_PAC;
     B = '0 | B_PAC;
     // end else begin
     //   R <= '0;

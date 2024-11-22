@@ -214,8 +214,6 @@ module pacman_game #(
       .y_pac      (y_pac)
   );
 
-
-
   ////////////////////////
   // SPRITES AND COLORS //
   ////////////////////////
@@ -273,26 +271,25 @@ module pacman_game #(
 
 
 
-  // THIS IS TEMPORARY!!!!!
-  logic [3:0] RRRR;
-  logic [3:0] GGGG;
-  logic [3:0] BBBB;
+  logic [3:0] R_map;
+  logic [3:0] G_map;
+  logic [3:0] B_map;
 
   map_sprite map_sprite (
       sx[2:0],
       sy[2:0],
       map_drawing_tile,
-      RRRR,
-      GGGG,
-      BBBB
+      R_map,
+      G_map,
+      B_map
   );
 
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_comb begin
     // if (game_pix_stb1) begin
-    R = RRRR | R_PAC | R_enemy;  // TODO: change to 32!!
-    G = GGGG | G_PAC | G_enemy;
-    B = BBBB | B_PAC | B_enemy;
+    R = R_map | R_PAC | R_enemy;  // TODO: change to 32!!
+    G = G_map | G_PAC | G_enemy;
+    B = B_map | B_PAC | B_enemy;
     // end else begin
     //   R <= '0;
     //   G <= '0;

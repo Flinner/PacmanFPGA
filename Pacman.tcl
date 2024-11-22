@@ -19,7 +19,7 @@ proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
  "[file normalize "$origin_dir/rtl/ip/clk_wiz_0.xci"]"\
- "[file normalize "$origin_dir/rtl/ip/dual_port_bram.sv"]"\
+ "[file normalize "$origin_dir/rtl/dual_port_bram.sv"]"\
  "[file normalize "$origin_dir/rtl/display_window_mapper.sv"]"\
  "[file normalize "$origin_dir/rtl/params.sv"]"\
  "[file normalize "$origin_dir/rtl/drawing_logic.sv"]"\
@@ -158,7 +158,7 @@ set obj [get_filesets sources_1]
 # Add local files from the original project (-no_copy_sources specified)
 set files [list \
  [file normalize "${origin_dir}/rtl/ip/clk_wiz_0.xci" ]\
- [file normalize "${origin_dir}/rtl/ip/dual_port_bram.sv" ]\
+ [file normalize "${origin_dir}/rtl/dual_port_bram.sv" ]\
  [file normalize "${origin_dir}/rtl/display_window_mapper.sv" ]\
  [file normalize "${origin_dir}/rtl/params.sv" ]\
  [file normalize "${origin_dir}/rtl/drawing_logic.sv" ]\
@@ -183,7 +183,7 @@ if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
 }
 
-set file "rtl/ip/dual_port_bram.sv"
+set file "rtl/dual_port_bram.sv"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 

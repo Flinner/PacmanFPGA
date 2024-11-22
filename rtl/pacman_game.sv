@@ -86,12 +86,13 @@ module pacman_game #(
   ////////////////////
   // PIPELINING END //
   ////////////////////
-  logic [8:0] x_pac;
-  logic [8:0] y_pac;
 
   //////////////
   // MOVEMENT //
   //////////////
+  logic [8:0] x_pac;
+  logic [8:0] y_pac;
+
 
   pacman_movement #(
       .INITIAL_MEM_FILE(MAP_F)
@@ -129,13 +130,17 @@ module pacman_game #(
 
   always_ff @(posedge vga_pix_clk) begin
     if (frame_stb1) begin
-      ate_candy_stb <= map_pacman_tile == 'b1001;
-      ate_power_cookie_stb <= map_pacman_tile == 'b1010;
+      ate_candy_stb <= map_pacman_tile == params::map::candy_tile;
+      ate_power_cookie_stb <= map_pacman_tile == params::map::cookie_tile;
       $display("map_pacman_tile: %b", map_pacman_tile);
       $display("CANDY: %b, POWER: %b", ate_candy_stb, ate_power_cookie_stb);
     end
   end
 
+  // PORT A:
+  //   used to read tile to draw, based on sx/sy
+  // PORT B:
+  //   used to read tile of pacman now, based on x_pac, y_pac
   dual_port_bram #(
       // Parameters
       .DATA_WIDTH(4),
@@ -146,9 +151,9 @@ module pacman_game #(
       .douta(map_drawing_tile),
       .doutb(map_pacman_tile),
       // Inputs
-      .clk  (vga_pix_clk),
-      .wea  ('0),
-      .web  (ate_candy_stb | ate_power_cookie_stb),
+      .clk(vga_pix_clk),
+      .wea('0),  // never write here, read only port
+      .web(ate_candy_stb | ate_power_cookie_stb),
       /* verilator lint_off WIDTHEXPAND */
       // PIPELINE - 1: this returns data one clk later
       .addra((sx / 8) + (sy / 8) * 32),
@@ -157,8 +162,8 @@ module pacman_game #(
       // by the time they change 100s of clks has passed
       .addrb((x_pac / 8) + (y_pac / 8) * 32),
       /* verilator lint_on WIDTHEXPAND */
-      .dia  ('b0),
-      .dib  ('b1000)
+      .dia('b0),  // never write here :)
+      .dib(params::map::empty_tile)
   );
 
 

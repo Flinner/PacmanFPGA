@@ -30,17 +30,14 @@ module sprite_map (
 
   always_comb
     case (sprite_code)
-      'b1000:  if (sy == 3) R = 'b1111;
- else R = '0;
-      'b1001:  R = 'b1111;
-      'b1010:  R = 'b1111;
-      'b1011:  R = 'b1111;
-      'b1100:  R = 'b1111;
-      'b1101:  R = 'b1111;
-      'b1110:  if (sy == 3) R = 'b1111;
- else R = '0;
-      'b1111:  if (sx == 3) R = 'b1111;
- else R = '0;
+      'b0000:  R = 'b1111;
+      'b0001:  R = 'b1111;
+      'b0010:  R = 'b1111;
+      'b0011:  R = 'b1111;
+      'b0100:  R = 'b1111;
+      'b0101:  R = 'b1111;
+      'b0110:  R = 'b1111;
+      'b0111:  R = 'b1111;
       default: R = '0;
     endcase
 

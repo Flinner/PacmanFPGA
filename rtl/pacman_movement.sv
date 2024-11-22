@@ -47,20 +47,20 @@ module pacman_movement #(
 
 
   // will hit if kept moving up...
-  logic MAP_UP;
-  logic MAP_DOWN;
-  logic MAP_RIGHT;
-  logic MAP_LEFT;
+  logic [3:0] MAP_UP;
+  logic [3:0] MAP_DOWN;
+  logic [3:0] MAP_RIGHT;
+  logic [3:0] MAP_LEFT;
 
   always_comb begin
     /* verilator lint_off WIDTHTRUNC */
     /* verilator lint_on WIDTHTRUNC */
     // 8 is MAP_BLOCK_SIZE
     // this gives the next tile if you moved in the given direction
-    MAP_UP    = MAP[x_pac/8+((y_pac-1)/8)*32] != 0;
-    MAP_DOWN  = MAP[x_pac/8+((y_pac)/8)*32+32] != 0;
-    MAP_RIGHT = MAP[(x_pac)/8 + 1+(y_pac/8)*32] != 0;
-    MAP_LEFT  = MAP[(x_pac-1)/8+(y_pac/8)*32] != 0;
+    MAP_UP    = MAP[x_pac/8+((y_pac-1)/8)*32] ;
+    MAP_DOWN  = MAP[x_pac/8+((y_pac)/8)*32+32];
+    MAP_RIGHT = MAP[(x_pac)/8 + 1+(y_pac/8)*32];
+    MAP_LEFT  = MAP[(x_pac-1)/8+(y_pac/8)*32];
   end
 
   // if x (the pacman sprite) is perfectly aligned, then moving in y direction will never clip walls
@@ -90,10 +90,10 @@ module pacman_movement #(
 
   always_ff @(posedge vga_pix_clk) begin
     case (next_direction)
-      UP:    if (MAP_UP    == 0 && x_aligned) curr_direction <= UP;
-      DOWN:  if (MAP_DOWN  == 0 && x_aligned) curr_direction <= DOWN;
-      RIGHT: if (MAP_RIGHT == 0 && y_aligned) curr_direction <= RIGHT;
-      LEFT:  if (MAP_LEFT  == 0 && y_aligned) curr_direction <= LEFT;
+      UP:    if (MAP_UP   [3] == 1 && x_aligned) curr_direction <= UP;
+      DOWN:  if (MAP_DOWN [3] == 1 && x_aligned) curr_direction <= DOWN;
+      RIGHT: if (MAP_RIGHT[3] == 1 && y_aligned) curr_direction <= RIGHT;
+      LEFT:  if (MAP_LEFT [3] == 1 && y_aligned) curr_direction <= LEFT;
     endcase
     if (rst) curr_direction <= RIGHT;
   end
@@ -108,10 +108,10 @@ module pacman_movement #(
     // CLK60HZ is = 1 once per frame thus we add/sub 1 per frame!
     // This avoids an if statment that results in gated clock warning!
     unique case (curr_direction)
-      UP:    if (MAP_UP    == 0 && x_aligned) y_pac <= y_pac - {8'b0, CLK60HZ};
-      DOWN:  if (MAP_DOWN  == 0 && x_aligned) y_pac <= y_pac + {8'b0, CLK60HZ};
-      RIGHT: if (MAP_RIGHT == 0 && y_aligned) x_pac <= x_pac + {8'b0, CLK60HZ};
-      LEFT:  if (MAP_LEFT  == 0 && y_aligned) x_pac <= x_pac - {8'b0, CLK60HZ};
+      UP:    if (MAP_UP   [3] == 1 && x_aligned) y_pac <= y_pac - {8'b0, CLK60HZ};
+      DOWN:  if (MAP_DOWN [3] == 1 && x_aligned) y_pac <= y_pac + {8'b0, CLK60HZ};
+      RIGHT: if (MAP_RIGHT[3] == 1 && y_aligned) x_pac <= x_pac + {8'b0, CLK60HZ};
+      LEFT:  if (MAP_LEFT [3] == 1 && y_aligned) x_pac <= x_pac - {8'b0, CLK60HZ};
     endcase
     // end
   end

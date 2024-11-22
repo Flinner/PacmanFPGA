@@ -277,7 +277,7 @@ module pacman_game #(
   logic [3:0] GGGG;
   logic [3:0] BBBB;
 
-  sprite_map sprite_map (
+  map_sprite map_sprite (
       sx[2:0],
       sy[2:0],
       map_drawing_tile,

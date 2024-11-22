@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module sprite_map (
+module map_sprite (
     input  logic [2:0] sx,
     input  logic [2:0] sy,
     input  logic [3:0] sprite_code,
@@ -56,4 +56,4 @@ module sprite_map (
     endcase
   end
 
-endmodule : sprite_map
+endmodule : map_sprite

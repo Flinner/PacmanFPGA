@@ -87,6 +87,20 @@ module pacman_game #(
   // PIPELINING END //
   ////////////////////
 
+
+  //////////////////////////
+  // SCORE AND SCOREBOARD //
+  //////////////////////////
+  logic [9:0] score;
+  always_ff @(posedge vga_pix_clk) begin
+    if (rst) score <= 0;
+    else if (ate_candy_stb) begin
+      score <= score + 1;
+      $display("Score: %d", score + 1);
+    end
+  end
+
+
   //////////////
   // MOVEMENT //
   //////////////
@@ -116,6 +130,7 @@ module pacman_game #(
   ////////////////////////////
   // CANDY and POWER COOKIE //
   ////////////////////////////
+  // TODO: to new module
 
 
   // this is the drawing beam's map tile
@@ -127,11 +142,26 @@ module pacman_game #(
   logic ate_candy_stb;
   logic ate_power_cookie_stb;
 
+  // this is to fix timing shit caused by reading memory, give it no mind
+  logic ate_candy1;
+  logic ate_power_cookie1;
+  // I convert 3 strobes to 1.
+
+
 
   always_ff @(posedge vga_pix_clk) begin
-    if (frame_stb1) begin
-      ate_candy_stb <= map_pacman_tile == params::map::candy_tile;
-      ate_power_cookie_stb <= map_pacman_tile == params::map::cookie_tile;
+    if (rst) begin
+      ate_candy_stb <= 0;
+      ate_power_cookie_stb <= 0;
+      ate_candy1 <= 0;
+      ate_power_cookie1 <= 0;
+    end
+    ate_candy1 <= ate_candy_stb;
+    ate_power_cookie1 <= ate_power_cookie_stb;
+
+    ate_candy_stb <= (map_pacman_tile == params::map::candy_tile) & ~ate_candy_stb & ~ate_candy1;
+    ate_power_cookie_stb <= (map_pacman_tile == params::map::cookie_tile) & ~ate_power_cookie_stb & ~ate_power_cookie1;
+    if (ate_candy_stb | ate_power_cookie_stb) begin
       $display("map_pacman_tile: %b", map_pacman_tile);
       $display("CANDY: %b, POWER: %b", ate_candy_stb, ate_power_cookie_stb);
     end

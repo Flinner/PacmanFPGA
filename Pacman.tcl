@@ -25,6 +25,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/rtl/drawing_logic.sv"]"\
  "[file normalize "$origin_dir/rtl/pacman_game.sv"]"\
  "[file normalize "$origin_dir/rtl/pacman_movement.sv"]"\
+ "[file normalize "$origin_dir/rtl/enemy_movement.sv"]"\
  "[file normalize "$origin_dir/rtl/vga_signal_gen.sv"]"\
  "[file normalize "$origin_dir/rtl/sprite_map.sv"]"\
  "[file normalize "$origin_dir/rtl/top.sv"]"\
@@ -164,6 +165,7 @@ set files [list \
  [file normalize "${origin_dir}/rtl/drawing_logic.sv" ]\
  [file normalize "${origin_dir}/rtl/pacman_game.sv" ]\
  [file normalize "${origin_dir}/rtl/pacman_movement.sv" ]\
+ [file normalize "${origin_dir}/rtl/enemy_movement.sv" ]\
  [file normalize "${origin_dir}/rtl/vga_signal_gen.sv" ]\
  [file normalize "${origin_dir}/rtl/sprite_map.sv" ]\
  [file normalize "${origin_dir}/rtl/top.sv" ]\
@@ -204,6 +206,10 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
 set file "rtl/pacman_movement.sv"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "rtl/enemy_movement.sv"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 

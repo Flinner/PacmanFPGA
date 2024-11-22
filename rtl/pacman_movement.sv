@@ -25,7 +25,8 @@
 `endif
 
 module pacman_movement #(
-    localparam H_MAP_WIDTH  = params::pacman::H_VISIBLE_AREA,
+    parameter INITIAL_MEM_FILE = "NONE",
+    localparam H_MAP_WIDTH = params::pacman::H_VISIBLE_AREA,
     localparam V_MAP_HEIGHT = params::pacman::V_VISIBLE_AREA
 ) (
     input logic vga_pix_clk,
@@ -37,13 +38,22 @@ module pacman_movement #(
     input logic BTND,
     input logic BTNR,
     input logic BTNL,
-    input logic [3:0] MAP[0:32*36-1],
     output logic [8:0] x_pac,
     output logic [8:0] y_pac
 );
 
   logic CLK60HZ;
   assign CLK60HZ = frame_stb;
+
+  ///////////////////////
+  // MAP DRAWING LOGIC //
+  ///////////////////////
+  // TODO: Optimize this, MAP can be 1 bit wide. We only check MAP[3].
+  logic [3:0] MAP[0:32*36-1];
+  initial begin
+    $display("Loading MAP from init file '%s'.", INITIAL_MEM_FILE);
+    $readmemb(INITIAL_MEM_FILE, MAP);
+  end
 
 
   // will hit if kept moving up...
@@ -115,5 +125,4 @@ module pacman_movement #(
     endcase
     // end
   end
-endmodule
-;  // pacman_movement
+endmodule : pacman_movement

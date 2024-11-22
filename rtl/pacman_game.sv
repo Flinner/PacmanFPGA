@@ -93,7 +93,9 @@ module pacman_game #(
   // MOVEMENT //
   //////////////
 
-  pacman_movement pacman_movement (  /**AUTOINST*/
+  pacman_movement #(
+      .INITIAL_MEM_FILE(MAP_F)
+  ) pacman_movement (  /**AUTOINST*/
       // Outputs
       .x_pac      (x_pac),
       .y_pac      (y_pac),
@@ -106,13 +108,19 @@ module pacman_game #(
       .BTNU       (BTNU),
       .BTND       (BTND),
       .BTNR       (BTNR),
-      .BTNL       (BTNL),
-      .MAP        (MAP  /*[3:0].[0:32*36-1]*/)
+      .BTNL       (BTNL)
+      // .MAP        (MAP  /*[3:0].[0:32*36-1]*/)
   );
 
   ////////////////////////////
   // CANDY and POWER COOKIE //
   ////////////////////////////
+
+
+  // this is the drawing beam's map tile
+  logic [3:0] map_drawing_tile;
+  // this is pacman's map tile
+  logic [3:0] map_pacman_tile;
 
   // strobe when eating a (power)cookie for one vga_pix_clk
   logic ate_candy_stb;
@@ -184,25 +192,7 @@ module pacman_game #(
   end
 
 
-  ///////////////////////
-  // MAP DRAWING LOGIC //
-  ///////////////////////
-  logic [3:0] MAP[0:32*36-1];
-  initial begin
-    $display("Loading MAP from init file '%s'.", MAP_F);
-    $readmemb(MAP_F, MAP);
-  end
 
-
-
-  // this is the drawing beam's map tile
-  logic [3:0] map_drawing_tile;
-  // this is pacman's map tile
-  logic [3:0] map_pacman_tile;
-  //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
-  /* verilator lint_off WIDTHEXPAND */
-  //assign map_drawing_tile = MAP[(sx1/8)+(sy1/8)*32];
-  /* verilator lint_on WIDTHEXPAND */
 
 
   // THIS IS TEMPORARY!!!!!

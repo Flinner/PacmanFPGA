@@ -91,6 +91,7 @@ module pacman_game #(
   //////////////////////////
   // SCORE AND SCOREBOARD //
   //////////////////////////
+  // TODO Scoreboard!
   logic [9:0] score;
   always_ff @(posedge vga_pix_clk) begin
     if (rst) score <= 0;
@@ -218,11 +219,11 @@ module pacman_game #(
 
 
   enemy_movement #(
-      /*AUTOINSTPARAM*/
+      /**AUTOINSTPARAM*/
       // Parameters
       .INITIAL_MEM_FILE(MAP_F)
   ) enemy_movement (
-      /*AUTOINST*/
+      /**AUTOINST*/
       // Outputs
       .x_red      (x_red),
       .y_red      (y_red),

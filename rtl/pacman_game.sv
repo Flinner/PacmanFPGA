@@ -100,7 +100,7 @@ module pacman_game #(
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
-      .frame_stb  (frame_stb),
+      .frame_stb  (frame_stb1),
       .sx         (sx[$clog2(H_MAP_WIDTH)-1:0]),
       .sy         (sy[$clog2(V_MAP_HEIGHT)-1:0]),
       .BTNU       (BTNU),
@@ -113,6 +113,45 @@ module pacman_game #(
   ////////////////////////////
   // CANDY and POWER COOKIE //
   ////////////////////////////
+
+  // strobe when eating a (power)cookie for one vga_pix_clk
+  logic ate_candy_stb;
+  logic ate_power_cookie_stb;
+
+
+  always_ff @(posedge vga_pix_clk) begin
+    if (frame_stb1) begin
+      ate_candy_stb <= map_pacman_tile == 'b1001;
+      ate_power_cookie_stb <= map_pacman_tile == 'b1010;
+      $display("map_pacman_tile: %b", map_pacman_tile);
+      $display("CANDY: %b, POWER: %b", ate_candy_stb, ate_power_cookie_stb);
+    end
+  end
+
+  dual_port_bram #(
+      // Parameters
+      .DATA_WIDTH(4),
+      .DATA_DEPTH(32 * 36),
+      .INITIAL_MEM_FILE(MAP_F)
+  ) candy_and_map_memory (
+      // Outputs
+      .douta(map_drawing_tile),
+      .doutb(map_pacman_tile),
+      // Inputs
+      .clk  (vga_pix_clk),
+      .wea  ('0),
+      .web  (ate_candy_stb | ate_power_cookie_stb),
+      /* verilator lint_off WIDTHEXPAND */
+      // PIPELINE - 1: this returns data one clk later
+      .addra((sx / 8) + (sy / 8) * 32),
+      // I think x_pac doesn't need the -1 pipeline
+      // I believe this is fine, since x_pac/y_pac change values at new frames
+      // by the time they change 100s of clks has passed
+      .addrb((x_pac / 8) + (y_pac / 8) * 32),
+      /* verilator lint_on WIDTHEXPAND */
+      .dia  ('b0),
+      .dib  ('b1000)
+  );
 
 
   ////////////////////////
@@ -154,28 +193,6 @@ module pacman_game #(
     $readmemb(MAP_F, MAP);
   end
 
-  // Yes, I duplicate memory! The Above is readonly, this is read/write:
-  single_port_bram_with_rst #(  /**AUTOINSTPARAM*/
-      // Parameters
-      .DATA_WIDTH(4),
-      .DATA_DEPTH(32 * 36),
-      .INITIAL_MEM_FILE(MAP_F)
-  ) cookie_and_candy_memory (  /**AUTOINST*/
-      // Outputs
-      .dout(map_pacman_tile),
-      // Inputs
-      .clk (vga_pix_clk),
-      .we  ('0),
-      .rst (rst),
-      /* verilator lint_off WIDTHEXPAND */
-      // PIPELINE - 1: this returns data one clk later
-      // I believe this is fine, since x_pac/y_pac change values at new frames
-      // by the time they change 100s of clks has passed
-      .addr((x_pac / 8) + (y_pac / 8) * 32),
-      /* verilator lint_on WIDTHEXPAND */
-      .di  ('0)
-  );
-
 
 
   // this is the drawing beam's map tile
@@ -184,7 +201,7 @@ module pacman_game #(
   logic [3:0] map_pacman_tile;
   //  STOP ANNOYING ME VERILATOR, I KNOW WHAT I WANT!!!
   /* verilator lint_off WIDTHEXPAND */
-  assign map_drawing_tile = MAP[(sx1/8)+(sy1/8)*32];
+  //assign map_drawing_tile = MAP[(sx1/8)+(sy1/8)*32];
   /* verilator lint_on WIDTHEXPAND */
 
 
@@ -207,7 +224,7 @@ module pacman_game #(
     // if (game_pix_stb1) begin
     R = RRRR | R_PAC;  // TODO: change to 32!!
     G = GGGG | G_PAC;
-    B = '0 | B_PAC;
+    B = BBBB | B_PAC;
     // end else begin
     //   R <= '0;
     //   G <= '0;

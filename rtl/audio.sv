@@ -13,14 +13,16 @@ module audio (
     output logic   en
 );
 
-  reg [7:0] chomp_audio_data[0:5735];  // 8-bit audio, 5736 samples
+  localparam AUDIO_SAMPLES = 5735;
+  logic [7:0] chomp_audio_data[0:AUDIO_SAMPLES];  // 8-bit audio, 5736 samples
   initial $readmemh("mem/Chomp.mem", chomp_audio_data);
 
-  reg [12:0] address;  // Address counter for audio samples
-  reg [ 7:0] current_sample;
+  logic [12:0] address;  // Address counter for audio samples
+  logic [ 7:0] current_sample;
 
   always @(posedge clk_25MHZ) begin
-    address <= address + {12'b0, clk_8KHZ};
+    if (address >= AUDIO_SAMPLES) address <= 0;
+    else address <= address + {12'b0, clk_8KHZ};
     current_sample <= chomp_audio_data[address];
   end
 

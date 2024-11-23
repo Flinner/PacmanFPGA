@@ -160,4 +160,20 @@ module top (
       .sy(sy)
   );
 
+  ///////////
+  // SOUND //
+  ///////////
+`ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
+  sound_t sound_type;
+  audio audio (  /**AUTOINST*/
+      // Interfaces
+      .sound_type(sound_type),
+      // Outputs
+      .clk_8KHZ(STROBE_8KHZ),
+      .clk_25MHZ(CLK25MHZ),
+      .pwm_out(AUD_PWM),
+      .en(AUD_SD)
+  );
+`endif
+
 endmodule

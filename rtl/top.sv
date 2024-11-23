@@ -196,4 +196,5 @@ module top (
                .pwm_out(AUD_PWM),
                .en(AUD_SD));
 `endif
+
 endmodule

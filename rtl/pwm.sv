@@ -9,6 +9,5 @@ module pwm (
   logic [7:0] counter;  // Counter for PWM
 
   always @(posedge clk) counter <= counter + 1;
-
   assign pwm_out = (counter < audio_sample) ? 1'b1 : 1'b0;
 endmodule

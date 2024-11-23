@@ -256,13 +256,15 @@ module pacman_game #(
   logic [3:0] B_PAC;
 
   logic pixel_in_pacman_sprite;
-
-  assign color = 12'hFFF;
+  logic [7:0] address;
+  //assign color = 12'hFFF;
+  trail tt(.clk(vga_pix_clk),.addra(),.douta(color));
   always_comb begin
     pixel_in_pacman_sprite = (({1'b0,sx1} >= x_pac && {1'b0,sx1} < x_pac + SPRITE_WIDTH) &&
                        (sy1 >= y_pac && sy1 < y_pac + SPRITE_HEIGHT));
 
     if (pixel_in_pacman_sprite) begin
+      address = (sy - y_pac) * 8 + (sx - x_pac);
       R_PAC = color[11:8];
       G_PAC = color[7:4];
       B_PAC = color[3:0];

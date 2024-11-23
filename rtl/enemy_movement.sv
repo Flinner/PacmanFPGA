@@ -5,18 +5,13 @@
 // 
 // Create Date: 10/19/2024 05:37:25 PM
 // Design Name: 
-// Module Name: drawing_logic
+// Module Name: enemy_movement
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
-// Description: 
+// Description: Controls the movement of enemies (monsters) in a Pac-Man-like game.
 // 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments: This module is pipelined at stage 2,
-//                      not that it matters, due to abstraction.
+// Dependencies: Map file for initialization and a VGA clock for timing.
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -31,7 +26,7 @@ module enemy_movement #(
 ) (
     input logic vga_pix_clk,
     input logic rst,
-    input logic frame_stb,  // 1 stage pipeline
+    input logic frame_stb,          // 60Hz frame signal for consistent movement
     input logic [8:0] x_pac,
     input logic [8:0] y_pac,
     output logic [8:0] x_red,
@@ -44,94 +39,93 @@ module enemy_movement #(
     output logic [8:0] y_pink
 );
 
-  logic CLK60HZ;
-  assign CLK60HZ = frame_stb;
+    ///////////////////////
+    // CLOCK AND MAP INIT //
+    ///////////////////////
+    logic CLK60HZ;
+    assign CLK60HZ = frame_stb;
 
-  ///////////////////////
-  // MAP DRAWING LOGIC //
-  ///////////////////////
-  // TODO: Optimize this, MAP can be 1 bit wide. We only check MAP[3].
-  logic [3:0] MAP[0:32*36-1];
-  initial begin
-    $display("Loading MAP from init file '%s'.", INITIAL_MEM_FILE);
-    $readmemb(INITIAL_MEM_FILE, MAP);
-  end
+    // Map storage
+    logic [3:0] MAP[0:32*36-1];
+    initial begin
+        $display("Loading MAP from init file '%s'.", INITIAL_MEM_FILE);
+        $readmemb(INITIAL_MEM_FILE, MAP);
+    end
 
+    ////////////////////////////
+    // POSITION AND DIRECTION //
+    ////////////////////////////
 
-  // will hit if kept moving up...
-  logic [3:0] MAP_UP_RED;
-  logic [3:0] MAP_DOWN_RED;
-  logic [3:0] MAP_RIGHT_RED;
-  logic [3:0] MAP_LEFT_RED;
+    // Aligned flags for movement (monsters align to 8-pixel grid)
+    logic x_red_aligned, y_red_aligned;
+    logic x_blue_aligned, y_blue_aligned;
+    logic x_yellow_aligned, y_yellow_aligned;
+    logic x_pink_aligned, y_pink_aligned;
 
-  always_comb begin
-    MAP_UP_RED    = MAP[x_red/8+((y_red-1)/8)*32] ;
-    MAP_DOWN_RED  = MAP[x_red/8+((y_red)/8)*32+32];
-    MAP_RIGHT_RED = MAP[(x_red)/8 + 1+(y_red/8)*32];
-    MAP_LEFT_RED  = MAP[(x_red-1)/8+(y_red/8)*32];
-  end
+    // Direction type
+    typedef enum { UP, RIGHT, DOWN, LEFT } direction_t;
 
+    // Direction variables for the red monster (similar for others if needed)
+    direction_t curr_direction, next_direction;
 
+    //////////////////////
+    // NEIGHBOR CHECKS  //
+    //////////////////////
 
+    // Red monster map surroundings
+    logic [3:0] MAP_UP_RED, MAP_DOWN_RED, MAP_RIGHT_RED, MAP_LEFT_RED;
 
-  // Yes, I like to align my = signs, but the auto formatter doesn't agree with my style...
-  // verilog_format: off
-  logic x_red_aligned          = x_red    [2:0] == '0;
-  logic y_red_aligned          = y_red    [2:0] == '0;
-  logic x_blue_aligned         = x_blue   [2:0] == '0;
-  logic y_blue_aligned         = y_blue   [2:0] == '0;
-  logic x_yellow_aligned       = x_yellow [2:0] == '0;
-  logic y_yellow_aligned       = y_yellow [2:0] == '0;
-  logic x_pink_aligned         = x_pink   [2:0] == '0;
-  logic y_pink_aligned         = y_pink   [2:0] == '0;
-  // verilog_format: on
+    always_comb begin
+        MAP_UP_RED    = MAP[x_red/8 + ((y_red-1)/8)*32];
+        MAP_DOWN_RED  = MAP[x_red/8 + ((y_red+8)/8)*32];
+        MAP_RIGHT_RED = MAP[(x_red+8)/8 + (y_red/8)*32];
+        MAP_LEFT_RED  = MAP[(x_red-8)/8 + (y_red/8)*32];
 
+        // Alignment checks
+        x_red_aligned    = (x_red[2:0] == 0);
+        y_red_aligned    = (y_red[2:0] == 0);
+    end
 
-  
-  
-  typedef enum {
-    UP,
-    RIGHT,
-    LEFT,
-    DOWN
-  } direction_t;
-  
-  direction_t curr_direction;
-  direction_t next_direction;
-    
-  logic [8:0] target_x = x_pac - x_red;
-  logic [8:0] target_y = y_pac - y_red;
-  
-always_ff @(posedge vga_pix_clk) begin
-    /**/ if (target_y < 0) next_direction <= UP;
-    else if (target_y > 0) next_direction <= DOWN;
-    else if (target_x > 0) next_direction <= RIGHT;
-    else if (target_x < 0) next_direction <= LEFT;
-  end
-  
+    ////////////////////////////
+    // TARGET AND DIRECTION   //
+    ////////////////////////////
 
- 
-always_ff @(posedge vga_pix_clk) begin
-    if (rst) begin
-      x_red    <= 8 * 15;
-      y_red    <= 8 * (4 + 10);
-      x_blue   <= 8 * 14;
-      y_blue   <= 8 * (4 + 13);
-      x_yellow <= 8 * 1;
-      y_yellow <= 8 * (4 + 13);
-      x_pink   <= 8 * 16;
-      y_pink   <= 8 * (4 + 13);
-    end // else if (CLK60HZ) begin
-    // CLK60HZ is = 1 once per frame thus we add/sub 1 per frame!
-    // This avoids an if statment that results in gated clock warning!
-    unique case (curr_direction)
-      UP:    if (MAP_UP_RED   [3] == 1 && x_red_aligned) y_red <= y_red - {8'b0, CLK60HZ};
-      DOWN:  if (MAP_DOWN_RED[3] == 1 && x_red_aligned) y_red <= y_red + {8'b0, CLK60HZ};
-      RIGHT: if (MAP_RIGHT_RED[3] == 1 && y_red_aligned) x_red <= x_red + {8'b0, CLK60HZ};
-      LEFT:  if (MAP_LEFT_RED [3] == 1 && y_red_aligned) x_red <= x_red - {8'b0, CLK60HZ};
-    endcase
-    // end
-  end
+    logic [8:0] target_x, target_y;
+    assign target_x = x_pac - x_red;
+    assign target_y = y_pac - y_red;
+
+    // Direction decision based on target
+    always_ff @(posedge vga_pix_clk) begin
+        if (rst) begin
+            curr_direction <= RIGHT;  // Default direction
+        end else begin
+            if (target_y < 0)       next_direction <= UP;
+            else if (target_y > 0) next_direction <= DOWN;
+            else if (target_x > 0) next_direction <= RIGHT;
+            else if (target_x < 0) next_direction <= LEFT;
+        end
+    end
+
+    /////////////////////////////
+    // MOVEMENT LOGIC FOR RED  //
+    /////////////////////////////
+
+    always_ff @(posedge vga_pix_clk) begin
+        if (rst) begin
+            // Reset positions
+            x_red <= 8 * 15;
+            y_red <= 8 * (4 + 10);
+        end else begin
+            unique case (curr_direction)
+                UP:    if (MAP_UP_RED[3] && x_red_aligned)    y_red <= y_red - {8'b0, CLK60HZ};
+                DOWN:  if (MAP_DOWN_RED[3] && x_red_aligned)  y_red <= y_red + {8'b0, CLK60HZ};
+                RIGHT: if (MAP_RIGHT_RED[3] && y_red_aligned) x_red <= x_red + {8'b0, CLK60HZ};
+                LEFT:  if (MAP_LEFT_RED[3] && y_red_aligned)  x_red <= x_red - {8'b0, CLK60HZ};
+            endcase
+            curr_direction <= next_direction;  // Update direction
+        end
+    end
+  /*
   always_ff @(posedge vga_pix_clk) begin
         case (curr_direction)
             UP: begin
@@ -172,6 +166,6 @@ always_ff @(posedge vga_pix_clk) begin
             end
         endcase
         if (rst) curr_direction <= RIGHT;
-    end
+    end*/
 
 endmodule : enemy_movement

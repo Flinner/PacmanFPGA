@@ -71,18 +71,7 @@ module enemy_movement #(
     MAP_LEFT_RED  = MAP[(x_red-1)/8+(y_red/8)*32];
   end
 
-  always_ff @(posedge vga_pix_clk) begin
-    if (rst) begin
-      x_red    <= 8 * 15;
-      y_red    <= 8 * (4 + 10);
-      x_blue   <= 8 * 14;
-      y_blue   <= 8 * (4 + 13);
-      x_yellow <= 8 * 1;
-      y_yellow <= 8 * (4 + 13);
-      x_pink   <= 8 * 16;
-      y_pink   <= 8 * (4 + 13);
-    end
-  end
+
 
 
   // Yes, I like to align my = signs, but the auto formatter doesn't agree with my style...
@@ -98,12 +87,54 @@ module enemy_movement #(
   // verilog_format: on
 
 
+  
+  
   typedef enum {
     UP,
     RIGHT,
     LEFT,
     DOWN
   } direction_t;
+  
+  direction_t curr_direction;
+  direction_t next_direction;
 
-
+always_ff @(posedge vga_pix_clk) begin
+    /**/ if (y_pac < y_red) next_direction <= UP;
+    else if (y_pac > y_red) next_direction <= DOWN;
+    else if (x_pac > x_red) next_direction <= RIGHT;
+    else if (x_pac < x_red) next_direction <= LEFT;
+  end
+  
+ always_ff @(posedge vga_pix_clk) begin
+    case (next_direction)
+      UP:    if (MAP_UP_RED   [3] == 1 && x_red_aligned) curr_direction <= UP;
+      DOWN:  if (MAP_DOWN_RED [3] == 1 && x_red_aligned) curr_direction <= DOWN;
+      RIGHT: if (MAP_RIGHT_RED[3] == 1 && y_red_aligned) curr_direction <= RIGHT;
+      LEFT:  if (MAP_LEFT_RED [3] == 1 && y_red_aligned) curr_direction <= LEFT;
+    endcase
+    if (rst) curr_direction <= RIGHT;
+  end
+ 
+always_ff @(posedge vga_pix_clk) begin
+    if (rst) begin
+      x_red    <= 8 * 15;
+      y_red    <= 8 * (4 + 10);
+      x_blue   <= 8 * 14;
+      y_blue   <= 8 * (4 + 13);
+      x_yellow <= 8 * 1;
+      y_yellow <= 8 * (4 + 13);
+      x_pink   <= 8 * 16;
+      y_pink   <= 8 * (4 + 13);
+    end // else if (CLK60HZ) begin
+    // CLK60HZ is = 1 once per frame thus we add/sub 1 per frame!
+    // This avoids an if statment that results in gated clock warning!
+    unique case (curr_direction)
+      UP:    if (MAP_UP_RED   [3] == 1 && x_red_aligned) y_red <= y_red - {8'b0, CLK60HZ};
+      DOWN:  if (MAP_DOWN_RED[3] == 1 && x_red_aligned) y_red <= y_red + {8'b0, CLK60HZ};
+      RIGHT: if (MAP_RIGHT_RED[3] == 1 && y_red_aligned) x_red <= x_red + {8'b0, CLK60HZ};
+      LEFT:  if (MAP_LEFT_RED [3] == 1 && y_red_aligned) x_red <= x_red - {8'b0, CLK60HZ};
+    endcase
+    // end
+  end
 endmodule : enemy_movement

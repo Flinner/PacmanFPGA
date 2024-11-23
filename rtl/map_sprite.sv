@@ -33,42 +33,50 @@ always_comb begin
     
 
     case (sprite_code)
+    // Upper wall
       4'b0001: 
         if (sy == 3'd5) 
           B = 4'b1111; // sy = 5 in binary
         else
           B = 4'b0000;
+    // Right wall
       4'b0010: 
         if (sx == 3'd3) 
           B = 4'b1111; // sx = 3 in binary
         else
           B = 4'b0000;
+    // Lower wall
       4'b0011: 
         if (sy == 3'd3) 
           B = 4'b1111; // sy = 3 in binary
         else
           B = 4'b0000;
+    // Left wall
       4'b0100: 
         if (sx == 3'd5) 
           B = 4'b1111; // sx = 5 in binary
         else
           B = 4'b0000;
+    // Upper left corner 
       4'b0101: 
         if ((sy == 3'd5 && sx >= 3'd5) || (sy >= 3'd5 && sx == 3'd5)) 
           B = 4'b1111; 
         else
           B = 4'b0000;
+    // Upper right corner
       4'b0110: 
         if ((sy == 3'd5 && sx <= 3'd3) || (sy >= 3'd5 && sx == 3'd3)) 
           B = 4'b1111; 
         else
           B = 4'b0000;
+    // Lower right corner
       4'b0111: 
         if ((sy == 3'd3 && sx <= 3'd3) || (sy <= 3'd3 && sx == 3'd3)) 
           B = 4'b1111; 
         else
           B = 4'b0000;
-      4'b1000: 
+    // Lower left corner  
+      4'b0000: 
         if ((sy == 3'd3 && sx >= 3'd5) || (sy <= 3'd3 && sx == 3'd5)) 
           B = 4'b1111; 
         else

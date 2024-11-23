@@ -9,6 +9,8 @@ cmake_install.cmake
 vivado_project/
 install_manifest.txt
 compile_commands.json
+/vivado_project/*
+vivado_project/Pacman.xpr
 CTestTestfile.cmake
 _deps
 CMakeUserPresets.json

@@ -106,15 +106,7 @@ always_ff @(posedge vga_pix_clk) begin
     else if (x_pac < x_red) next_direction <= LEFT;
   end
   
- always_ff @(posedge vga_pix_clk) begin
-    case (next_direction)
-      UP:    if (MAP_UP_RED   [3] == 1 && x_red_aligned) curr_direction <= UP;
-      DOWN:  if (MAP_DOWN_RED [3] == 1 && x_red_aligned) curr_direction <= DOWN;
-      RIGHT: if (MAP_RIGHT_RED[3] == 1 && y_red_aligned) curr_direction <= RIGHT;
-      LEFT:  if (MAP_LEFT_RED [3] == 1 && y_red_aligned) curr_direction <= LEFT;
-    endcase
-    if (rst) curr_direction <= RIGHT;
-  end
+
  
 always_ff @(posedge vga_pix_clk) begin
     if (rst) begin
@@ -137,4 +129,46 @@ always_ff @(posedge vga_pix_clk) begin
     endcase
     // end
   end
+  always_ff @(posedge vga_pix_clk) begin
+        case (curr_direction)
+            UP: begin
+                if (MAP_UP_RED[3] == 1 && x_red_aligned) begin
+                    curr_direction <= UP ; end
+                else if (MAP_UP_RED[3] == 0 && x_red_aligned)   begin 
+                if (MAP_RIGHT_RED[3] == 1 && y_red_aligned) curr_direction <= RIGHT;
+                    else if (MAP_LEFT_RED[3] == 1 && y_red_aligned) curr_direction <= LEFT;
+                    else if ( MAP_DOWN_RED[3] == 1 && x_red_aligned) curr_direction <= DOWN;
+                end
+            end
+            RIGHT: begin
+                if (MAP_RIGHT_RED[3] == 1 && y_red_aligned) begin
+                    curr_direction <= RIGHT ; end
+                else if (MAP_RIGHT_RED[3] == 0 && y_red_aligned)   begin
+                    if (MAP_UP_RED[3] == 1 && x_red_aligned) curr_direction <= UP;
+                    else if (MAP_DOWN_RED[3] == 1 && x_red_aligned) curr_direction <= DOWN;
+                    else if (MAP_LEFT_RED [3] == 1 && y_red_aligned)curr_direction <= LEFT;
+                end
+            end
+            DOWN: begin
+                if (MAP_DOWN_RED[3] == 1 && y_red_aligned) begin
+                curr_direction <= DOWN ; end
+                else if (MAP_DOWN_RED[3] == 0 && y_red_aligned)   begin
+                    if (MAP_LEFT_RED[3] == 1 && x_red_aligned) curr_direction <= LEFT;
+                    else if (MAP_RIGHT_RED[3] == 1 && x_red_aligned) curr_direction <= RIGHT;
+                    else if (MAP_UP_RED [3] == 1 && y_red_aligned) curr_direction <= UP;
+                end
+            end
+            LEFT: begin
+                if (MAP_LEFT_RED[3] == 1 && y_red_aligned) begin
+                curr_direction <= LEFT ; end
+                else if (MAP_DOWN_RED[3] == 0 && y_red_aligned)   begin
+                     if (MAP_DOWN_RED[3] == 1 && x_red_aligned) curr_direction <= DOWN;
+                    else if (MAP_UP_RED [3] == 1 && y_red_aligned) curr_direction <= UP;
+                    else if (MAP_RIGHT_RED[3] == 1 && x_red_aligned) curr_direction <= RIGHT;
+                end
+            end
+        endcase
+        if (rst) curr_direction <= RIGHT;
+    end
+
 endmodule : enemy_movement

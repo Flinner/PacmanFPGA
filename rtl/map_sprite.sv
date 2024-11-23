@@ -76,11 +76,11 @@ always_comb begin
         else
           B = 4'b0000;
     // Lower left corner  
-      4'b0000: 
+     /* 4'b0000: 
         if ((sy == 3'd3 && sx >= 3'd5) || (sy <= 3'd3 && sx == 3'd5)) 
           B = 4'b1111; 
         else
-          B = 4'b0000;
+          B = 4'b0000;*/
       
        
       default: 

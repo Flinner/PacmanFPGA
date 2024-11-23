@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module enemy_sprite (
+    input logic clk,rst,
     input logic [8:0] x_red,
     input logic [8:0] y_red,
     input logic [8:0] x_blue,
@@ -38,6 +39,8 @@ module enemy_sprite (
 
   localparam SPRITE_WIDTH = 8;
   localparam SPRITE_HEIGHT = 8;
+  localparam MONSTER_WIDTH = 14;
+  localparam MONSTER_HEIGHT = 14;
 
   logic pixel_in_red_sprite;
   logic [11:0] R_color;
@@ -46,12 +49,17 @@ module enemy_sprite (
   logic [3:0] R_red;
   logic [3:0] G_red;
   logic [3:0] B_red;
-
+  
+  logic [11:0] red_color;
+  logic [8:0] red_address;
+  
+  //BLINKY bln (.clk(clk),.addra(red_address),.douta(red_color));
   always_comb begin
     pixel_in_red_sprite = (({1'b0,sx} >= x_red && {1'b0,sx} < x_red + SPRITE_WIDTH) &&
                        (sy >= y_red && sy < y_red + SPRITE_HEIGHT));
 
     if (pixel_in_red_sprite) begin
+      //red_address = sx + sy * MONSTER_WIDTH;
       R_red = R_color[11:8];
       G_red = R_color[7:4];
       B_red = R_color[3:0];

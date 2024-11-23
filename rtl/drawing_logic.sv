@@ -21,6 +21,9 @@
 
 `ifdef VERILATOR
 `include "rtl/params.sv"
+`include "rtl/common_defines.svh"
+`else
+`include "common_defines.svh"
 `endif
 
 
@@ -44,6 +47,9 @@ module drawing_logic #(
     output logic [3:0] R,
     G,
     B,
+`ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
+    output sound_t sound_type,
+`endif
     input logic vga_pix_clk,
     input logic clk,
     input logic rst,
@@ -142,6 +148,9 @@ module drawing_logic #(
       .BTND(BTND),
       .BTNR(BTNR),
       .BTNL(BTNL),
+`ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
+      .sound_type(sound_type),
+`endif
       .display_enabled(game_display_enabled)
   );
 

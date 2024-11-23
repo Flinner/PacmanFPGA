@@ -226,6 +226,8 @@ module pacman_game #(
   // Enemies!
   enemy_sprite enemy_sprite (  /**AUTOINST*/
       // Outputs
+      .clk     (clk),
+      .rst     (rst),
       .R       (R_enemy),
       .G       (G_enemy),
       .B       (B_enemy),

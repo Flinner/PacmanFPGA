@@ -11,6 +11,7 @@
 `default_nettype none
 `include "rtl/params.sv"
 `endif
+`include "rtl/common_defines.svh"
 
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 

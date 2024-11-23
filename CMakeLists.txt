@@ -58,7 +58,7 @@ endif()
 
 
 # Glob all .sv files in the rtl directory
-file(GLOB RTL_SOURCE_FILES rtl/*.sv rtl/ip/*.sv)
+file(GLOB RTL_SOURCE_FILES rtl/*.sv rtl/*.svh rtl/ip/*.sv)
 # Ensure top.sv is at the top and not duplicated
 list(REMOVE_ITEM RTL_SOURCE_FILES ${CMAKE_SOURCE_DIR}/rtl/top.sv)
 list(INSERT RTL_SOURCE_FILES 0 ${CMAKE_SOURCE_DIR}/rtl/top.sv)

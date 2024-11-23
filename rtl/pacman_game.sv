@@ -282,8 +282,8 @@ module pacman_game #(
   logic [3:0] B_map;
 
   map_sprite map_sprite (
-      sx[2:0],
-      sy[2:0],
+      sx1[2:0],
+      sy1[2:0],
       map_drawing_tile,
       R_map,
       G_map,

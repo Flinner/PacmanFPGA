@@ -21,12 +21,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `ifdef VERILATOR
-//
-`include "rtl/params.sv"  //
-`include "rtl/common_defines.svh"  //
-`else  //
-`include "common_defines.svh"  //
-`endif  //
+`include "rtl/params.sv"
+`endif
 
 // This game only sees 224x288 display. It doesn't care about the rest,
 //  it is fine to give random output to save on logic
@@ -258,7 +254,7 @@ module pacman_game #(
   logic pixel_in_pacman_sprite;
   logic [7:0] address;
   //assign color = 12'hFFF;
-  trail tt(.clk(vga_pix_clk),.addra(),.douta(color));
+  trail tt(.clka(vga_pix_clk),.addra(),.douta(color));
   always_comb begin
     pixel_in_pacman_sprite = (({1'b0,sx1} >= x_pac && {1'b0,sx1} < x_pac + SPRITE_WIDTH) &&
                        (sy1 >= y_pac && sy1 < y_pac + SPRITE_HEIGHT));

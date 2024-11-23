@@ -21,10 +21,10 @@
 //////////////////////////////////////////////////////////////////////////////////
 `ifdef VERILATOR
 `include "rtl/params.sv"
-`include "rtl/common_defines.svh" 
-`else 
-`include "common_defines.svh" 
-`endif 
+`include "rtl/common_defines.svh"
+`else
+`include "common_defines.svh"
+`endif
 
 // This game only sees 224x288 display. It doesn't care about the rest,
 //  it is fine to give random output to save on logic

@@ -48,7 +48,7 @@ module drawing_logic #(
     G,
     B,
 `ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
-    output sound_t sound_type
+    output sound_t sound_type,
 `endif
     input logic vga_pix_clk,
     input logic clk,

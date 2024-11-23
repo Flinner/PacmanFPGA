@@ -51,7 +51,7 @@ module pacman_game #(
     output logic [3:0] G,
     output logic [3:0] B,
 `ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
-    output sound_t sound_type
+    output sound_t sound_type,
 `endif
     // there is an important distnction between `vga_pix_clk` and `game_pix_stb`
     // vga_pix_clk will "clock" on each physical vga pixel drawing

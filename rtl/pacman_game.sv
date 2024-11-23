@@ -19,14 +19,12 @@
 //                      not that it matters, due to abstraction.
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
 `ifdef VERILATOR
-//
-`include "rtl/params.sv"  //
-`include "rtl/common_defines.svh"  //
-`else  //
-`include "common_defines.svh"  //
-`endif  //
+`include "rtl/params.sv"
+`include "rtl/common_defines.svh" 
+`else 
+`include "common_defines.svh" 
+`endif 
 
 // This game only sees 224x288 display. It doesn't care about the rest,
 //  it is fine to give random output to save on logic
@@ -256,13 +254,15 @@ module pacman_game #(
   logic [3:0] B_PAC;
 
   logic pixel_in_pacman_sprite;
-
-  assign color = 12'hFFF;
+  logic [7:0] address;
+  //assign color = 12'hFFF;
+  trail tt(.clka(vga_pix_clk),.addra(),.douta(color));
   always_comb begin
     pixel_in_pacman_sprite = (({1'b0,sx1} >= x_pac && {1'b0,sx1} < x_pac + SPRITE_WIDTH) &&
                        (sy1 >= y_pac && sy1 < y_pac + SPRITE_HEIGHT));
 
     if (pixel_in_pacman_sprite) begin
+      address = (sy - y_pac) * 8 + (sx - x_pac);
       R_PAC = color[11:8];
       G_PAC = color[7:4];
       B_PAC = color[3:0];

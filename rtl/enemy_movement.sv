@@ -98,12 +98,15 @@ module enemy_movement #(
   
   direction_t curr_direction;
   direction_t next_direction;
-
+    
+  logic [8:0] target_x = x_pac - x_red;
+  logic [8:0] target_y = y_pac - y_red;
+  
 always_ff @(posedge vga_pix_clk) begin
-    /**/ if (y_pac < y_red) next_direction <= UP;
-    else if (y_pac > y_red) next_direction <= DOWN;
-    else if (x_pac > x_red) next_direction <= RIGHT;
-    else if (x_pac < x_red) next_direction <= LEFT;
+    /**/ if (target_y < 0) next_direction <= UP;
+    else if (target_y > 0) next_direction <= DOWN;
+    else if (target_x > 0) next_direction <= RIGHT;
+    else if (target_x < 0) next_direction <= LEFT;
   end
   
 

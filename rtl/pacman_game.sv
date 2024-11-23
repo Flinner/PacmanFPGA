@@ -22,9 +22,6 @@
 
 `ifdef VERILATOR
 `include "rtl/params.sv"
-`include "rtl/common_defines.svh"
-`else
-`include "common_defines.svh"
 `endif
 
 // This game only sees 224x288 display. It doesn't care about the rest,
@@ -50,9 +47,6 @@ module pacman_game #(
     output logic [3:0] R,
     output logic [3:0] G,
     output logic [3:0] B,
-`ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
-    output sound_t sound_type,
-`endif
     // there is an important distnction between `vga_pix_clk` and `game_pix_stb`
     // vga_pix_clk will "clock" on each physical vga pixel drawing
     // game_pix_stb will STROBE on each virtual game pixel
@@ -301,13 +295,5 @@ module pacman_game #(
     //   G <= '0;
     //   B <= '0;
   end
-
-
-  ////////////
-  // AUDIO! //
-  ////////////
-`ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
-  assign sound_type = CREDIT;
-`endif
 
 endmodule

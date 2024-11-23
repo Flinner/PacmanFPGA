@@ -8,10 +8,12 @@
 // I hate it I hate it I hate it I hate it
 // I hate it I hate it I hate it I hate it
 // I hate it I hate it I hate it I hate it
-`default_nettype none
-`include "rtl/params.sv"
+    `default_nettype none
+    `include "rtl/params.sv"
+    `include "rtl/common_defines.svh"
+`else
+    `include "common_defines.svh"
 `endif
-`include "rtl/common_defines.svh"
 
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -52,6 +54,10 @@ module top (
     VGA_B,
     output logic VGA_HS,
     VGA_VS
+`ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
+    ,output logic AUD_PWM,
+    output logic AUD_SD  // AUDIO ENABLE
+`endif
 
 );
 
@@ -118,6 +124,9 @@ module top (
       .BTNU(BTNU),
       .BTNL(BTNL),
       .BTNR(BTNR),
+     `ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
+      .sound_type(sound_type),
+     `endif
       .BTND(BTND),
       .R(VGA_R),
       .G(VGA_G),
@@ -161,4 +170,16 @@ module top (
       .sy(sy)
   );
 
+   ///////////
+   // SOUND //
+   ///////////
+`ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
+  sound_t sound_type;
+   audio audio(/**AUTOINST*/
+               // Interfaces
+               .sound_type(sound_type),
+               // Outputs
+               .pwm(AUD_PWM),
+               .en(AUD_SD));
+`endif
 endmodule

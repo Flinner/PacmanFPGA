@@ -19,6 +19,7 @@
 //                      not that it matters, due to abstraction.
 // 
 //////////////////////////////////////////////////////////////////////////////////
+`ifdef VERILATOR
 `include "rtl/params.sv"
 `include "rtl/common_defines.svh" 
 `else 

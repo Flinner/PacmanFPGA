@@ -10,6 +10,9 @@
 // I hate it I hate it I hate it I hate it
 `default_nettype none
 `include "rtl/params.sv"
+`include "rtl/common_defines.svh"
+`else
+`include "common_defines.svh"
 `endif
 
 //////////////////////////////////////////////////////////////////////////////////

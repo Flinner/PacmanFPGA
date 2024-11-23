@@ -179,7 +179,9 @@ module top (
                // Interfaces
                .sound_type(sound_type),
                // Outputs
-               .pwm(AUD_PWM),
+               .clk_8KHZ(),
+               .clk_25MHZ(CLK25MHZ),
+               .pwm_out(AUD_PWM),
                .en(AUD_SD));
 `endif
 endmodule

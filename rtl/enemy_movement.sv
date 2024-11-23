@@ -18,6 +18,7 @@
 `ifdef VERILATOR
 `include "rtl/params.sv"
 `endif
+/* verilator lint_off UNSIGNED */
 
 module enemy_movement #(
     parameter INITIAL_MEM_FILE = "NONE",
@@ -169,3 +170,5 @@ module enemy_movement #(
     end*/
 
 endmodule : enemy_movement
+
+/* verilator lint_on UNSIGNED */

@@ -100,6 +100,18 @@ module top (
       .clk_in1 (CLK100MHZ)
   );
 `endif
+
+`ifndef VERILATOR
+  logic STROBE_8KHZ;
+  precise_div #(.CLKS_PER_STB(25_000_000/8_000))
+   clk_8khz( /**AUTOINST*/
+            // Outputs
+            .o_stb(STROBE_8KHZ),
+            // Inputs
+            .i_clk(CLK25MHZ),
+            .i_reset(~CPU_RESETN));
+`endif
+
   // FIXME: Assert rst for a few cycles at start
 
   // assign frame_stb = sy == sx && sx == 0;
@@ -179,7 +191,7 @@ module top (
                // Interfaces
                .sound_type(sound_type),
                // Outputs
-               .clk_8KHZ(),
+               .clk_8KHZ(STROBE_8KHZ),
                .clk_25MHZ(CLK25MHZ),
                .pwm_out(AUD_PWM),
                .en(AUD_SD));

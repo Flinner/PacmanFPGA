@@ -92,18 +92,18 @@ module enemy_movement #(
     ////////////////////////////
 
     logic [8:0] target_x, target_y;
-    assign target_x = x_pac - x_red;
-    assign target_y = y_pac - y_red;
+   // assign target_x = x_pac - x_red;
+   // assign target_y = y_pac - y_red;
 
     // Direction decision based on target
     always_ff @(posedge vga_pix_clk) begin
         if (rst) begin
-            curr_direction <= RIGHT;  // Default direction
+            next_direction <= RIGHT;  // Default direction
         end else begin
-            if (target_y < 0)       next_direction <= UP;
-            else if (target_y > 0) next_direction <= DOWN;
-            else if (target_x > 0) next_direction <= RIGHT;
-            else if (target_x < 0) next_direction <= LEFT;
+            if (y_pac < y_red)      next_direction <= UP;
+            else if (y_pac > y_red) next_direction <= DOWN;
+            else if (x_pac > x_red) next_direction <= RIGHT;
+            else if (x_pac < x_red) next_direction <= LEFT;
         end
     end
 
@@ -114,8 +114,14 @@ module enemy_movement #(
     always_ff @(posedge vga_pix_clk) begin
         if (rst) begin
             // Reset positions
-            x_red <= 8 * 15;
-            y_red <= 8 * (4 + 10);
+            x_red    <= 8 * 15;
+            y_red    <= 8 * (4 + 10);
+            x_blue   <= 8 * 14;
+            y_blue   <= 8 * (4 + 13);
+            x_yellow <= 8 * 1;
+            y_yellow <= 8 * (4 + 13);
+            x_pink   <= 8 * 16;
+            y_pink   <= 8 * (4 + 13);
         end else begin
             unique case (curr_direction)
                 UP:    if (MAP_UP_RED[3] == 1 && x_red_aligned)    y_red <= y_red - {8'b0, CLK60HZ};

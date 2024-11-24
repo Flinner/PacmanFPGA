@@ -23,6 +23,7 @@
 `include "rtl/params.sv"
 `include "rtl/common_defines.svh"
 `else
+`include "params.sv"
 `include "common_defines.svh"
 `endif
 
@@ -179,7 +180,7 @@ module pacman_game #(
       .addrb((x_pac / 8) + (y_pac / 8) * 32),
       /* verilator lint_on WIDTHEXPAND */
       .dia('b0),  // never write here :)
-      .dib(params::map::empty_tile)
+      .dib('b1000)
   );
 
   ////////////////////////
@@ -201,14 +202,48 @@ module pacman_game #(
   ) enemy_movement (
       /**AUTOINST*/
       // Outputs
-      .x_red      (x_red),
-      .y_red      (y_red),
+     // .x_red      (x_red),
+     // .y_red      (y_red),
       .x_blue     (x_blue),
       .y_blue     (y_blue),
-      .x_yellow   (x_yellow),
-      .y_yellow   (y_yellow),
-      .x_pink     (x_pink),
-      .y_pink     (y_pink),
+      //.x_yellow   (x_yellow),
+     // .y_yellow   (y_yellow),
+     // .x_pink     (x_pink),
+      //.y_pink     (y_pink),
+      // Inputs
+      .vga_pix_clk(vga_pix_clk),
+      .rst        (rst),
+      .frame_stb  (frame_stb),
+      .x_pac      (x_pac),
+      .y_pac      (y_pac)
+  );
+  
+  red_monster_mov #(
+      /**AUTOINSTPARAM*/
+      // Parameters
+      .INITIAL_MEM_FILE(MAP_F)
+  ) red_mov (
+      /**AUTOINST*/
+      // Outputs
+      .x_red      (x_red),
+      .y_red      (y_red),
+      // Inputs
+      .vga_pix_clk(vga_pix_clk),
+      .rst        (rst),
+      .frame_stb  (frame_stb),
+      .x_pac      (x_pac),
+      .y_pac      (y_pac)
+  );
+  
+  pink_monster_mov #(
+      /**AUTOINSTPARAM*/
+      // Parameters
+      .INITIAL_MEM_FILE(MAP_F)
+  ) pink_mov (
+      /**AUTOINST*/
+      // Outputs
+      .x_pink      (x_pink),
+      .y_pink      (y_pink),
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),

@@ -88,9 +88,9 @@ module red_monster_mov #(
 
   always_ff @(posedge vga_pix_clk) begin
             if (y_pac < y_red)      next_direction <= UP;
-            else if (y_pac > y_red) next_direction <= DOWN;
-            else if (x_pac > x_red) next_direction <= RIGHT;
-            else if (x_pac < x_red) next_direction <= LEFT;
+            if (y_pac > y_red) next_direction <= DOWN;
+            if (x_pac > x_red) next_direction <= RIGHT;
+            if (x_pac < x_red) next_direction <= LEFT;
         end
     
 

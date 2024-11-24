@@ -119,7 +119,6 @@ module enemy_movement #(
                 RIGHT: if (MAP_RIGHT_BLUE[3] == 1 && y_blue_aligned) x_blue <= x_blue + {8'b0, CLK60HZ};
                 LEFT:  if (MAP_LEFT_BLUE[3] == 1 && y_blue_aligned)  x_blue <= x_blue - {8'b0, CLK60HZ};
             endcase
-            curr_direction <= next_direction;  // Update direction
         end
     end
   /*

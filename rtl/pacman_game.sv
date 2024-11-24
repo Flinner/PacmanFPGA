@@ -252,27 +252,22 @@ module pacman_game #(
   logic [3:0] R_PAC;
   logic [3:0] G_PAC;
   logic [3:0] B_PAC;
-
-  logic pixel_in_pacman_sprite;
-  logic [7:0] address;
-  assign color = 12'hFFF;
-  //trail tt(.clka(vga_pix_clk),.addra(),.douta(color));
-  always_comb begin
-    pixel_in_pacman_sprite = (({1'b0,sx1} >= x_pac && {1'b0,sx1} < x_pac + SPRITE_WIDTH) &&
-                       (sy1 >= y_pac && sy1 < y_pac + SPRITE_HEIGHT));
-
-    if (pixel_in_pacman_sprite) begin
-      //address = (sy - y_pac) * 8 + (sx - x_pac);
-      R_PAC = color[11:8];
-      G_PAC = color[7:4];
-      B_PAC = color[3:0];
-    end else begin
-      //square = (sx1 >= x1_pac && sx1<x2_pac) && (sy1 >= y1 && sy1< y2);
-      R_PAC = 4'h0;  // Default red component
-      G_PAC = 4'h0;  // Default green component
-      B_PAC = 4'h0;  // Default blue component
-    end
-  end
+  
+  // Pacman!
+  pacman_sprite pacman_sprite (  /**AUTOINST*/
+      // Outputs
+      .clk     (vga_pix_clk),
+      .rst     (rst),
+      .R       (R_PAC),
+      .G       (G_PAC),
+      .B       (B_PAC),
+      // Inputs
+      .x_pac   (x_pac),
+      .y_pac   (y_pac),
+      .sx      (sx1),
+      .sy      (sy1)
+  );
+  
 
 
 

@@ -53,13 +53,13 @@ module enemy_sprite (
   logic [11:0] red_color;
   logic [8:0] red_address;
   
-  blk_mem_gen_0_ red_monster (.clka(clk),.addra(red_address),.douta(red_color));
+  //blk_mem_gen_0_ red_monster (.clka(clk),.addra(red_address),.douta(red_color));
   always_comb begin
     pixel_in_red_sprite = (({1'b0,sx} >= x_red && {1'b0,sx} < x_red + SPRITE_WIDTH) &&
                        (sy >= y_red && sy < y_red + SPRITE_HEIGHT));
 
     if (pixel_in_red_sprite) begin
-      red_address = {1'b0,sx}-x_red + (sy-y_red) * MONSTER_WIDTH;
+     // red_address = {1'b0,sx}-x_red + (sy-y_red) * MONSTER_WIDTH;
       R_red = R_color[11:8];
       G_red = R_color[7:4];
       B_red = R_color[3:0];

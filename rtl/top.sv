@@ -113,7 +113,7 @@ module top (
   ) drawing_logic (
       .clk(CLK100MHZ),  // unused for now
       .vga_pix_clk(CLK25MHZ),
-      .rst(~CPU_RESETN),
+      .rst(~CPU_RESETN | soft_rst),
       .frame_stb(frame_stb_aot),
       .sx(sx_aot),
       .sy(sy_aot),
@@ -155,13 +155,31 @@ module top (
       .V_BACK_PORCH  (V_BACK_PORCH)
   ) vga1 (
       .vga_pix_clk(CLK25MHZ),
-      .rst(~CPU_RESETN),
+      .rst(~CPU_RESETN | soft_rst),
       .display_enabled(display_enabled),
       .H_SYNC(VGA_HS),
       .V_SYNC(VGA_VS),
       .sx(sx),
       .sy(sy)
   );
+
+  /////////////////
+  // RESET LOGIC //
+  /////////////////
+  // Explicit rst signal needs to be asserted at the beginning, to set pacman/enemies at correct position
+
+  logic soft_rst;
+  reset_generator #(  /*AUTOINSTPARAM*/
+      // Parameters
+      .RESET_CYCLES(32 * 36)  // should probably move this to a variable :smile:
+  ) reset_generator (
+      /**AUTOINST*/
+      // Outputs
+      .reset(soft_rst),
+      // Inputs
+      .clk  (CLK25MHZ)
+  );
+
 
   ///////////
   // SOUND //

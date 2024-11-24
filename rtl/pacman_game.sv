@@ -167,6 +167,7 @@ module pacman_game #(
       .doutb(map_pacman_tile),
       // Inputs
       .clk(vga_pix_clk),
+      .soft_rst(rst),
       .wea('0),  // never write here, read only port
       .web(ate_candy_stb | ate_power_cookie_stb),
       /* verilator lint_off WIDTHEXPAND */
@@ -219,7 +220,7 @@ module pacman_game #(
   ///////////////
   // COLLISION //
   ///////////////
-  logic collide_with_enemy;
+  logic collided_with_enemy;
   assign collided_with_enemy = (x_pac == x_red    && y_pac == y_red)    || 
                                (x_pac == x_blue   && y_pac == y_blue)   || 
                                (x_pac == x_yellow && y_pac == y_yellow) || 

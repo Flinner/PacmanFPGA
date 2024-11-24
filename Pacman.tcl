@@ -20,6 +20,7 @@ proc checkRequiredFiles { origin_dir} {
   set files [list \
  "[file normalize "$origin_dir/rtl/ip/clk_wiz_0.xci"]"\
  "[file normalize "$origin_dir/rtl/ip/precise_div.sv"]"\
+ "[file normalize "$origin_dir/rtl/ip/reset_generator.sv"]"\
  "[file normalize "$origin_dir/rtl/dual_port_bram.sv"]"\
  "[file normalize "$origin_dir/rtl/display_window_mapper.sv"]"\
  "[file normalize "$origin_dir/rtl/params.sv"]"\
@@ -165,6 +166,7 @@ set obj [get_filesets sources_1]
 set files [list \
  [file normalize "${origin_dir}/rtl/ip/clk_wiz_0.xci" ]\
  [file normalize "${origin_dir}/rtl/ip/precise_div.sv" ]\
+ [file normalize "${origin_dir}/rtl/ip/reset_generator.sv" ]\
  [file normalize "${origin_dir}/rtl/dual_port_bram.sv" ]\
  [file normalize "${origin_dir}/rtl/display_window_mapper.sv" ]\
  [file normalize "${origin_dir}/rtl/params.sv" ]\
@@ -196,6 +198,10 @@ if { ![get_property "is_locked" $file_obj] } {
 }
 
 set file "rtl/ip/precise_div.sv"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "rtl/ip/reset_generator.sv"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 

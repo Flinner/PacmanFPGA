@@ -65,9 +65,22 @@ module map_sprite (
       4'b0000:
       if ((sy == 3'd4 && sx >= 3'd4) || (sy <= 3'd4 && sx == 3'd4)) B = 4'b1111;
       else B = 4'b0000;
-
-
-      default: B = 4'b0000;
+      // candy
+      'b1001: begin
+        R = 'b0000;
+        if ((sy == 4 || sy == 3) && (sx == 4 || sx == 3)) G = 'b1111;
+        else G = '0;
+      end
+      // power cookie
+      'b1010: begin
+        R = 'b0000;
+        if ((sy < 6 && sy > 2) && (sx < 6 && sx > 2)) B = 'b1111;
+        else B = '0;
+      end
+      default: begin
+        B = 4'b0000;
+        R = '0;
+      end
     endcase
   end
 

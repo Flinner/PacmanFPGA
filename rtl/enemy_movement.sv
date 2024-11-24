@@ -118,10 +118,10 @@ module enemy_movement #(
             y_red <= 8 * (4 + 10);
         end else begin
             unique case (curr_direction)
-                UP:    if (MAP_UP_RED[3] && x_red_aligned)    y_red <= y_red - {8'b0, CLK60HZ};
-                DOWN:  if (MAP_DOWN_RED[3] && x_red_aligned)  y_red <= y_red + {8'b0, CLK60HZ};
-                RIGHT: if (MAP_RIGHT_RED[3] && y_red_aligned) x_red <= x_red + {8'b0, CLK60HZ};
-                LEFT:  if (MAP_LEFT_RED[3] && y_red_aligned)  x_red <= x_red - {8'b0, CLK60HZ};
+                UP:    if (MAP_UP_RED[3] == 1 && x_red_aligned)    y_red <= y_red - {8'b0, CLK60HZ};
+                DOWN:  if (MAP_DOWN_RED[3] == 1 && x_red_aligned)  y_red <= y_red + {8'b0, CLK60HZ};
+                RIGHT: if (MAP_RIGHT_RED[3] == 1 && y_red_aligned) x_red <= x_red + {8'b0, CLK60HZ};
+                LEFT:  if (MAP_LEFT_RED[3] == 1 && y_red_aligned)  x_red <= x_red - {8'b0, CLK60HZ};
             endcase
             curr_direction <= next_direction;  // Update direction
         end

@@ -228,7 +228,7 @@ module pacman_game #(
   // Enemies!
   enemy_sprite enemy_sprite (  /**AUTOINST*/
       // Outputs
-      .clk     (clk),
+      .clk     (vga_pix_clk),
       .rst     (rst),
       .R       (R_enemy),
       .G       (G_enemy),
@@ -255,7 +255,7 @@ module pacman_game #(
 
   logic pixel_in_pacman_sprite;
   logic [7:0] address;
-  //assign color = 12'hFFF;
+  assign color = 12'hFFF;
   //trail tt(.clka(vga_pix_clk),.addra(),.douta(color));
   always_comb begin
     pixel_in_pacman_sprite = (({1'b0,sx1} >= x_pac && {1'b0,sx1} < x_pac + SPRITE_WIDTH) &&

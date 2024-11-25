@@ -85,33 +85,24 @@ module enemy_movement #(
    // assign target_y = y_pac - y_red;
 
     // Direction decision based on target
-    /*
+    
     always_ff @(posedge vga_pix_clk) begin
-            if (y_pac < y_blue && ((MAP_DOWN_BLUE[3] == 1 && x_blue_aligned) && ((MAP_RIGHT_BLUE[3] == 1 && y_blue_aligned) | (MAP_RIGHT_BLUE[3] == 1 && y_blue_aligned))  ))      next_direction <= UP;
-            else if (y_pac > y_blue  && ((MAP_UP_BLUE[3] == 1 && x_blue_aligned) && ((MAP_RIGHT_BLUE[3] == 1 && y_blue_aligned) | (MAP_RIGHT_BLUE[3] == 1 && y_blue_aligned))  ) ) next_direction <= DOWN;
-            else if (x_pac > x_blue  && ((MAP_LEFT_BLUE[3] == 1 && y_blue_aligned) && ((MAP_UP_BLUE[3] == 1 && y_blue_aligned) | (MAP_DOWN_BLUE[3] == 1 && y_blue_aligned))  )) next_direction <= RIGHT;
-            else if (x_pac < x_blue && ((MAP_RIGHT_BLUE[3] == 1 && y_blue_aligned) && ((MAP_UP_BLUE[3] == 1 && y_blue_aligned) | (MAP_DOWN_BLUE[3] == 1 && y_blue_aligned))  ) ) next_direction <= LEFT;
-        end
-    */always_ff @(posedge vga_pix_clk) begin
-            if (y_pac < y_blue)      next_direction <= UP;
-            else if (y_pac > y_blue) next_direction <= DOWN;
-            else if (x_pac > x_blue) next_direction <= RIGHT;
-            else if (x_pac < x_blue) next_direction <= LEFT;
-        end
+            if (y_pac < y_blue )      next_direction <= UP;
+            else if (y_pac > y_blue  ) next_direction <= DOWN;
+            else if (x_pac > x_blue ) next_direction <= RIGHT;
+            else if (x_pac < x_blue  ) next_direction <= LEFT; 
+            end
+        
+   
 
 
 
     always_ff @(posedge vga_pix_clk) begin
         if (rst) begin
             // Reset positions
-           // x_red    <= 8 * 15;
-            //y_red    <= 8 * (4 + 10);
             x_blue   <= 8 * 15;
             y_blue   <= 8 * (4 + 10);
-           /* x_yellow <= 8 * 1;
-            y_yellow <= 8 * (4 + 13);
-            x_pink   <= 8 * 16;
-            y_pink   <= 8 * (4 + 13);*/
+       
         end else begin
             unique case (curr_direction)
                 UP:    if (MAP_UP_BLUE[3] == 1 && x_blue_aligned)    y_blue <= y_blue - {8'b0, CLK60HZ};
@@ -121,48 +112,48 @@ module enemy_movement #(
             endcase
         end
     end
-  /*
-  always_ff @(posedge vga_pix_clk) begin
-        case (curr_direction)
+    always_ff @(posedge vga_pix_clk) begin
+        case (next_direction)
             UP: begin
-                if (MAP_UP_RED[3] == 1 && x_red_aligned) begin
+                if (MAP_UP_BLUE[3] == 1 && x_blue_aligned) begin
                     curr_direction <= UP ; end
-                else if (MAP_UP_RED[3] == 0 && x_red_aligned)   begin 
-                if (MAP_RIGHT_RED[3] == 1 && y_red_aligned) curr_direction <= RIGHT;
-                    else if (MAP_LEFT_RED[3] == 1 && y_red_aligned) curr_direction <= LEFT;
-                    else if ( MAP_DOWN_RED[3] == 1 && x_red_aligned) curr_direction <= DOWN;
+                else if (MAP_UP_BLUE[3] == 0 && x_blue_aligned)   begin 
+                if (MAP_RIGHT_BLUE[3] == 1 && y_blue_aligned) curr_direction <= RIGHT;
+                    else if (MAP_LEFT_BLUE[3] == 1 && y_blue_aligned) curr_direction <= LEFT;
+                    else if ( MAP_DOWN_BLUE[3] == 1 && x_blue_aligned) curr_direction <= DOWN;
                 end
             end
             RIGHT: begin
-                if (MAP_RIGHT_RED[3] == 1 && y_red_aligned) begin
+                if (MAP_RIGHT_BLUE[3] == 1 && y_blue_aligned) begin
                     curr_direction <= RIGHT ; end
-                else if (MAP_RIGHT_RED[3] == 0 && y_red_aligned)   begin
-                    if (MAP_UP_RED[3] == 1 && x_red_aligned) curr_direction <= UP;
-                    else if (MAP_DOWN_RED[3] == 1 && x_red_aligned) curr_direction <= DOWN;
-                    else if (MAP_LEFT_RED [3] == 1 && y_red_aligned)curr_direction <= LEFT;
+                else if (MAP_RIGHT_BLUE[3] == 0 && y_blue_aligned)   begin
+                    if (MAP_UP_BLUE[3] == 1 && x_blue_aligned) curr_direction <= UP;
+                    else if (MAP_DOWN_BLUE[3] == 1 && x_blue_aligned) curr_direction <= DOWN;
+                    else if (MAP_LEFT_BLUE [3] == 1 && y_blue_aligned)curr_direction <= LEFT;
                 end
             end
             DOWN: begin
-                if (MAP_DOWN_RED[3] == 1 && y_red_aligned) begin
+                if (MAP_DOWN_BLUE[3] == 1 && y_blue_aligned) begin
                 curr_direction <= DOWN ; end
-                else if (MAP_DOWN_RED[3] == 0 && y_red_aligned)   begin
-                    if (MAP_LEFT_RED[3] == 1 && x_red_aligned) curr_direction <= LEFT;
-                    else if (MAP_RIGHT_RED[3] == 1 && x_red_aligned) curr_direction <= RIGHT;
-                    else if (MAP_UP_RED [3] == 1 && y_red_aligned) curr_direction <= UP;
+                else if (MAP_DOWN_BLUE[3] == 0 && y_blue_aligned)   begin
+                    if (MAP_LEFT_BLUE[3] == 1 && x_blue_aligned) curr_direction <= LEFT;
+                    else if (MAP_RIGHT_BLUE[3] == 1 && x_blue_aligned) curr_direction <= RIGHT;
+                    else if (MAP_UP_BLUE [3] == 1 && y_blue_aligned) curr_direction <= UP;
                 end
             end
             LEFT: begin
-                if (MAP_LEFT_RED[3] == 1 && y_red_aligned) begin
+                if (MAP_LEFT_BLUE[3] == 1 && y_blue_aligned) begin
                 curr_direction <= LEFT ; end
-                else if (MAP_DOWN_RED[3] == 0 && y_red_aligned)   begin
-                     if (MAP_DOWN_RED[3] == 1 && x_red_aligned) curr_direction <= DOWN;
-                    else if (MAP_UP_RED [3] == 1 && y_red_aligned) curr_direction <= UP;
-                    else if (MAP_RIGHT_RED[3] == 1 && x_red_aligned) curr_direction <= RIGHT;
+                else if (MAP_DOWN_BLUE[3] == 0 && y_blue_aligned)   begin
+                     if (MAP_DOWN_BLUE[3] == 1 && x_blue_aligned) curr_direction <= DOWN;
+                    else if (MAP_UP_BLUE [3] == 1 && y_blue_aligned) curr_direction <= UP;
+                    else if (MAP_RIGHT_BLUE[3] == 1 && x_blue_aligned) curr_direction <= RIGHT;
                 end
             end
         endcase
         if (rst) curr_direction <= RIGHT;
-    end*/
+    end
+
 
 endmodule : enemy_movement
 

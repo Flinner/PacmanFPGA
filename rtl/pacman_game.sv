@@ -111,6 +111,8 @@ module pacman_game #(
   logic [8:0] x_pac;
   logic [8:0] y_pac;
 
+  logic h_flip;
+  logic v_flip;
 
   pacman_movement #(
       .INITIAL_MEM_FILE(MAP_F)
@@ -118,6 +120,8 @@ module pacman_game #(
       // Outputs
       .x_pac      (x_pac),
       .y_pac      (y_pac),
+      .h_flip     (h_flip),
+      .v_flip     (v_flip),
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
@@ -202,14 +206,8 @@ module pacman_game #(
   ) enemy_movement (
       /**AUTOINST*/
       // Outputs
-     // .x_red      (x_red),
-     // .y_red      (y_red),
       .x_blue     (x_blue),
       .y_blue     (y_blue),
-      //.x_yellow   (x_yellow),
-     // .y_yellow   (y_yellow),
-     // .x_pink     (x_pink),
-      //.y_pink     (y_pink),
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
@@ -289,8 +287,8 @@ module pacman_game #(
       .y_yellow(y_yellow),
       .x_pink  (x_pink),
       .y_pink  (y_pink),
-      .sx      (sx),
-      .sy      (sy)
+      .sx      (sx1),
+      .sy      (sy1)
   );
 
 
@@ -312,7 +310,9 @@ module pacman_game #(
       .x_pac   (x_pac),
       .y_pac   (y_pac),
       .sx      (sx1),
-      .sy      (sy1)
+      .sy      (sy1),
+      .h_flip  (h_flip),
+      .v_flip  (v_flip)
   );
   
 

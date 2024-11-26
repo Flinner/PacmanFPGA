@@ -91,11 +91,16 @@ module pacman_game #(
   ////////////////////
 
 
+  ////////////////
+  // GAME LOGIC //
+  ////////////////
+
+
   //////////////////////////
   // SCORE AND SCOREBOARD //
   //////////////////////////
   // TODO Scoreboard!
-  logic [9:0] score;
+  logic [15:0] score;
   always_ff @(posedge vga_pix_clk) begin
     if (rst) score <= 0;
     else if (ate_candy_stb) begin
@@ -314,9 +319,6 @@ module pacman_game #(
       .h_flip(h_flip),
       .v_flip(v_flip)
   );
-
-
-
 
 
   logic [3:0] R_map;

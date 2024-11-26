@@ -3,7 +3,7 @@
 module text (
     input logic clk,
     input logic MODE,
-    input logic [9:0] score,
+    input logic [15:0] score,
     input logic [7:0] sx,
     input logic [8:0] sy,
     output logic [3:0] R,
@@ -35,12 +35,14 @@ module text (
   /////////////////
   // BCD SCORE //
   ////////////////
-  logic [3:0] BCDSCORE[0:1];
-  logic [7:0] TXT_BCDSCORE[0:1];
+  logic [3:0] BCDSCORE[0:3];
+  logic [7:0] TXT_BCDSCORE[0:3];
   localparam BCDSCORE_start_x = 8 * 5;
   localparam BCDSCORE_start_y = 8 * 1;  /* verilator lint_off WIDTHEXPAND */
   assign TXT_BCDSCORE[0] = BCDSCORE[0] + 48;  // int to ASCII
   assign TXT_BCDSCORE[1] = BCDSCORE[1] + 48;  // int to ASCII
+  assign TXT_BCDSCORE[2] = BCDSCORE[2] + 48;  // int to ASCII
+  assign TXT_BCDSCORE[3] = BCDSCORE[3] + 48;  // int to ASCII
   /* verilator lint_on WIDTHEXPAND */
 
 
@@ -58,11 +60,11 @@ module text (
 
   decimal_to_bcd #(  /**AUTOINSTPARAM*/
       // Parameters
-      .BIN_WIDTH (10),
-      .BCD_DIGITS(2)
+      .BIN_WIDTH (16),
+      .BCD_DIGITS(4)
   ) decimal_to_bcd_score0 (  /**AUTOINST*/
       // Outputs
-      .bcd   ({BCDSCORE[0], BCDSCORE[1]}),
+      .bcd   ({BCDSCORE[0], BCDSCORE[1], BCDSCORE[2], BCDSCORE[3]}),
       // Inputs
       .binary(score)
   );

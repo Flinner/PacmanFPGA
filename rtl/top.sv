@@ -113,7 +113,7 @@ module top (
   ) drawing_logic (
       .clk(CLK100MHZ),  // unused for now
       .vga_pix_clk(CLK25MHZ),
-      .rst(~CPU_RESETN | soft_rst),
+      .rst(soft_rst),
       .frame_stb(frame_stb_aot),
       .sx(sx_aot),
       .sy(sy_aot),
@@ -155,7 +155,7 @@ module top (
       .V_BACK_PORCH  (V_BACK_PORCH)
   ) vga1 (
       .vga_pix_clk(CLK25MHZ),
-      .rst(~CPU_RESETN | soft_rst),
+      .rst('0),  // never reset vga
       .display_enabled(display_enabled),
       .H_SYNC(VGA_HS),
       .V_SYNC(VGA_VS),
@@ -177,7 +177,8 @@ module top (
       // Outputs
       .reset(soft_rst),
       // Inputs
-      .clk  (CLK25MHZ)
+      .trigger_reset(~CPU_RESETN),
+      .clk(CLK25MHZ)
   );
 
 

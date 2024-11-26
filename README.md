@@ -18,3 +18,8 @@ Install this https://github.com/barbedo/vivado-git
 # Gen font:
 
 python scripts/ttf_to_sv.py > rtl/ip/font.sv
+
+# Format code
+```
+find . -name "*.sv" -exec verible-verilog-format --inplace {} \;
+```

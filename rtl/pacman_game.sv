@@ -215,7 +215,7 @@ module pacman_game #(
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
-  
+
   red_monster_mov #(
       /**AUTOINSTPARAM*/
       // Parameters
@@ -232,7 +232,7 @@ module pacman_game #(
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
-  
+
   pink_monster_mov #(
       /**AUTOINSTPARAM*/
       // Parameters
@@ -240,8 +240,8 @@ module pacman_game #(
   ) pink_mov (
       /**AUTOINST*/
       // Outputs
-      .x_pink      (x_pink),
-      .y_pink      (y_pink),
+      .x_pink     (x_pink),
+      .y_pink     (y_pink),
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
@@ -294,27 +294,27 @@ module pacman_game #(
 
   // PACMAN COLOR
   logic [11:0] color;
-  logic [3:0] R_PAC;
-  logic [3:0] G_PAC;
-  logic [3:0] B_PAC;
-  
+  logic [ 3:0] R_PAC;
+  logic [ 3:0] G_PAC;
+  logic [ 3:0] B_PAC;
+
   // Pacman!
   pacman_sprite pacman_sprite (  /**AUTOINST*/
       // Outputs
-      .clk     (vga_pix_clk),
-      .rst     (rst),
-      .R       (R_PAC),
-      .G       (G_PAC),
-      .B       (B_PAC),
+      .clk   (vga_pix_clk),
+      .rst   (rst),
+      .R     (R_PAC),
+      .G     (G_PAC),
+      .B     (B_PAC),
       // Inputs
-      .x_pac   (x_pac),
-      .y_pac   (y_pac),
-      .sx      (sx1),
-      .sy      (sy1),
-      .h_flip  (h_flip),
-      .v_flip  (v_flip)
+      .x_pac (x_pac),
+      .y_pac (y_pac),
+      .sx    (sx1),
+      .sy    (sy1),
+      .h_flip(h_flip),
+      .v_flip(v_flip)
   );
-  
+
 
 
 
@@ -331,6 +331,10 @@ module pacman_game #(
       G_map,
       B_map
   );
+
+  //////////
+  // TEXT //
+  //////////
 
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_comb begin

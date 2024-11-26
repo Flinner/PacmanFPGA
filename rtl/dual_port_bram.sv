@@ -29,7 +29,7 @@ module dual_port_bram #(
       initial begin
         $display("Loading MAP from init file '%s' to BRAM.", INITIAL_MEM_FILE);
         $readmemb(INITIAL_MEM_FILE, ram);
-//        $readmemb(INITIAL_MEM_FILE, rst_source);
+        //        $readmemb(INITIAL_MEM_FILE, rst_source);
       end
     end else begin : DONT_INITIALIZE_MEM
       initial begin
@@ -58,25 +58,25 @@ module dual_port_bram #(
   // Reset logic
   // chatGPTed :)
 
-//  logic [$clog2(DATA_DEPTH)-1:0] addr_rst;
-//  logic                          rst_done;
-//  logic [        DATA_WIDTH-1:0] rst_source[0:DATA_DEPTH-1];
+  //  logic [$clog2(DATA_DEPTH)-1:0] addr_rst;
+  //  logic                          rst_done;
+  //  logic [        DATA_WIDTH-1:0] rst_source[0:DATA_DEPTH-1];
 
-//  always @(posedge clk) begin
-//    if (soft_rst) begin
-//      addr_rst <= 0;
-//      rst_done <= 0;
-//    end else if (!rst_done) begin
-//      ram[addr_rst] <= rst_source[addr_rst];  // Write zero to all BRAM locations
-//      /* verilator lint_off WIDTHEXPAND */
-//      if (addr_rst == DATA_DEPTH - 1) begin
-//        /* verilator lint_on WIDTHEXPAND */
-//        rst_done <= 1;  // Reset complete
-//      end else begin
-//        addr_rst <= addr_rst + 1;  // Increment address
-//      end
-//    end
-//  end
+  //  always @(posedge clk) begin
+  //    if (soft_rst) begin
+  //      addr_rst <= 0;
+  //      rst_done <= 0;
+  //    end else if (!rst_done) begin
+  //      ram[addr_rst] <= rst_source[addr_rst];  // Write zero to all BRAM locations
+  //      /* verilator lint_off WIDTHEXPAND */
+  //      if (addr_rst == DATA_DEPTH - 1) begin
+  //        /* verilator lint_on WIDTHEXPAND */
+  //        rst_done <= 1;  // Reset complete
+  //      end else begin
+  //        addr_rst <= addr_rst + 1;  // Increment address
+  //      end
+  //    end
+  //  end
 
 endmodule : dual_port_bram
 

@@ -26,10 +26,10 @@ module pink_monster_mov #(
     parameter INITIAL_MEM_FILE = "NONE",
     localparam H_MAP_WIDTH = params::pacman::H_VISIBLE_AREA,
     localparam V_MAP_HEIGHT = params::pacman::V_VISIBLE_AREA
-)  (
+) (
     input logic vga_pix_clk,
     input logic rst,
-    input logic frame_stb,  
+    input logic frame_stb,
     input logic [8:0] x_pac,
     input logic [8:0] y_pac,
     output logic [8:0] x_pink,
@@ -86,13 +86,13 @@ module pink_monster_mov #(
 
 
   always_ff @(posedge vga_pix_clk) begin
-            if (y_pac < y_pink)      next_direction <= UP;
-            else if (y_pac > y_pink) next_direction <= DOWN;
-            else if (x_pac > x_pink) next_direction <= RIGHT;
-            else if (x_pac < x_pink) next_direction <= LEFT;
-        end
-  
-    
+    if (y_pac < y_pink) next_direction <= UP;
+    else if (y_pac > y_pink) next_direction <= DOWN;
+    else if (x_pac > x_pink) next_direction <= RIGHT;
+    else if (x_pac < x_pink) next_direction <= LEFT;
+  end
+
+
 
   always_ff @(posedge vga_pix_clk) begin
     case (next_direction)
@@ -107,8 +107,8 @@ module pink_monster_mov #(
   always_ff @(posedge vga_pix_clk) begin
     // $display("CLK60HZ: %d, RST: %d", CLK60HZ, rst);
     if (rst) begin
-      x_pink    <= 8 * 20;  // Initial X position for Pinky
-      y_pink    <= 8 * (4 + 10);  // Initial Y position for Pinky
+      x_pink <= 8 * 20;  // Initial X position for Pinky
+      y_pink <= 8 * (4 + 10);  // Initial Y position for Pinky
       // $display("x_pac: %d, y_pac: %d", x_pac, y_pac);
     end  // else if (CLK60HZ) begin
     // CLK60HZ is = 1 once per frame thus we add/sub 1 per frame!

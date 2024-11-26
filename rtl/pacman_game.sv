@@ -336,12 +336,28 @@ module pacman_game #(
   // TEXT //
   //////////
 
+  logic [3:0] R_txt;
+  logic [3:0] G_txt;
+  logic [3:0] B_txt;
+
+  text text (  /**AUTOINST*/
+      // Outputs
+      .R   (R_txt),
+      .G   (G_txt),
+      .B   (B_txt),
+      // Inputs
+      .clk(vga_pix_clk),
+      .sx  (sx),
+      .sy  (sy),
+      .MODE('0)
+  );
+
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_comb begin
     // if (game_pix_stb1) begin
-    R = R_map | R_PAC | R_enemy;  // TODO: change to 32!!
-    G = G_map | G_PAC | G_enemy;
-    B = B_map | B_PAC | B_enemy;
+    R = R_txt | R_map | R_PAC | R_enemy;  // TODO: change to 32!!
+    G = G_txt | G_map | G_PAC | G_enemy;
+    B = B_txt | B_map | B_PAC | B_enemy;
     // end else begin
     //   R <= '0;
     //   G <= '0;

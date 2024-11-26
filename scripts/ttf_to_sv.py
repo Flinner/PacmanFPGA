@@ -24,8 +24,8 @@ def generate_verilog(font_path, size=8):
       `timescale 1ns / 1ps
 
         module font (
-        input int char,
-        input logic [9:0] sy, sx,
+        input logic [7:0] char,
+        input logic [2:0] sy,
         output logic pixel
     );
     
@@ -41,11 +41,11 @@ def generate_verilog(font_path, size=8):
         for row, binary in enumerate(bin_data):
             # Split binary data into 6 parts (as per your example)
             formatted_data = '_'.join([binary[i:i+8] for i in range(0, len(binary), 8)])
-            verilog_code += f"\n        32'd{ord(char)}: row_data = 64'b{formatted_data};"
+            verilog_code += f"\n        32'd{ord(char)}: row_data = 8'b{formatted_data};"
     
     # Verilog footer
     verilog_code += """
-        default: row_data = 64'b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000;
+        default: row_data = 8'b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000;
     endcase
     end
 

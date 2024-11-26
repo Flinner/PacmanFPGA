@@ -20,6 +20,7 @@ proc checkRequiredFiles { origin_dir} {
   # THIS DOENS't INCLUDE XCIX IMPORTS!!
   # SEARCH BELOW FOR "IMPORT_XCIX"
   set files [list \
+ "[file normalize "$origin_dir/rtl/ip/clk_wiz_0.xci"]"\
  "[file normalize "$origin_dir/rtl/ip/precise_div.sv"]"\
  "[file normalize "$origin_dir/rtl/ip/reset_generator.sv"]"\
  "[file normalize "$origin_dir/rtl/dual_port_bram.sv"]"\
@@ -165,6 +166,7 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 set obj [get_filesets sources_1]
 # Add local files from the original project (-no_copy_sources specified)
 set files [list \
+ [file normalize "${origin_dir}/rtl/ip/clk_wiz_0.xci" ]\
  [file normalize "${origin_dir}/rtl/ip/precise_div.sv" ]\
  [file normalize "${origin_dir}/rtl/ip/reset_generator.sv" ]\
  [file normalize "${origin_dir}/rtl/dual_port_bram.sv" ]\
@@ -185,21 +187,16 @@ set files [list \
 ]
 set added_files [add_files -fileset sources_1 $files]
 
-# Specify the directory containing the .xcix files
-set xcix_dir "${origin_dir}/rtl/ip"
-
-# Get a list of all .xcix files in the directory
-set xcix_files [glob -nocomplain "$xcix_dir/*.xcix"]
-
-# Loop through each .xcix file and import it
-foreach xcix_file $xcix_files {
-    read_ip -files $xcix_file
-    puts "Imported (no copy): $xcix_file"
-}
-
-
 # Set 'sources_1' fileset file properties for remote files
 # None
+
+set file "clk_wiz_0.xci"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+}
 
 set file "rtl/ip/precise_div.sv"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]

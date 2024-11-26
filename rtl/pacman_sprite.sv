@@ -52,7 +52,7 @@ module pacman_sprite (
 `ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/open_mouth_8.mem"),
 `else
-      .INITIAL_MEM_FILE("mem/open_mouth_8.mem"),
+      .INITIAL_MEM_FILE("../mem/open_mouth_8.mem"),
 `endif
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)

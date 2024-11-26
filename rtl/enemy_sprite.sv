@@ -51,7 +51,7 @@ module enemy_sprite (
 `ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/red_monster_sprite.mem"),
 `else
-      .INITIAL_MEM_FILE("mem/red_monster_sprite.mem"),
+      .INITIAL_MEM_FILE("../mem/red_monster_sprite.mem"),
 `endif
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)
@@ -64,7 +64,7 @@ module enemy_sprite (
 `ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/pink_monster_sprite.mem"),
 `else
-      .INITIAL_MEM_FILE("mem/pink_monster_sprite.mem"),
+      .INITIAL_MEM_FILE("../mem/pink_monster_sprite.mem"),
 `endif
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)
@@ -77,7 +77,7 @@ module enemy_sprite (
 `ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/blue_monster_sprite.mem"),
 `else
-      .INITIAL_MEM_FILE("mem/blue_monster_sprite.mem"),
+      .INITIAL_MEM_FILE("../mem/blue_monster_sprite.mem"),
 `endif
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)

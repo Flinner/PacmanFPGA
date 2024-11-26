@@ -181,6 +181,18 @@ foreach file $files {
     set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 }
 
+# Get a list of all .mem files in rtl/mem directory
+set files [glob -nocomplain "${origin_dir}/rtl/mem/*.mem"]
+
+# Add the found files to the Vivado project
+set added_files [add_files -fileset sources_1 $files]
+
+# Loop through all the added files and set their file type to SystemVerilog
+foreach file $files {
+    set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+    set_property -name "file_type" -value "Memory File" -objects $file_obj
+}
+
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]

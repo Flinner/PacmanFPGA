@@ -45,13 +45,37 @@ module enemy_sprite (
 
   logic pixel_in_red_sprite, pixel_in_pink_sprite, pixel_in_blue_sprite;
   logic [11:0] R_color, P_color, B_color;
-  logic [8:0] red_address, pink_address, blue_address;
+  logic [5:0] red_address, pink_address, blue_address;
 
-  //sprite_of_red_monster red_monster (.clka(clk),.addra(red_address),.douta(R_color));
-  // red_sprite red(.a(red_address),.spo(R_color));
-  // pink_sprite pink (.a(pink_address),.spo(P_color));
-  // blue_sprite blue (.a(blue_address),.spo(B_color));
+  rams_dist #(
+      .INITIAL_MEM_FILE("rtl/mem/red_monster_sprite.mem"),
+      .DATA_WIDTH(12),
+      .DATA_DEPTH(64)
+  ) red_sprite (
+      .a  (red_address),
+      .spo(R_color)
+  );
 
+  rams_dist #(
+      .INITIAL_MEM_FILE("rtl/mem/pink_monster_sprite.mem"),
+      .DATA_WIDTH(12),
+      .DATA_DEPTH(64)
+  ) pink_sprite (
+      .a  (pink_address),
+      .spo(P_color)
+  );
+
+  rams_dist #(
+      .INITIAL_MEM_FILE("rtl/mem/blue_monster_sprite.mem"),
+      .DATA_WIDTH(12),
+      .DATA_DEPTH(64)
+  ) blue_sprite (
+      .a  (blue_address),
+      .spo(B_color)
+  );
+
+
+  /* verilator lint_off WIDTHTRUNC */
   always_comb begin
     pixel_in_red_sprite = (({1'b0,sx} >= x_red && {1'b0,sx} < x_red + SPRITE_WIDTH) &&
                        (sy >= y_red && sy < y_red + SPRITE_HEIGHT));
@@ -62,35 +86,28 @@ module enemy_sprite (
     pixel_in_blue_sprite = (({1'b0,sx} >= x_blue && {1'b0,sx} < x_blue + SPRITE_WIDTH) &&
                        (sy >= y_blue && sy < y_blue + SPRITE_HEIGHT));
 
-    R = 4'h0;  // Default red component
-    G = 4'h0;  // Default green component
-    B = 4'h0;  // Default blue component
-    blue_address = '0;
-    pink_address = '0;
-    red_address = '0;
 
+    red_address = {1'b0, sx} - x_red + (sy - y_red) * MONSTER_WIDTH;
+    pink_address = {1'b0, sx} - x_pink + (sy - y_pink) * MONSTER_WIDTH;
+    blue_address = {1'b0, sx} - x_blue + (sy - y_blue) * MONSTER_WIDTH;
     if (pixel_in_red_sprite) begin
-      red_address = {1'b0, sx} - x_red + (sy - y_red) * MONSTER_WIDTH;
       R = R_color[11:8];
       G = R_color[7:4];
       B = R_color[3:0];
     end else if (pixel_in_pink_sprite) begin
-      pink_address = {1'b0, sx} - x_pink + (sy - y_pink) * MONSTER_WIDTH;
       R = P_color[11:8];
       G = P_color[7:4];
       B = P_color[3:0];
     end else if (pixel_in_blue_sprite) begin
-      blue_address = {1'b0, sx} - x_blue + (sy - y_blue) * MONSTER_WIDTH;
       R = B_color[11:8];
       G = B_color[7:4];
       B = B_color[3:0];
+    end else begin
+      R = 4'h0;  // Default red component
+      G = 4'h0;  // Default green component
+      B = 4'h0;  // Default blue component
     end
   end
-
-
-  // assign R = R_red;
-  //assign G = G_red;
-  //assign B = B_red;
-
+  /* verilator lint_on WIDTHTRUNC */
 
 endmodule : enemy_sprite

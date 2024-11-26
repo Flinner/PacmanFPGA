@@ -16,12 +16,12 @@ module rams_dist #(
   generate
     if (INITIAL_MEM_FILE != "NONE") begin : INITIALIZE_MEM_FROM_FILE
       initial begin
-        $display("Loading MAP from init file '%s' to BRAM.", INITIAL_MEM_FILE);
+        $display("Loading MAP from init file '%s' to Distributed RAM.", INITIAL_MEM_FILE);
         $readmemh(INITIAL_MEM_FILE, ram);
       end
     end else begin : DONT_INITIALIZE_MEM
       initial begin
-        $display("BRAM not initialized!");
+        $display("Distributed RAM not initialized!");
       end
     end
   endgenerate

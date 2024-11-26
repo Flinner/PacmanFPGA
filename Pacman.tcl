@@ -165,106 +165,21 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 # Add local files from the original project (-no_copy_sources specified)
-set files [list \
- [file normalize "${origin_dir}/rtl/ip/clk_wiz_0.xci" ]\
- [file normalize "${origin_dir}/rtl/ip/precise_div.sv" ]\
- [file normalize "${origin_dir}/rtl/ip/reset_generator.sv" ]\
- [file normalize "${origin_dir}/rtl/dual_port_bram.sv" ]\
- [file normalize "${origin_dir}/rtl/display_window_mapper.sv" ]\
- [file normalize "${origin_dir}/rtl/params.sv" ]\
- [file normalize "${origin_dir}/rtl/drawing_logic.sv" ]\
- [file normalize "${origin_dir}/rtl/pacman_game.sv" ]\
- [file normalize "${origin_dir}/rtl/pacman_movement.sv" ]\
- [file normalize "${origin_dir}/rtl/cookie_candy.sv" ]\
- [file normalize "${origin_dir}/rtl/enemy_movement.sv" ]\
- [file normalize "${origin_dir}/rtl/enemy_sprite.sv" ]\
- [file normalize "${origin_dir}/rtl/vga_signal_gen.sv" ]\
- [file normalize "${origin_dir}/rtl/map_sprite.sv" ]\
- [file normalize "${origin_dir}/rtl/audio.sv" ]\
- [file normalize "${origin_dir}/rtl/pwm.sv" ]\
- [file normalize "${origin_dir}/rtl/top.sv" ]\
- [file normalize "${origin_dir}/rtl/mem/map.mem" ]\
-]
+
+# Get a list of all .sv files in rtl/ directory (including subdirectories)
+set files [glob -nocomplain "${origin_dir}/rtl/**/*.sv"]
+
+# Add the found files to the Vivado project
 set added_files [add_files -fileset sources_1 $files]
 
-# Set 'sources_1' fileset file properties for remote files
-# None
+# Loop through all the added files and set their file type to SystemVerilog
+foreach file $files {
+    # Get the file object for the current file
+    set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 
-set file "clk_wiz_0.xci"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+    # Set the file type to SystemVerilog
+    set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 }
-
-set file "rtl/ip/precise_div.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/ip/reset_generator.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/dual_port_bram.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/display_window_mapper.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/params.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/drawing_logic.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/pacman_game.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/cookie_candy.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/pacman_movement.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/enemy_movement.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/enemy_sprite.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/vga_signal_gen.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/map_sprite.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/audio.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/pwm.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "rtl/top.sv"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "mem/map.mem"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "Memory File" -objects $file_obj
 
 
 # Set 'sources_1' fileset properties

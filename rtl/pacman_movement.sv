@@ -40,7 +40,8 @@ module pacman_movement #(
     input logic BTNL,
     output logic [8:0] x_pac,
     output logic [8:0] y_pac,
-    output logic h_flip,v_flip
+    output logic h_flip,
+    v_flip
 );
 
   logic CLK60HZ;
@@ -126,20 +127,23 @@ module pacman_movement #(
     endcase
     // end
   end
-  
+
   always_comb begin
-  if(curr_direction == RIGHT) begin
-  h_flip <= 1;
-  v_flip <= 1; end
-  else if (curr_direction == LEFT) begin
-  h_flip <= 0;
-  v_flip <= 1; end 
-  else if (curr_direction == UP) begin
-  h_flip <= 1;
-  v_flip <= 0; end 
-  else if (curr_direction == DOWN) begin
-  h_flip <= 0;
-  v_flip <= 0; end 
-  
+    h_flip = 0;
+    v_flip = 0;
+    if (curr_direction == RIGHT) begin
+      h_flip = 1;
+      v_flip = 1;
+    end else if (curr_direction == LEFT) begin
+      h_flip = 0;
+      v_flip = 1;
+    end else if (curr_direction == UP) begin
+      h_flip = 1;
+      v_flip = 0;
+    end else if (curr_direction == DOWN) begin
+      h_flip = 0;
+      v_flip = 0;
+    end
+
   end
 endmodule : pacman_movement

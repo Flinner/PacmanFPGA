@@ -48,7 +48,11 @@ module enemy_sprite (
   logic [5:0] red_address, pink_address, blue_address;
 
   rams_dist #(
+`ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/red_monster_sprite.mem"),
+`else
+      .INITIAL_MEM_FILE("mem/red_monster_sprite.mem"),
+`endif
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)
   ) red_sprite (
@@ -57,7 +61,11 @@ module enemy_sprite (
   );
 
   rams_dist #(
+`ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/pink_monster_sprite.mem"),
+`else
+      .INITIAL_MEM_FILE("mem/pink_monster_sprite.mem"),
+`endif
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)
   ) pink_sprite (
@@ -66,7 +74,11 @@ module enemy_sprite (
   );
 
   rams_dist #(
+`ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/blue_monster_sprite.mem"),
+`else
+      .INITIAL_MEM_FILE("mem/blue_monster_sprite.mem"),
+`endif
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)
   ) blue_sprite (

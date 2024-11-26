@@ -49,7 +49,11 @@ module pacman_sprite (
   logic [11:0] color;
   //assign color = 12'hFFF;
   rams_dist #(
+`ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/open_mouth_8.mem"),
+`else
+      .INITIAL_MEM_FILE("mem/open_mouth_8.mem"),
+`endif
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)
   ) pacmanSprite (

@@ -3,6 +3,7 @@
 module text (
     input logic clk,
     input logic MODE,
+    input logic [9:0] score,
     input logic [7:0] sx,
     input logic [8:0] sy,
     output logic [3:0] R,
@@ -34,13 +35,19 @@ module text (
   /////////////////
   // BCD SCORE //
   ////////////////
-  localparam [7:0] TXT_BCDSCORE[0:1] = "99";
+  logic [3:0] BCDSCORE[0:1];
+  logic [7:0] TXT_BCDSCORE[0:1];
   localparam BCDSCORE_start_x = 8 * 5;
-  localparam BCDSCORE_start_y = 8 * 1;
+  localparam BCDSCORE_start_y = 8 * 1;  /* verilator lint_off WIDTHEXPAND */
+  assign TXT_BCDSCORE[0] = BCDSCORE[0] + 48;  // int to ASCII
+  assign TXT_BCDSCORE[1] = BCDSCORE[1] + 48;  // int to ASCII
+  /* verilator lint_on WIDTHEXPAND */
 
 
 
-  font font (  /*AUTOINST*/
+
+
+  font font (  /**AUTOINST*/
       // Outputs
       .pixel(pixel),
       // Inputs
@@ -48,6 +55,18 @@ module text (
       .sy   (sy[2:0]),
       .sx   (sx[2:0])
   );
+
+  decimal_to_bcd #(  /**AUTOINSTPARAM*/
+      // Parameters
+      .BIN_WIDTH (10),
+      .BCD_DIGITS(2)
+  ) decimal_to_bcd_score0 (  /**AUTOINST*/
+      // Outputs
+      .bcd   ({BCDSCORE[0], BCDSCORE[1]}),
+      // Inputs
+      .binary(score)
+  );
+
 
 
   // should return data after 1 clk :)

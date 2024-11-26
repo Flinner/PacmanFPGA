@@ -349,6 +349,7 @@ module pacman_game #(
       .clk(vga_pix_clk),
       .sx  (sx),
       .sy  (sy),
+      .score(score),
       .MODE('0)
   );
 

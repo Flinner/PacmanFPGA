@@ -193,7 +193,7 @@ set xcix_files [glob -nocomplain "$xcix_dir/*.xcix"]
 
 # Loop through each .xcix file and import it
 foreach xcix_file $xcix_files {
-    import_ip -files $xcix_file -no_copy
+    read_ip -files $xcix_file
     puts "Imported (no copy): $xcix_file"
 }
 

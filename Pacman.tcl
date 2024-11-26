@@ -167,7 +167,22 @@ set obj [get_filesets sources_1]
 # Add local files from the original project (-no_copy_sources specified)
 
 # Get a list of all .sv files in rtl/ directory (including subdirectories)
-set files [glob -nocomplain "${origin_dir}/rtl/**/*.sv"]
+set files [glob -nocomplain "${origin_dir}/rtl/*.sv"]
+
+# Add the found files to the Vivado project
+set added_files [add_files -fileset sources_1 $files]
+
+# Loop through all the added files and set their file type to SystemVerilog
+foreach file $files {
+    # Get the file object for the current file
+    set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+
+    # Set the file type to SystemVerilog
+    set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+}
+
+# Get a list of all .sv files in rtl/ directory (including subdirectories)
+set files [glob -nocomplain "${origin_dir}/rtl/ip/*.sv"]
 
 # Add the found files to the Vivado project
 set added_files [add_files -fileset sources_1 $files]

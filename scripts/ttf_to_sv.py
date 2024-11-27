@@ -49,7 +49,7 @@ def generate_verilog(font_path, size=8):
     endcase
     end
 
-    assign pixel = row_data[sy*8+sx];
+    assign pixel = row_data[(8-sy)*8+(8-sx)];
 
     endmodule
     """

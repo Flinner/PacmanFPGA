@@ -174,8 +174,11 @@ set added_files [add_files -fileset sources_1 $files]
 
 # Loop through all the added files and set their file type to SystemVerilog
 foreach file $files {
+    # Normalize the file path to get an absolute path
+    set normalized_file [file normalize $file]
+
     # Get the file object for the current file
-    set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+    set file_obj [get_files -of_objects [get_filesets sources_1] [list $normalized_file]]
 
     # Set the file type to SystemVerilog
     set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
@@ -189,8 +192,11 @@ set added_files [add_files -fileset sources_1 $files]
 
 # Loop through all the added files and set their file type to SystemVerilog
 foreach file $files {
+    # Normalize the file path to get an absolute path
+    set normalized_file [file normalize $file]
+
     # Get the file object for the current file
-    set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+    set file_obj [get_files -of_objects [get_filesets sources_1] [list $normalized_file]]
 
     # Set the file type to SystemVerilog
     set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
@@ -202,10 +208,37 @@ set files [glob -nocomplain "${origin_dir}/rtl/mem/*.mem"]
 # Add the found files to the Vivado project
 set added_files [add_files -fileset sources_1 $files]
 
-# Loop through all the added files and set their file type to SystemVerilog
+# # Loop through all the added files and set their file type to SystemVerilog
+# foreach file $files {
+#     set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+#     set_property -name "file_type" -value "Memory File" -objects $file_obj
+# }
+
+# Loop through all the added files and set their file type to Memory File
 foreach file $files {
-    set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+    # Normalize the file path to get an absolute path
+    set normalized_file [file normalize $file]
+    
+    # Get the file object in the specified fileset
+    set file_obj [get_files -of_objects [get_filesets sources_1] [list $normalized_file]]
+    
+    # Set the file type to "Memory File"
     set_property -name "file_type" -value "Memory File" -objects $file_obj
+}
+
+# Define the path to your XCI file or directory
+set files [glob -nocomplain "${origin_dir}/rtl/ip/*.xci"]
+
+# Import each XCI file and associate it with the default fileset
+foreach file $files {
+    # Normalize the path to ensure it's absolute
+    set normalized_file [file normalize $file]
+
+    # Import the XCI file
+    import_files -norecurse $normalized_file
+
+    # Optionally, add to a specific fileset
+    add_files -fileset [get_filesets sources_1] $normalized_file
 }
 
 

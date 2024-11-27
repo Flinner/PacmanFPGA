@@ -82,7 +82,7 @@ module pacman_game #(
     sx1 <= sx;
     sy1 <= sy;
     display_enabled1 <= display_enabled;
-    frame_stb1 <= frame_stb;
+    frame_stb1 <= frame_stb & gm == GAME_MODE_GAME_PLAY;
     game_pix_stb1 <= game_pix_stb;
   end
 
@@ -91,9 +91,94 @@ module pacman_game #(
   ////////////////////
 
 
-  ////////////////
-  // GAME LOGIC //
-  ////////////////
+  ////////////////////
+  // GAME LOGIC FSM //
+  ////////////////////
+
+  game_mode_t gm;
+
+  always_ff @(posedge vga_pix_clk) begin
+    if (rst) begin
+      gm <= GAME_MODE_LOADING;
+      loading_timer_start <= ~loading_timer_start;
+      $display("MODE IS LOADING!!");
+    end
+
+    case (gm)
+      // exits after timer
+      GAME_MODE_LOADING: begin
+        if (loading_stb) begin
+          // TODO: loading screen
+        end else begin
+          gm <= GAME_MODE_WELCOME_SCREEN;
+          $display("MODE IS WELCOME SCREEN!!");
+          welcome_timer_start <= ~welcome_timer_start;
+        end
+
+      end
+
+      // exits after timer
+      GAME_MODE_WELCOME_SCREEN: begin
+        if (welcome_stb) begin
+
+        end else begin
+          gm <= GAME_MODE_READY;
+          $display("MODE IS READY!!");
+        end
+      end
+
+      // exits after any key press
+      GAME_MODE_READY: begin
+        if (BTNU || BTND || BTNL || BTNR) begin
+          gm <= GAME_MODE_GAME_PLAY;
+          $display("MODE IS GAME_PLAY!!");
+        end
+      end
+
+      // exits with LOSING/WINNING
+      GAME_MODE_GAME_PLAY: begin
+        if (collided_with_enemy) gm <= GAME_MODE_FAIL;
+        if (score >= params::map::candy_count) gm <= GAME_MODE_WIN;
+      end
+
+      GAME_MODE_BLUE_GHOST_MODE: ;
+
+      GAME_MODE_FAIL: ;
+
+      GAME_MODE_FINISH: ;
+
+    endcase
+  end
+
+  ////////////
+  // TIMERS //
+  ////////////
+  logic loading_stb;
+  logic loading_timer_start;
+  strobe_gen #(  /**AUTOINSTPARAM*/
+      // Parameters
+      .STROBE_TIME_S(3)
+  ) loading_timer (  /**AUTOINST*/
+      // Outputs
+      .strobe(loading_stb),
+      // Inputs
+      .clk   (vga_pix_clk),
+      .start (loading_timer_start)
+  );
+
+  logic welcome_stb;
+  logic welcome_timer_start;
+  strobe_gen #(  /**AUTOINSTPARAM*/
+      // Parameters
+      .STROBE_TIME_S(1)
+  ) welcome_timer (  /**AUTOINST*/
+      // Outputs
+      .strobe(welcome_stb),
+      // Inputs
+      .clk   (vga_pix_clk),
+      .start (welcome_timer_start)
+  );
+
 
 
   //////////////////////////
@@ -216,7 +301,7 @@ module pacman_game #(
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
-      .frame_stb  (frame_stb),
+      .frame_stb  (frame_stb1),
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
@@ -233,7 +318,7 @@ module pacman_game #(
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
-      .frame_stb  (frame_stb),
+      .frame_stb  (frame_stb1),
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
@@ -250,7 +335,7 @@ module pacman_game #(
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
-      .frame_stb  (frame_stb),
+      .frame_stb  (frame_stb1),
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
@@ -358,10 +443,17 @@ module pacman_game #(
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_comb begin
     // if (game_pix_stb1) begin
-    R = R_txt | R_map | R_PAC | R_enemy;  // TODO: change to 32!!
-    G = G_txt | G_map | G_PAC | G_enemy;
-    B = B_txt | B_map | B_PAC | B_enemy;
+    if (gm == GAME_MODE_LOADING) begin
+      R = R_txt;  // TODO: change to 32!!
+      G = G_txt;
+      B = B_txt;
+    end else begin
+      R = R_txt | R_map | R_PAC | R_enemy;  // TODO: change to 32!!
+      G = G_txt | G_map | G_PAC | G_enemy;
+      B = B_txt | B_map | B_PAC | B_enemy;
+    end
     // end else begin
+
     //   R <= '0;
     //   G <= '0;
     //   B <= '0;

@@ -30,7 +30,7 @@ module text (
   ////////////////
   // LOADING... //
   ////////////////
-  localparam [7:0] TXT_LOADING[0:9] = "LOADING...";
+  localparam [7:0] TXT_LOADING[0:9] = {"L", "O", "A", "D", "I", "N", "G", ".", ".", "."};
   localparam LOADING_start_x = 8 * 13;
   localparam LOADING_start_y = 8 * 17;
 
@@ -38,18 +38,25 @@ module text (
   ///////////
   // READY //
   ///////////
-  localparam [7:0] TXT_READY[0:5] = "READY!";
+  localparam [7:0] TXT_READY[0:5] = {"R", "E", "A", "D", "Y", "!"};
   localparam READY_start_x = 8 * 13;
   localparam READY_start_y = 8 * 17;
 
-  localparam [7:0] TXT_PRESS[0:23] = "PRESSY ANY KEY TO START!";
+  // verilog_format: off
+  localparam [7:0] TXT_PRESS[0:22] = {"P", "R", "E", "S", "S", " ",
+    "A", "N", "Y", " ",
+    "K", "E", "Y", " ",
+    "T", "O", " ",
+    "S", "T", "A", "R", "T", "!"
+  };
+    // verilog_format: on
   localparam PRESS_start_x = 8 * 4;
   localparam PRESS_start_y = 8 * 2;
 
   /////////////////
   // HIGH SCORE //
   ////////////////
-  localparam [7:0] TXT_HIGHSCORE[0:9] = "HIGH SCORE";
+  localparam [7:0] TXT_HIGHSCORE[0:9] = {"H", "I", "G", "H", " ", "S", "C", "O", "R", "E"};
   localparam HIGHSCORE_start_x = 8 * 11;
   localparam HIGHSCORE_start_y = 8 * 0;
 

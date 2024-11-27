@@ -36,7 +36,7 @@ package params;
     parameter empty_tile = 'b1000;
     parameter cookie_tile = 'b1010;
     parameter candy_tile = 'b1001;
-    parameter candy_count = 'd15;
+    parameter candy_count = 'd231;
   endclass : map
 endpackage : params
 `endif

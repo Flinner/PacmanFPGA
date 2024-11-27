@@ -52,6 +52,13 @@ module text (
   localparam LOADING_start_y = 8 * 17;
 
 
+  ////////////////
+  // LOST... //
+  ////////////////
+  localparam [7:0] TXT_LOST[0:10] = {"Y", "O", "U", " ", "L", "O", "S", "T", " ", ":", "("};
+  localparam LOST_start_x = 8 * 13;
+  localparam LOST_start_y = 8 * 17;
+
   ///////////
   // READY //
   ///////////
@@ -185,6 +192,17 @@ module text (
       ascii_char <= TXT_BCDSCORE[(sx-BCDSCORE_start_x)/8];
       /* verilator lint_on WIDTHEXPAND */
     end
+
+    /* verilator lint_off WIDTHEXPAND */
+    // verilog_format: off
+    if ((sy >= LOST_start_y && sy < LOST_start_y + CHAR_HEIGHT) && //
+        (sx >= LOST_start_x && sx < LOST_start_x + ($size(TXT_LOST) * CHAR_WIDTH)) && //
+        (MODE == GAME_MODE_FAIL)) begin
+    // verilog_format: on
+      ascii_char <= TXT_LOST[(sx-LOST_start_x)/8];
+      /* verilator lint_on WIDTHEXPAND */
+    end
+
 
   end
 

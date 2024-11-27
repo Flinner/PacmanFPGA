@@ -138,13 +138,20 @@ module pacman_game #(
 
       // exits with LOSING/WINNING
       GAME_MODE_GAME_PLAY: begin
-        if (collided_with_enemy) gm <= GAME_MODE_FAIL;
+        if (collided_with_enemy) begin
+          gm <= GAME_MODE_FAIL;
+          fail_timer_start <= ~fail_timer_start;
+        end
         if (score >= params::map::candy_count) gm <= GAME_MODE_WIN;
       end
 
       GAME_MODE_BLUE_GHOST_MODE: ;
 
-      GAME_MODE_FAIL: ;
+      GAME_MODE_FAIL:
+      if (fail_stb) begin
+      end else begin
+        gm <= GAME_MODE_READY;
+      end
 
       GAME_MODE_FINISH: ;
 
@@ -187,6 +194,21 @@ module pacman_game #(
   );
 
 
+  logic fail_stb;
+  logic fail_timer_start;
+  strobe_gen #(  /**AUTOINSTPARAM*/
+      // Parameters
+`ifdef VERILATOR
+      .CLOCK_FREQ_HZ(1_000_000),
+`endif
+      .STROBE_TIME_S(1)
+  ) fail_timer (  /**AUTOINST*/
+      // Outputs
+      .strobe(fail_stb),
+      // Inputs
+      .clk   (vga_pix_clk),
+      .start (fail_timer_start)
+  );
 
   //////////////////////////
   // SCORE AND SCOREBOARD //
@@ -450,7 +472,7 @@ module pacman_game #(
   // TODO: remove useless check, since we check the screen on the RGB anyway
   always_comb begin
     // if (game_pix_stb1) begin
-    if (gm == GAME_MODE_LOADING) begin
+    if (gm == GAME_MODE_LOADING || gm == GAME_MODE_FAIL) begin
       R = R_txt;  // TODO: change to 32!!
       G = G_txt;
       B = B_txt;

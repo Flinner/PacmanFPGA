@@ -27,6 +27,23 @@ module text (
   localparam CHAR_HEIGHT = 8;  // chars of a word
   localparam CHAR_WIDTH = 8;  // chars of a word
 
+  //////////////
+  // FLASHING //
+  //////////////
+  /* verilator lint_off WIDTHEXPAND */
+  logic frame_stb;
+  logic flash;
+
+
+
+  always_ff @(posedge clk) begin
+    frame_stb <= (sy == sx && sx == 0);
+    if (frame_stb) flash <= ~flash;
+  end
+  /* verilator lint_on WIDTHEXPAND */
+
+
+
   ////////////////
   // LOADING... //
   ////////////////
@@ -141,7 +158,9 @@ module text (
         (sx >= PRESS_start_x && sx < PRESS_start_x + ($size(TXT_PRESS) * CHAR_WIDTH)) && //
         (MODE == GAME_MODE_READY)) begin
     // verilog_format: on
-      ascii_char <= TXT_PRESS[(sx-PRESS_start_x)/8];
+      if (flash) ascii_char <= TXT_PRESS[(sx-PRESS_start_x)/8];
+      else ascii_char <= " ";
+
       /* verilator lint_on WIDTHEXPAND */
     end
 
@@ -149,7 +168,8 @@ module text (
     // verilog_format: off
     if ((  /* sy >= HIGHSCORE_start_y && */ sy < HIGHSCORE_start_y + CHAR_HEIGHT) &&  //
         (sx >= HIGHSCORE_start_x && sx < HIGHSCORE_start_x + ($size(TXT_HIGHSCORE) * CHAR_WIDTH)) &&
-        (MODE != GAME_MODE_LOADING)) begin
+        (MODE != GAME_MODE_LOADING) &&
+        (MODE != GAME_MODE_READY)) begin
       // verilog_format: on
       ascii_char <= TXT_HIGHSCORE[(sx-HIGHSCORE_start_x)/8];
       /* verilator lint_on WIDTHEXPAND */
@@ -159,7 +179,8 @@ module text (
     /* verilator lint_off WIDTHEXPAND */
     if ((sy >= BCDSCORE_start_y && sy < BCDSCORE_start_y + CHAR_HEIGHT) &&  //
         (sx >= BCDSCORE_start_x && sx < BCDSCORE_start_x + ($size(TXT_BCDSCORE) * CHAR_WIDTH)) &&
-        (MODE != GAME_MODE_LOADING)) begin
+        (MODE != GAME_MODE_LOADING) &&
+        (MODE != GAME_MODE_READY)) begin
       // verilog_format: on
       ascii_char <= TXT_BCDSCORE[(sx-BCDSCORE_start_x)/8];
       /* verilator lint_on WIDTHEXPAND */

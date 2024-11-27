@@ -82,7 +82,7 @@ module pacman_game #(
     sx1 <= sx;
     sy1 <= sy;
     display_enabled1 <= display_enabled;
-    frame_stb1 <= frame_stb & gm == GAME_MODE_GAME_PLAY;
+    frame_stb1 <= frame_stb;
     game_pix_stb1 <= game_pix_stb;
   end
 
@@ -110,9 +110,9 @@ module pacman_game #(
         if (loading_stb) begin
           // TODO: loading screen
         end else begin
-          gm <= GAME_MODE_WELCOME_SCREEN;
-          $display("MODE IS WELCOME SCREEN!!");
-          welcome_timer_start <= ~welcome_timer_start;
+          gm <= GAME_MODE_READY;
+          // $display("MODE IS WELCOME SCREEN!!");
+          // welcome_timer_start <= ~welcome_timer_start;
         end
 
       end
@@ -120,7 +120,8 @@ module pacman_game #(
       // exits after timer
       GAME_MODE_WELCOME_SCREEN: begin
         if (welcome_stb) begin
-
+          // TODO: no welcome
+          gm <= GAME_MODE_READY;
         end else begin
           gm <= GAME_MODE_READY;
           $display("MODE IS READY!!");
@@ -157,6 +158,9 @@ module pacman_game #(
   logic loading_timer_start;
   strobe_gen #(  /**AUTOINSTPARAM*/
       // Parameters
+`ifdef VERILATOR
+      .CLOCK_FREQ_HZ(1_000_000),
+`endif
       .STROBE_TIME_S(3)
   ) loading_timer (  /**AUTOINST*/
       // Outputs
@@ -170,6 +174,9 @@ module pacman_game #(
   logic welcome_timer_start;
   strobe_gen #(  /**AUTOINSTPARAM*/
       // Parameters
+`ifdef VERILATOR
+      .CLOCK_FREQ_HZ(1_000_000),
+`endif
       .STROBE_TIME_S(1)
   ) welcome_timer (  /**AUTOINST*/
       // Outputs
@@ -215,7 +222,7 @@ module pacman_game #(
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
-      .frame_stb  (frame_stb1),
+      .frame_stb  (frame_stb1 & gm == GAME_MODE_GAME_PLAY),
       .sx         (sx),
       .sy         (sy),
       .BTNU       (BTNU),
@@ -301,7 +308,7 @@ module pacman_game #(
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
-      .frame_stb  (frame_stb1),
+      .frame_stb  (frame_stb1 & gm == GAME_MODE_GAME_PLAY),
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
@@ -318,7 +325,7 @@ module pacman_game #(
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
-      .frame_stb  (frame_stb1),
+      .frame_stb  (frame_stb1 & gm == GAME_MODE_GAME_PLAY),
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
@@ -335,7 +342,7 @@ module pacman_game #(
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
-      .frame_stb  (frame_stb1),
+      .frame_stb  (frame_stb1 & gm == GAME_MODE_GAME_PLAY),
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
@@ -437,7 +444,7 @@ module pacman_game #(
       .sx  (sx),
       .sy  (sy),
       .score(score),
-      .MODE('0)
+      .MODE(gm)
   );
 
   // TODO: remove useless check, since we check the screen on the RGB anyway

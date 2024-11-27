@@ -113,8 +113,8 @@ module pacman_movement #(
   always_ff @(posedge vga_pix_clk) begin
     // $display("CLK60HZ: %d, RST: %d", CLK60HZ, rst);
     if (rst) begin
-      x_pac <= 8 * 1;
-      y_pac <= 8 * 4;
+      x_pac <= 8 * 15;
+      y_pac <= 8 * 20;
       // $display("x_pac: %d, y_pac: %d", x_pac, y_pac);
     end  // else if (CLK60HZ) begin
     // CLK60HZ is = 1 once per frame thus we add/sub 1 per frame!

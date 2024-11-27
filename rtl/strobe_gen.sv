@@ -1,15 +1,16 @@
 `timescale 1ns / 1ps
 
 module strobe_gen #(
-    parameter CLOCK_FREQ_HZ = 25_000_000,  // Clock frequency in Hz (e.g., 100 MHz)
-    parameter STROBE_TIME_S = 1            // Duration of the strobe in seconds
+    parameter CLOCK_FREQ_HZ  = 25_000_000,  // Clock frequency in Hz (e.g., 100 MHz)
+    parameter BI_STABLE      = 0,
+    parameter STROBE_TIME_MS = 1000         // Duration of the strobe in seconds
 ) (
     input  logic clk,    // Clock input
     input  logic start,  // Reset input
     output logic strobe  // Strobe signal output
 );
 
-  localparam integer MAX_COUNT = CLOCK_FREQ_HZ * STROBE_TIME_S;  // Total clock cycles for strobe time
+  localparam integer MAX_COUNT = CLOCK_FREQ_HZ * STROBE_TIME_MS / 1000;  // Total clock cycles for strobe time
 
   logic [$clog2(MAX_COUNT)-1:0] counter;  // Counter to count clock cycles
   logic                         start_old;
@@ -18,7 +19,7 @@ module strobe_gen #(
   always_ff @(posedge clk) begin
     start_old <= start;
 
-    if (start_old != start) begin
+    if (start_old != start || (BI_STABLE && ~strobe)) begin
       counter <= 0;
       strobe  <= 1;
       /* verilator lint_off WIDTHEXPAND*/

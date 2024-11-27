@@ -166,9 +166,9 @@ module pacman_game #(
   strobe_gen #(  /**AUTOINSTPARAM*/
       // Parameters
 `ifdef VERILATOR
-      .CLOCK_FREQ_HZ(1_000_000),
+      .CLOCK_FREQ_HZ (1_000_000),
 `endif
-      .STROBE_TIME_S(3)
+      .STROBE_TIME_MS(1000)
   ) loading_timer (  /**AUTOINST*/
       // Outputs
       .strobe(loading_stb),
@@ -182,9 +182,9 @@ module pacman_game #(
   strobe_gen #(  /**AUTOINSTPARAM*/
       // Parameters
 `ifdef VERILATOR
-      .CLOCK_FREQ_HZ(1_000_000),
+      .CLOCK_FREQ_HZ (1_000_000),
 `endif
-      .STROBE_TIME_S(1)
+      .STROBE_TIME_MS(1000)
   ) welcome_timer (  /**AUTOINST*/
       // Outputs
       .strobe(welcome_stb),
@@ -199,9 +199,9 @@ module pacman_game #(
   strobe_gen #(  /**AUTOINSTPARAM*/
       // Parameters
 `ifdef VERILATOR
-      .CLOCK_FREQ_HZ(1_000_000),
+      .CLOCK_FREQ_HZ (1_000_000),
 `endif
-      .STROBE_TIME_S(1)
+      .STROBE_TIME_MS(1000)
   ) fail_timer (  /**AUTOINST*/
       // Outputs
       .strobe(fail_stb),

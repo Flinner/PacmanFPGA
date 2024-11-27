@@ -31,16 +31,24 @@ module text (
   // FLASHING //
   //////////////
   /* verilator lint_off WIDTHEXPAND */
-  logic frame_stb;
   logic flash;
 
 
+  strobe_gen #(  /**AUTOINSTPARAM*/
+      // Parameters
+`ifdef VERILATOR
+      .CLOCK_FREQ_HZ(2_000_000),
+      .AS_STABLE    (1),
 
-  always_ff @(posedge clk) begin
-    frame_stb <= (sy == sx && sx == 0);
-    if (frame_stb) flash <= ~flash;
-  end
-  /* verilator lint_on WIDTHEXPAND */
+`endif
+      .STROBE_TIME_MS(500)
+  ) flashing_timer (  /**AUTOINST*/
+      // Outputs
+      .strobe(flash),
+      // Inputs
+      .clk   (clk),
+      .start ('0)
+  );
 
 
 

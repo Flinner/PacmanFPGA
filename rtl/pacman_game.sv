@@ -150,7 +150,7 @@ module pacman_game #(
       GAME_MODE_FAIL:
       if (fail_stb) begin
       end else begin
-        gm <= GAME_MODE_READY;
+        gm <= GAME_MODE_LOADING;
       end
 
       GAME_MODE_FINISH: ;

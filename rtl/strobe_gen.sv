@@ -2,7 +2,7 @@
 
 module strobe_gen #(
     parameter CLOCK_FREQ_HZ  = 25_000_000,  // Clock frequency in Hz (e.g., 100 MHz)
-    parameter BI_STABLE      = 0,
+    parameter AS_STABLE      = 0,
     parameter STROBE_TIME_MS = 1000         // Duration of the strobe in seconds
 ) (
     input  logic clk,    // Clock input
@@ -19,7 +19,7 @@ module strobe_gen #(
   always_ff @(posedge clk) begin
     start_old <= start;
 
-    if (start_old != start || (BI_STABLE && ~strobe)) begin
+    if ((AS_STABLE && ~strobe) || ~AS_STABLE && (start_old != start)) begin
       counter <= 0;
       strobe  <= 1;
       /* verilator lint_off WIDTHEXPAND*/

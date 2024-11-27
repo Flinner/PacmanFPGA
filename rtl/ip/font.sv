@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module font (
-    input logic [7:0] char,
+    input logic [7:0] ascii_char,
     input logic [2:0] sy,
     sx,
     output logic pixel
@@ -10,7 +10,7 @@ module font (
   logic [63:0] row_data;
 
   always_comb begin
-    case (char)  // determinet the rows
+    case (ascii_char)  // determinet the rows
       // Character: '0'
       8'd48: row_data = 64'b00111000_01000100_01001100_01010100_01100100_01000100_00111000_00000000;
       // Character: '1'

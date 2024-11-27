@@ -20,7 +20,7 @@ module text (
     output logic [3:0] B
 );
   logic       pixel;
-  logic [7:0] char;
+  logic [7:0] ascii_char;
 
 
   localparam WORD_LEN = 16;  // chars of a word
@@ -74,7 +74,7 @@ module text (
       // Outputs
       .pixel(pixel),
       // Inputs
-      .char (char),
+      .ascii_char(ascii_char),
       .sy   (sy[2:0]),
       .sx   (sx[2:0])
   );
@@ -105,7 +105,7 @@ module text (
   //   endcase
 
   always_ff @(posedge clk) begin
-    char <= " ";
+    ascii_char <= " ";
 
     // LOADING!
     /* verilator lint_off WIDTHEXPAND */
@@ -114,7 +114,7 @@ module text (
         (sx >= LOADING_start_x && sx < LOADING_start_x + ($size(TXT_LOADING) * CHAR_WIDTH)) && //
         (MODE == GAME_MODE_LOADING)) begin
     // verilog_format: on
-      char <= TXT_LOADING[(sx-LOADING_start_x)/8];
+      ascii_char <= TXT_LOADING[(sx-LOADING_start_x)/8];
       /* verilator lint_on WIDTHEXPAND */
     end
 
@@ -125,7 +125,7 @@ module text (
         (sx >= READY_start_x && sx < READY_start_x + ($size(TXT_READY) * CHAR_WIDTH)) && //
         (MODE == GAME_MODE_READY)) begin
     // verilog_format: on
-      char <= TXT_READY[(sx-READY_start_x)/8];
+      ascii_char <= TXT_READY[(sx-READY_start_x)/8];
       /* verilator lint_on WIDTHEXPAND */
     end
     /* verilator lint_off WIDTHEXPAND */
@@ -134,7 +134,7 @@ module text (
         (sx >= PRESS_start_x && sx < PRESS_start_x + ($size(TXT_PRESS) * CHAR_WIDTH)) && //
         (MODE == GAME_MODE_READY)) begin
     // verilog_format: on
-      char <= TXT_PRESS[(sx-PRESS_start_x)/8];
+      ascii_char <= TXT_PRESS[(sx-PRESS_start_x)/8];
       /* verilator lint_on WIDTHEXPAND */
     end
 
@@ -144,7 +144,7 @@ module text (
         (sx >= HIGHSCORE_start_x && sx < HIGHSCORE_start_x + ($size(TXT_HIGHSCORE) * CHAR_WIDTH)) &&
         (MODE != GAME_MODE_LOADING)) begin
       // verilog_format: on
-      char <= TXT_HIGHSCORE[(sx-HIGHSCORE_start_x)/8];
+      ascii_char <= TXT_HIGHSCORE[(sx-HIGHSCORE_start_x)/8];
       /* verilator lint_on WIDTHEXPAND */
     end
 
@@ -154,7 +154,7 @@ module text (
         (sx >= BCDSCORE_start_x && sx < BCDSCORE_start_x + ($size(TXT_BCDSCORE) * CHAR_WIDTH)) &&
         (MODE != GAME_MODE_LOADING)) begin
       // verilog_format: on
-      char <= TXT_BCDSCORE[(sx-BCDSCORE_start_x)/8];
+      ascii_char <= TXT_BCDSCORE[(sx-BCDSCORE_start_x)/8];
       /* verilator lint_on WIDTHEXPAND */
     end
 

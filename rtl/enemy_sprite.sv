@@ -26,8 +26,8 @@ module enemy_sprite (
     input logic [8:0] y_red,
     input logic [8:0] x_blue,
     input logic [8:0] y_blue,
-    input logic [8:0] x_yellow,
-    input logic [8:0] y_yellow,
+    input logic [8:0] x_orange,
+    input logic [8:0] y_orange,
     input logic [8:0] x_pink,
     input logic [8:0] y_pink,
     input logic [7:0] sx,
@@ -43,9 +43,9 @@ module enemy_sprite (
   localparam MONSTER_WIDTH = 8;
   localparam MONSTER_HEIGHT = 8;
 
-  logic pixel_in_red_sprite, pixel_in_pink_sprite, pixel_in_blue_sprite;
-  logic [11:0] R_color, P_color, B_color;
-  logic [5:0] red_address, pink_address, blue_address;
+  logic pixel_in_red_sprite, pixel_in_pink_sprite, pixel_in_blue_sprite,pixel_in_orange_sprite;
+  logic [11:0] R_color, P_color, B_color,O_color;
+  logic [5:0] red_address, pink_address, blue_address, orange_address;
 
   rams_dist #(
 `ifdef VERILATOR
@@ -85,7 +85,18 @@ module enemy_sprite (
       .a  (blue_address),
       .spo(B_color)
   );
-
+  rams_dist #(
+`ifdef VERILATOR
+      .INITIAL_MEM_FILE("rtl/mem/orange_monster.mem"),
+`else
+      .INITIAL_MEM_FILE("../mem/orange_monster.mem"),
+`endif
+      .DATA_WIDTH(12),
+      .DATA_DEPTH(64)
+  ) orange_sprite (
+      .a  (orange_address),
+      .spo(O_color)
+  );
 
   /* verilator lint_off WIDTHTRUNC */
   always_comb begin
@@ -97,11 +108,15 @@ module enemy_sprite (
 
     pixel_in_blue_sprite = (({1'b0,sx} >= x_blue && {1'b0,sx} < x_blue + SPRITE_WIDTH) &&
                        (sy >= y_blue && sy < y_blue + SPRITE_HEIGHT));
+                       
+    pixel_in_orange_sprite = (({1'b0,sx} >= x_orange && {1'b0,sx} < x_orange + SPRITE_WIDTH) &&
+                       (sy >= y_orange && sy < y_orange + SPRITE_HEIGHT));
 
 
     red_address = {1'b0, sx} - x_red + (sy - y_red) * MONSTER_WIDTH;
     pink_address = {1'b0, sx} - x_pink + (sy - y_pink) * MONSTER_WIDTH;
     blue_address = {1'b0, sx} - x_blue + (sy - y_blue) * MONSTER_WIDTH;
+    orange_address = {1'b0, sx} - x_orange + (sy - y_orange) * MONSTER_WIDTH;
     if (pixel_in_red_sprite) begin
       R = R_color[11:8];
       G = R_color[7:4];
@@ -114,6 +129,10 @@ module enemy_sprite (
       R = B_color[11:8];
       G = B_color[7:4];
       B = B_color[3:0];
+    end else if (pixel_in_orange_sprite) begin
+      R = O_color[11:8];
+      G = O_color[7:4];
+      B = O_color[3:0];
     end else begin
       R = 4'h0;  // Default red component
       G = 4'h0;  // Default green component

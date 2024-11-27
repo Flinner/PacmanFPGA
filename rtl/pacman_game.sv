@@ -168,7 +168,7 @@ module pacman_game #(
 `ifdef VERILATOR
       .CLOCK_FREQ_HZ (1_000_000),
 `endif
-      .STROBE_TIME_MS(1000)
+      .STROBE_TIME_S(1)
   ) loading_timer (  /**AUTOINST*/
       // Outputs
       .strobe(loading_stb),
@@ -184,7 +184,7 @@ module pacman_game #(
 `ifdef VERILATOR
       .CLOCK_FREQ_HZ (1_000_000),
 `endif
-      .STROBE_TIME_MS(1000)
+      .STROBE_TIME_S(1)
   ) welcome_timer (  /**AUTOINST*/
       // Outputs
       .strobe(welcome_stb),
@@ -201,7 +201,7 @@ module pacman_game #(
 `ifdef VERILATOR
       .CLOCK_FREQ_HZ (1_000_000),
 `endif
-      .STROBE_TIME_MS(1000)
+      .STROBE_TIME_S(1)
   ) fail_timer (  /**AUTOINST*/
       // Outputs
       .strobe(fail_stb),
@@ -313,8 +313,8 @@ module pacman_game #(
   logic [8:0] y_red;
   logic [8:0] x_blue;
   logic [8:0] y_blue;
-  logic [8:0] x_yellow;
-  logic [8:0] y_yellow;
+  logic [8:0] x_orange;
+  logic [8:0] y_orange;
   logic [8:0] x_pink;
   logic [8:0] y_pink;
 
@@ -351,6 +351,22 @@ module pacman_game #(
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
+ orange_mov #(
+      /**AUTOINSTPARAM*/
+      // Parameters
+      .INITIAL_MEM_FILE(MAP_F)
+  ) orange_mov (
+      /**AUTOINST*/
+      // Outputs
+      .x_orange      (x_orange),
+      .y_orange      (y_orange),
+      // Inputs
+      .vga_pix_clk(vga_pix_clk),
+      .rst        (rst),
+      .frame_stb  (frame_stb1 & gm == GAME_MODE_GAME_PLAY),
+      .x_pac      (x_pac),
+      .y_pac      (y_pac)
+  );
 
   pink_monster_mov #(
       /**AUTOINSTPARAM*/
@@ -375,7 +391,7 @@ module pacman_game #(
   logic collided_with_enemy;
   assign collided_with_enemy = (x_pac == x_red    && y_pac == y_red)    || 
                                (x_pac == x_blue   && y_pac == y_blue)   || 
-                               (x_pac == x_yellow && y_pac == y_yellow) || 
+                               (x_pac == x_orange && y_pac == y_orange) || 
                                (x_pac == x_pink   && y_pac == y_pink);
 
 
@@ -402,8 +418,8 @@ module pacman_game #(
       .y_red   (y_red),
       .x_blue  (x_blue),
       .y_blue  (y_blue),
-      .x_yellow(x_yellow),
-      .y_yellow(y_yellow),
+      .x_orange (x_orange),
+      .y_orange(y_orange),
       .x_pink  (x_pink),
       .y_pink  (y_pink),
       .sx      (sx1),

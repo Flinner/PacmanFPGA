@@ -31,7 +31,11 @@ module text (
   // FLASHING //
   //////////////
   /* verilator lint_off WIDTHEXPAND */
+  logic toggle_flash;
   logic flash;
+
+  always_ff @(posedge clk) if (flash) toggle_flash <= toggle_flash;
+
 
 
   strobe_gen #(  /**AUTOINSTPARAM*/
@@ -42,7 +46,7 @@ module text (
       .STROBE_TIME_S(1)
   ) flashing_timer (  /**AUTOINST*/
       // Outputs
-      .strobe(flash),
+      .strobe(toggle_flash),
       // Inputs
       .clk   (clk),
       .start ('0)
@@ -179,7 +183,7 @@ module text (
         (sx >= READY_start_x && sx < READY_start_x + ($size(TXT_READY) * CHAR_WIDTH)) && //
         (MODE == GAME_MODE_READY)) begin
     // verilog_format: on
-      if (~flash) ascii_char <= ascii_char <= TXT_READY[(sx-READY_start_x)/8];
+      if (~flash) ascii_char <= TXT_READY[(sx-READY_start_x)/8];
       else ascii_char <= " ";
       /* verilator lint_on WIDTHEXPAND */
     end

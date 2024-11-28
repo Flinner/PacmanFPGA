@@ -13,28 +13,16 @@ module audio (
     output logic   en
 );
 
-  localparam MAX_AUDIO_SAMPLES = 40_000;
   integer AUDIO_SAMPLES;
-
-  logic [7:0] audio_data[0:MAX_AUDIO_SAMPLES];  // 8-bit audio, 5736 samples
 
   localparam CHOMP_SAMPLES = 5735;
   localparam INTRO_SAMPLES = 12279;
   localparam DEATH_SAMPLES = 33735;
-
-  logic [7:0] CHOMP_AUDIO_DATA[0:CHOMP_SAMPLES];  // 8-bit audio, 5736 samples
-  logic [7:0] INTRO_AUDIO_DATA[0:INTRO_SAMPLES];  // 8-bit audio, 5736 samples
-  logic [7:0] DEATH_AUDIO_DATA[0:DEATH_SAMPLES];  // 8-bit audio, 5736 samples
-
   logic [7:0] chomp_byte;
   logic [7:0] intro_byte;
   logic [7:0] death_byte;
 
 
-
-  initial $readmemh("mem/Chomp.mem", CHOMP_AUDIO_DATA);
-  initial $readmemh("mem/Intro.mem", INTRO_AUDIO_DATA);
-  initial $readmemh("mem/Death.mem", DEATH_AUDIO_DATA);
 
   single_port_bram_with_rst #(  /*AUTOINSTPARAM*/
       // Parameters

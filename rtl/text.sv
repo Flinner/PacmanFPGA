@@ -110,14 +110,14 @@ module text (
   logic [7:0] TXT_BCDSCORE[0:3];
   localparam BCDSCORE_start_x = 8 * 5;
   localparam BCDSCORE_start_y = 8 * 1;  /* verilator lint_off WIDTHEXPAND */
-  assign TXT_BCDSCORE[0] = score[3:0] > 9 ? score[3:0] + 48 : score[3:0] - 10;  // int to ASCII
-  assign TXT_BCDSCORE[1] = score[7:4] > 9 ? score[7:4] + 48 : score[7:4] - 10;  // int to ASCII
-  assign TXT_BCDSCORE[2] = score[11:8] > 9 ? score[11:8] + 48 : score[11:8] - 10;  // int to ASCII
-  assign TXT_BCDSCORE[3] = score[15:12] > 9 ? score[15:12] + 48 : score[15:12] - 10;  // int to ASCII
-  // assign TXT_BCDSCORE[3] = BCDSCORE[0] + 48;  // int to ASCII
-  // assign TXT_BCDSCORE[2] = BCDSCORE[1] + 48;  // int to ASCII
-  // assign TXT_BCDSCORE[1] = BCDSCORE[2] + 48;  // int to ASCII
-  // assign TXT_BCDSCORE[0] = BCDSCORE[3] + 48;  // int to ASCII
+  // assign TXT_BCDSCORE[0] = score[3:0]   > 9 ? (score[3:0]   + 48) : (score[3:0  ] + 65 - 10);  // int to ASCII
+  // assign TXT_BCDSCORE[1] = score[7:4]   > 9 ? (score[7:4]   + 48) : (score[7:4  ] + 65 - 10);  // int to ASCII
+  // assign TXT_BCDSCORE[2] = score[11:8]  > 9 ? (score[11:8]  + 48) : (score[11:8 ] + 65 - 10);  // int to ASCII
+  // assign TXT_BCDSCORE[3] = score[15:12] > 9 ? (score[15:12] + 48) : (score[15:12] + 65 - 10);  // int to ASCII
+  assign TXT_BCDSCORE[3] = BCDSCORE[0] + 48;  // int to ASCII
+  assign TXT_BCDSCORE[2] = BCDSCORE[1] + 48;  // int to ASCII
+  assign TXT_BCDSCORE[1] = BCDSCORE[2] + 48;  // int to ASCII
+  assign TXT_BCDSCORE[0] = BCDSCORE[3] + 48;  // int to ASCII
   /* verilator lint_on WIDTHEXPAND */
 
 

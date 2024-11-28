@@ -198,5 +198,17 @@ module top (
       .en(AUD_SD)
   );
 `endif
+`ifndef VERILATOR
+  logic STROBE_8KHZ;
+  precise_div #(
+      .CLKS_PER_STB(25_000_000 / 8_000)
+  ) clk_8khz (  /**AUTOINST*/
+      // Outputs
+      .o_stb  (STROBE_8KHZ),
+      // Inputs
+      .i_clk  (CLK25MHZ),
+      .i_reset(~CPU_RESETN)
+  );
+`endif
 
 endmodule

@@ -47,7 +47,7 @@ module enemy_sprite (
   logic [11:0] R_color, P_color, B_color, O_color;
   logic [5:0] red_address, pink_address, blue_address, orange_address;
 
-  rams_dist #(
+  rams_dist_to_bram #(
 `ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/red_monster_sprite.mem"),
 `else
@@ -56,6 +56,7 @@ module enemy_sprite (
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)
   ) red_sprite (
+      .clk(clk),
       .a  (red_address),
       .spo(R_color)
   );

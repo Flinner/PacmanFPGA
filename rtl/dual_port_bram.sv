@@ -9,6 +9,7 @@
 module dual_port_bram #(
     parameter DATA_WIDTH = 4,
     parameter DATA_DEPTH = 1023,
+    parameter READ_HEX = 0,
     parameter INITIAL_MEM_FILE = "NONE"
 ) (
     input logic clk,
@@ -25,11 +26,15 @@ module dual_port_bram #(
 );
 
   generate
-    if (INITIAL_MEM_FILE != "NONE") begin : INITIALIZE_MEM_FROM_FILE
+    if (INITIAL_MEM_FILE != "NONE" && READ_HEX == 1) begin : INITIALIZE_MEM_FROM_FILE_HEX
       initial begin
         $display("Loading MAP from init file '%s' to BRAM.", INITIAL_MEM_FILE);
+        // $readmemb(INITIAL_MEM_FILE, ram);
+        $readmemh(INITIAL_MEM_FILE, ram);
+      end
+    end else if (INITIAL_MEM_FILE != "NONE" && READ_HEX == 0) begin : INITIALIZE_MEM_FROM_FILE_BIN
+      initial begin
         $readmemb(INITIAL_MEM_FILE, ram);
-        //        $readmemb(INITIAL_MEM_FILE, rst_source);
       end
     end else begin : DONT_INITIALIZE_MEM
       initial begin
@@ -37,6 +42,7 @@ module dual_port_bram #(
       end
     end
   endgenerate
+
 
   logic [DATA_WIDTH-1:0] ram[0:DATA_DEPTH-1];
 

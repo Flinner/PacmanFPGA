@@ -113,7 +113,7 @@ module top (
   ) drawing_logic (
       .clk(CLK100MHZ),  // unused for now
       .vga_pix_clk(CLK25MHZ),
-      .rst(soft_rst),
+      .rst(soft_rst | ~CPU_RESETN),
       .frame_stb(frame_stb_aot),
       .sx(sx_aot),
       .sy(sy_aot),

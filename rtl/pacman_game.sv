@@ -140,18 +140,15 @@ module pacman_game #(
       GAME_MODE_GAME_PLAY: begin
         if (collided_with_enemy) begin
           gm <= GAME_MODE_FAIL;
-          fail_timer_start <= ~fail_timer_start;
+          // fail_timer_start <= ~fail_timer_start;
         end
         if (score >= params::map::candy_count) gm <= GAME_MODE_WIN;
       end
 
       GAME_MODE_BLUE_GHOST_MODE: ;
 
-      GAME_MODE_FAIL:
-      if (fail_stb) begin
-      end else begin
-        gm <= GAME_MODE_LOADING;
-      end
+      GAME_MODE_FAIL: ;  // requires manually reset!
+
 
       GAME_MODE_FINISH: ;
 
@@ -201,7 +198,7 @@ module pacman_game #(
 `ifdef VERILATOR
       .CLOCK_FREQ_HZ(1_000_000),
 `endif
-      .STROBE_TIME_S(1)
+      .STROBE_TIME_S(3)
   ) fail_timer (  /**AUTOINST*/
       // Outputs
       .strobe(fail_stb),

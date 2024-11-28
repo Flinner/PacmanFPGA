@@ -65,6 +65,19 @@ module text (
   localparam LOST_start_x = 8 * 13;
   localparam LOST_start_y = 8 * 17;
 
+  // verilog_format: off
+  localparam [7:0] TXT_RESET[0:24] = {
+        "P","R","E","S","S"," ",
+        "R","E","S","E","T"," ",
+        "T","O"," ",
+        "P","L","A","Y"," ",
+        "A","G","A","I","N"
+  };
+    // verilog_format: on
+  localparam RESET_start_x = 8 * 4;
+  localparam RESET_start_y = 8 * 2;
+
+
   ///////////
   // READY //
   ///////////
@@ -208,6 +221,23 @@ module text (
       ascii_char <= TXT_LOST[(sx-LOST_start_x)/8];
       /* verilator lint_on WIDTHEXPAND */
     end
+
+    /* verilator lint_off WIDTHEXPAND */
+    // verilog_format: off
+    if ((sy >= RESET_start_y && sy < RESET_start_y + CHAR_HEIGHT) && //
+        (sx >= RESET_start_x && sx < RESET_start_x + ($size(TXT_RESET) * CHAR_WIDTH)) && //
+        (MODE == GAME_MODE_FAIL)) begin
+    // verilog_format: on
+
+      if (~flash) ascii_char <= TXT_RESET[(sx-RESET_start_x)/8];
+      else ascii_char <= " ";
+      /* verilator lint_on WIDTHEXPAND */
+    end
+
+    /* verilator lint_off WIDTHEXPAND */
+    // ascii_char <= get_ascii_char(RESET_start_x, RESET_start_y, MODE == GAME_MODE_FAIL, TXT_RESET);
+    /* verilator lint_on WIDTHEXPAND */
+
 
 
   end

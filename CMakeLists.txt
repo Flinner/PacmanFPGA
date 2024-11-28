@@ -67,5 +67,5 @@ verilate(Vour SOURCES ${RTL_SOURCE_FILES}
   TOP_MODULE top
   OPT_FAST
   THREADS
-  VERILATOR_ARGS -O3 --x-initial fast --noassert --x-assign fast --threads 10
+  VERILATOR_ARGS -O3 --x-initial fast --noassert --x-assign fast --threads 10  --report-unoptflat
 )

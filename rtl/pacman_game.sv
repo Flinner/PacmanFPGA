@@ -351,7 +351,7 @@ module pacman_game #(
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
-  orange_mov #(
+  orange_monster_mov #(
       /**AUTOINSTPARAM*/
       // Parameters
       .INITIAL_MEM_FILE(MAP_F)

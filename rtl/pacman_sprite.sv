@@ -43,10 +43,11 @@ module pacman_sprite (
 
 
   logic pixel_in_red_sprite;
-
+  /* verilator lint_off UNOPTFLAT */
   logic pixel_in_pacman_sprite;
-  logic [5:0] pacman_address, pacman_address1;
-  logic [11:0] color, color0, color1;
+  logic [5:0] pacman_address  /*verilator split_var*/;  // , pacman_address1;
+
+  logic [11:0] color  /*verilator split_var*/, color0, color1;
   //assign color = 12'hFFF;
   rams_dist #(
 `ifdef VERILATOR
@@ -54,7 +55,7 @@ module pacman_sprite (
 `else
       .INITIAL_MEM_FILE("../mem/open_mouth_8.mem"),
 `endif
-      .DATA_WIDTH(8),
+      .DATA_WIDTH(12),
       .DATA_DEPTH(64)
   ) pacmanSprite (
       .a  (pacman_address),
@@ -69,40 +70,48 @@ module pacman_sprite (
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)
   ) pacmanSprite_closed (
-      .a  (pacman_address1),
+      .a  (pacman_address),
       .spo(color1)
   );
   logic toggle, stb;
 
-  precise_div tog (
+  precise_div #(  /*AUTOINSTPARAM*/
+      // Parameters
+      .CLKS_PER_STB(12_000_000)
+  ) tog (
       .i_clk  (clk),
       .i_reset(rst),
       .o_stb  (stb)
   );
+
+  // always_ff @(posedge clk) if (stb) toggle <= ~toggle;
+  // toggle depends on the pacman position. works on both x and y
+  assign toggle = x_pac[1] ^ y_pac[1];
+
+  assign color  = (toggle) ? color0 : color1;
   always_comb begin
     pixel_in_pacman_sprite = (({1'b0,sx} >= x_pac && {1'b0,sx} < x_pac + SPRITE_WIDTH) &&
                        (sy >= y_pac && sy < y_pac + SPRITE_HEIGHT));
 
     pacman_address = '0;
-    if (stb) toggle <= ~toggle;
+    // pacman_address1 = '0;
 
     /* verilator lint_off WIDTHTRUNC */
     if (pixel_in_pacman_sprite) begin
       if (h_flip == 1 && v_flip == 1) begin
-        pacman_address  = (sy - y_pac) * SPRITE_WIDTH + (sx - x_pac);
-        pacman_address1 = (sy - y_pac) * SPRITE_WIDTH + (sx - x_pac);
+        pacman_address = (sy - y_pac) * SPRITE_WIDTH + (sx - x_pac);
+        // pacman_address1 = (sy - y_pac) * SPRITE_WIDTH + (sx - x_pac);
       end else if (h_flip == 0 && v_flip == 1) begin
-        pacman_address  = (sy - y_pac) * SPRITE_WIDTH + SPRITE_HEIGHT - 1 - (sx - x_pac);
-        pacman_address1 = (sy - y_pac) * SPRITE_WIDTH + SPRITE_HEIGHT - 1 - (sx - x_pac);
+        pacman_address = (sy - y_pac) * SPRITE_WIDTH + SPRITE_HEIGHT - 1 - (sx - x_pac);
+        // pacman_address1 = (sy - y_pac) * SPRITE_WIDTH + SPRITE_HEIGHT - 1 - (sx - x_pac);
       end else if (h_flip == 1 && v_flip == 0) begin
-        pacman_address  = (sx - x_pac) * SPRITE_WIDTH + (SPRITE_HEIGHT - 1 - (sy - y_pac));
-        pacman_address1 = (sx - x_pac) * SPRITE_WIDTH + (SPRITE_HEIGHT - 1 - (sy - y_pac));
+        pacman_address = (sx - x_pac) * SPRITE_WIDTH + (SPRITE_HEIGHT - 1 - (sy - y_pac));
+        // pacman_address1 = (sx - x_pac) * SPRITE_WIDTH + (SPRITE_HEIGHT - 1 - (sy - y_pac));
       end else if (h_flip == 0 && v_flip == 0) begin
-        pacman_address  = (SPRITE_WIDTH - 1 - (sx - x_pac)) * SPRITE_WIDTH + (sy - y_pac);
-        pacman_address1 = (SPRITE_WIDTH - 1 - (sx - x_pac)) * SPRITE_WIDTH + (sy - y_pac);
+        pacman_address = (SPRITE_WIDTH - 1 - (sx - x_pac)) * SPRITE_WIDTH + (sy - y_pac);
+        // pacman_address1 = (SPRITE_WIDTH - 1 - (sx - x_pac)) * SPRITE_WIDTH + (sy - y_pac);
       end
 
-      color = (toggle) ? color0 : color1;
       R = color[11:8];
       G = color[7:4];
       B = color[3:0];

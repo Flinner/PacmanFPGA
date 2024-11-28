@@ -35,6 +35,9 @@ module map_sprite (
 
   always_comb begin
     // Default output values
+    R = 'b0000;
+    B = 'b0000;
+    G = 'b0000;
 
 
     case (sprite_code)

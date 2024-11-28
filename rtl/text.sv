@@ -175,7 +175,8 @@ module text (
         (sx >= READY_start_x && sx < READY_start_x + ($size(TXT_READY) * CHAR_WIDTH)) && //
         (MODE == GAME_MODE_READY)) begin
     // verilog_format: on
-      ascii_char <= TXT_READY[(sx-READY_start_x)/8];
+      if (~flash) ascii_char <= ascii_char <= TXT_READY[(sx-READY_start_x)/8];
+      else ascii_char <= " ";
       /* verilator lint_on WIDTHEXPAND */
     end
     /* verilator lint_off WIDTHEXPAND */

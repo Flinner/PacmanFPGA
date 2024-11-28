@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 
+// chatGPTed.
 module decimal_to_bcd (
     input  logic [15:0] binary,      // 16-bit binary score input
     output logic [ 3:0] bcd   [0:3]  // 4 BCD digits to represent the binary

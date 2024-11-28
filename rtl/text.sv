@@ -37,11 +37,9 @@ module text (
   strobe_gen #(  /**AUTOINSTPARAM*/
       // Parameters
 `ifdef VERILATOR
-      .CLOCK_FREQ_HZ(2_000_000),
-      .AS_STABLE    (1),
-
+      .CLOCK_FREQ_HZ(2_000_000)
 `endif
-      .STROBE_TIME_MS(500)
+      .STROBE_TIME_S(1)
   ) flashing_timer (  /**AUTOINST*/
       // Outputs
       .strobe(flash),

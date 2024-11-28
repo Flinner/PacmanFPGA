@@ -97,17 +97,21 @@ module audio (
   always_comb
     case (sound_type)
       SOUND_LOADING: begin
+        AUDIO_SAMPLES  = INTRO_SAMPLES;
         current_sample = intro_byte;
       end
       SOUND_READY: begin
+        AUDIO_SAMPLES  = INTRO_SAMPLES;
         current_sample = intro_byte;
       end
       SOUND_WIN: begin
       end
       SOUND_GAME_PLAY: begin
+        AUDIO_SAMPLES  = CHOMP_SAMPLES;
         current_sample = chomp_byte;
       end
       SOUND_FAIL: begin
+        AUDIO_SAMPLES  = DEATH_SAMPLES;
         current_sample = death_byte;
       end
       default: ;

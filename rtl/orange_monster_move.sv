@@ -22,7 +22,7 @@
 `include "rtl/params.sv"
 `endif
 
-module orange_monster_mov #(
+module orange_monster_move #(
     parameter INITIAL_MEM_FILE = "NONE",
     localparam H_MAP_WIDTH = params::pacman::H_VISIBLE_AREA,
     localparam V_MAP_HEIGHT = params::pacman::V_VISIBLE_AREA
@@ -121,4 +121,4 @@ module orange_monster_mov #(
     endcase
     // end
   end
-endmodule : orange_monster_mov
+endmodule : orange_monster_move

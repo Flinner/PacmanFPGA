@@ -280,7 +280,7 @@ module pacman_game #(
   //   used to read tile to draw, based on sx/sy
   // PORT B:
   //   used to read tile of pacman now, based on x_pac, y_pac
-  dual_port_bram #(
+  dual_port_bram_with_rst #(
       // Parameters
       .DATA_WIDTH(4),
       .DATA_DEPTH(32 * 36),
@@ -351,7 +351,7 @@ module pacman_game #(
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
-  orange_monster_mov #(
+  orange_monster_move #(
       /**AUTOINSTPARAM*/
       // Parameters
       .INITIAL_MEM_FILE(MAP_F)

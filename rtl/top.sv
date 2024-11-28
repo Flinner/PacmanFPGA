@@ -171,7 +171,7 @@ module top (
   logic soft_rst;
   reset_generator #(  /*AUTOINSTPARAM*/
       // Parameters
-      .RESET_CYCLES(32 * 36)  // should probably move this to a variable :smile:
+      .RESET_CYCLES(32 * 36 + 10)  // should probably move this to a variable :smile: (+10 just in case)
   ) reset_generator (
       /**AUTOINST*/
       // Outputs

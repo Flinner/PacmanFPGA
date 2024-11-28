@@ -110,10 +110,10 @@ module text (
   logic [7:0] TXT_BCDSCORE[0:3];
   localparam BCDSCORE_start_x = 8 * 5;
   localparam BCDSCORE_start_y = 8 * 1;  /* verilator lint_off WIDTHEXPAND */
-  assign TXT_BCDSCORE[0] = BCDSCORE[0] + 48;  // int to ASCII
-  assign TXT_BCDSCORE[1] = BCDSCORE[1] + 48;  // int to ASCII
-  assign TXT_BCDSCORE[2] = BCDSCORE[2] + 48;  // int to ASCII
-  assign TXT_BCDSCORE[3] = BCDSCORE[3] + 48;  // int to ASCII
+  assign TXT_BCDSCORE[3] = BCDSCORE[0] + 48;  // int to ASCII
+  assign TXT_BCDSCORE[2] = BCDSCORE[1] + 48;  // int to ASCII
+  assign TXT_BCDSCORE[1] = BCDSCORE[2] + 48;  // int to ASCII
+  assign TXT_BCDSCORE[0] = BCDSCORE[3] + 48;  // int to ASCII
   /* verilator lint_on WIDTHEXPAND */
 
 

@@ -13,18 +13,42 @@ module audio (
     output logic   en
 );
 
-  localparam AUDIO_SAMPLES = 5735;
-  logic [7:0] chomp_audio_data[0:AUDIO_SAMPLES];  // 8-bit audio, 5736 samples
+  localparam MAX_AUDIO_SAMPLES = 10_000;
+  integer AUDIO_SAMPLES;
+
+  logic [7:0] audio_data[0:MAX_AUDIO_SAMPLES];  // 8-bit audio, 5736 samples
+
+  localparam CHOMP_SAMPLES = 5735;
+  logic [7:0] chomp_audio_data[0:CHOMP_SAMPLES];  // 8-bit audio, 5736 samples
+
+
   initial $readmemh("mem/Chomp.mem", chomp_audio_data);
 
-  logic [12:0] address;  // Address counter for audio samples
+  logic [13:0] address;  // Address counter for audio samples
   logic [ 7:0] current_sample;
 
   always @(posedge clk_25MHZ) begin
     if (address >= AUDIO_SAMPLES) address <= 0;
     else address <= address + {12'b0, clk_8KHZ};
-    current_sample <= chomp_audio_data[address];
+    current_sample <= audio_data[address];
   end
+
+  always_comb
+    case (sound_type)
+      SOUND_LOADING: begin
+      end
+      SOUND_READY: begin
+      end
+      SOUND_WIN: begin
+      end
+      SOUND_GAME_PLAY: begin
+        AUDIO_SAMPLES = CHOMP_SAMPLES;
+        audio_data[0:CHOMP_SAMPLES] = chomp_audio_data;
+      end
+      SOUND_FAIL: begin
+      end
+      default: ;
+    endcase
 
   assign en = '1;
 

@@ -135,7 +135,7 @@ module text (
   // .BCD_DIGITS(4)
   ) decimal_to_bcd_score0 (  /**AUTOINST*/
       // Outputs
-      .bcd   ({BCDSCORE[0], BCDSCORE[1], BCDSCORE[2], BCDSCORE[3]}),
+      .bcd   (BCDSCORE),
       // Inputs
       .binary(score)
   );

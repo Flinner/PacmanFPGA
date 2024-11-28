@@ -124,6 +124,7 @@ module top (
       .R(VGA_R),
       .G(VGA_G),
       .B(VGA_B),
+      .sound_type(sound_type),
       .display_enabled(display_enabled_aot)
   );
 
@@ -185,8 +186,8 @@ module top (
   ///////////
   // SOUND //
   ///////////
-`ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
   sound_t sound_type;
+`ifndef VERILATOR  // NO AUDIO IN VERILATOR SIMULATION :(
   audio audio (  /**AUTOINST*/
       // Interfaces
       .sound_type(sound_type),

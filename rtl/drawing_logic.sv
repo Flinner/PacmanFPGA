@@ -20,7 +20,10 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `ifdef VERILATOR
+`include "rtl/common_defines.svh"
 `include "rtl/params.sv"
+`else
+`include "common_defines.svh"
 `endif
 
 
@@ -44,6 +47,7 @@ module drawing_logic #(
     output logic [3:0] R,
     G,
     B,
+    output sound_t sound_type,
     input logic vga_pix_clk,
     input logic clk,
     input logic rst,
@@ -130,6 +134,7 @@ module drawing_logic #(
       .R(GAME_R),
       .G(GAME_G),
       .B(GAME_B),
+      .sound_type(sound_type),
       // Inputs
       .game_pix_stb(vga_pix_clk),
       .vga_pix_clk(vga_pix_clk),

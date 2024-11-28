@@ -50,6 +50,7 @@ module pacman_game #(
     output logic [3:0] R,
     output logic [3:0] G,
     output logic [3:0] B,
+    output sound_t sound_type,
     // there is an important distnction between `vga_pix_clk` and `game_pix_stb`
     // vga_pix_clk will "clock" on each physical vga pixel drawing
     // game_pix_stb will STROBE on each virtual game pixel
@@ -101,6 +102,7 @@ module pacman_game #(
     if (rst) begin
       gm <= GAME_MODE_LOADING;
       loading_timer_start <= ~loading_timer_start;
+      sound_type <= SOUND_LOADING;
       $display("MODE IS LOADING!!");
     end
 
@@ -108,6 +110,7 @@ module pacman_game #(
       // exits after timer
       GAME_MODE_LOADING: begin
         if (loading_stb) begin
+          sound_type <= SOUND_LOADING;
           // TODO: loading screen
         end else begin
           gm <= GAME_MODE_READY;
@@ -130,6 +133,7 @@ module pacman_game #(
 
       // exits after any key press
       GAME_MODE_READY: begin
+        sound_type <= SOUND_READY;
         if (BTNU || BTND || BTNL || BTNR) begin
           gm <= GAME_MODE_GAME_PLAY;
           $display("MODE IS GAME_PLAY!!");
@@ -138,6 +142,7 @@ module pacman_game #(
 
       // exits with LOSING/WINNING
       GAME_MODE_GAME_PLAY: begin
+        sound_type <= SOUND_GAME_PLAY;
         if (collided_with_enemy) begin
           gm <= GAME_MODE_FAIL;
           // fail_timer_start <= ~fail_timer_start;
@@ -147,10 +152,15 @@ module pacman_game #(
 
       GAME_MODE_BLUE_GHOST_MODE: ;
 
-      GAME_MODE_FAIL: ;  // requires manually reset!
+      // requires manually reset!
+      GAME_MODE_FAIL: sound_type <= SOUND_FAIL;
 
 
       GAME_MODE_FINISH: ;
+      GAME_MODE_WIN: sound_type <= SOUND_WIN;
+
+      default: gm <= GAME_MODE_LOADING;
+
 
     endcase
   end

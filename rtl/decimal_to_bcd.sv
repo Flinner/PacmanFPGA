@@ -1,27 +1,36 @@
 `timescale 1ns / 1ps
 
-module decimal_to_bcd #(
-    parameter BIN_WIDTH  = 8,  // Width of the binary input
-    parameter BCD_DIGITS = 3   // Number of BCD digits in the output
-) (
-    input  logic [     BIN_WIDTH-1:0] binary,  // Binary input
-    output logic [(BCD_DIGITS*4)-1:0] bcd      // BCD output
+module decimal_to_bcd (
+    input  logic [15:0] binary,      // 16-bit binary score input
+    output logic [ 3:0] bcd   [0:3]  // 4 BCD digits to represent the binary
 );
-  integer i, j;
+
+  integer i;
 
   always_comb begin
-    // Initialize the BCD output to zero
-    bcd = 0;
+    // Initialize BCD binary digits to 0
+    bcd[0] = 4'b0000;
+    bcd[1] = 4'b0000;
+    bcd[2] = 4'b0000;
+    bcd[3] = 4'b0000;
 
-    // Start the Double Dabble algorithm
-    for (i = BIN_WIDTH - 1; i >= 0; i--) begin
-      // Step 1: Shift left all BCD digits and bring in the next binary bit
-      bcd = {bcd[(BCD_DIGITS*4)-2:0], binary[i]};
+    // Perform BCD conversion using Double Dabble Algorithm
+    for (i = 15; i >= 0; i = i - 1) begin
+      // Shift left to make room for the next bit of the binary
+      if (bcd[3] >= 5) bcd[3] = bcd[3] + 3;
+      if (bcd[2] >= 5) bcd[2] = bcd[2] + 3;
+      if (bcd[1] >= 5) bcd[1] = bcd[1] + 3;
+      if (bcd[0] >= 5) bcd[0] = bcd[0] + 3;
 
-      // Step 2: Adjust BCD digits (Add 3 if the digit >= 5)
-      for (j = 0; j < BCD_DIGITS; j++) begin
-        if (bcd[(j*4)+3-:4] >= 5) bcd[(j*4)+3-:4] = bcd[(j*4)+3-:4] + 3;
-      end
+      // Shift all BCD digits left by 1 (equivalent to multiplying by 2)
+      bcd[3] = bcd[3] << 1;
+      bcd[2] = bcd[2] << 1;
+      bcd[1] = bcd[1] << 1;
+      bcd[0] = bcd[0] << 1;
+
+      // Bring in the next bit from the binary
+      bcd[0][0] = binary[i];
     end
   end
+
 endmodule

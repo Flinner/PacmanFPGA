@@ -130,9 +130,9 @@ module text (
   );
 
   decimal_to_bcd #(  /**AUTOINSTPARAM*/
-      // Parameters
-      .BIN_WIDTH (16),
-      .BCD_DIGITS(4)
+  // Parameters
+  // .BIN_WIDTH (16),
+  // .BCD_DIGITS(4)
   ) decimal_to_bcd_score0 (  /**AUTOINST*/
       // Outputs
       .bcd   ({BCDSCORE[0], BCDSCORE[1], BCDSCORE[2], BCDSCORE[3]}),

@@ -105,7 +105,7 @@ module enemy_movement #(
   always_ff @(posedge vga_pix_clk) begin
     // $display("CLK60HZ: %d, RST: %d", CLK60HZ, rst);
     if (rst) begin
-      x_blue <= 8 * 15;
+      x_blue <= 8 * 12;
       y_blue <= 8 * (4 + 10);
       // $display("x_pac: %d, y_pac: %d", x_pac, y_pac);
     end  // else if (CLK60HZ) begin

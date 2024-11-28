@@ -87,8 +87,8 @@ module orange_monster_move #(
 
 
   always_ff @(posedge vga_pix_clk) begin
-    if (y_pac < y_orange) next_direction <= UP;
-    if (y_pac > y_orange) next_direction <= DOWN;
+    if (y_pac + 8 < y_orange) next_direction <= UP;
+    if (y_pac + 2 > y_orange) next_direction <= DOWN;
     if (x_pac > x_orange) next_direction <= RIGHT;
     if (x_pac < x_orange) next_direction <= LEFT;
   end
@@ -107,7 +107,7 @@ module orange_monster_move #(
   always_ff @(posedge vga_pix_clk) begin
     // $display("CLK60HZ: %d, RST: %d", CLK60HZ, rst);
     if (rst) begin
-      x_orange <= 8 * 15;
+      x_orange <= 8 * 13;
       y_orange <= 8 * (4 + 10);
       // $display("x_pac: %d, y_pac: %d", x_pac, y_pac);
     end  // else if (CLK60HZ) begin

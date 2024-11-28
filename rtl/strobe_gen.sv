@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 
 module strobe_gen #(
-    parameter CLOCK_FREQ_HZ  = 25_000_000,  // Clock frequency in Hz (e.g., 100 MHz)
-    parameter STROBE_TIME_S = 1         // Duration of the strobe in seconds
+    parameter CLOCK_FREQ_HZ = 25_000_000,  // Clock frequency in Hz (e.g., 100 MHz)
+    parameter STROBE_TIME_S = 1            // Duration of the strobe in seconds
 ) (
     input  logic clk,    // Clock input
     input  logic start,  // Reset input

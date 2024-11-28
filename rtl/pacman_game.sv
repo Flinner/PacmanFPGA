@@ -166,7 +166,7 @@ module pacman_game #(
   strobe_gen #(  /**AUTOINSTPARAM*/
       // Parameters
 `ifdef VERILATOR
-      .CLOCK_FREQ_HZ (1_000_000),
+      .CLOCK_FREQ_HZ(1_000_000),
 `endif
       .STROBE_TIME_S(1)
   ) loading_timer (  /**AUTOINST*/
@@ -182,7 +182,7 @@ module pacman_game #(
   strobe_gen #(  /**AUTOINSTPARAM*/
       // Parameters
 `ifdef VERILATOR
-      .CLOCK_FREQ_HZ (1_000_000),
+      .CLOCK_FREQ_HZ(1_000_000),
 `endif
       .STROBE_TIME_S(1)
   ) welcome_timer (  /**AUTOINST*/
@@ -199,7 +199,7 @@ module pacman_game #(
   strobe_gen #(  /**AUTOINSTPARAM*/
       // Parameters
 `ifdef VERILATOR
-      .CLOCK_FREQ_HZ (1_000_000),
+      .CLOCK_FREQ_HZ(1_000_000),
 `endif
       .STROBE_TIME_S(1)
   ) fail_timer (  /**AUTOINST*/
@@ -351,15 +351,15 @@ module pacman_game #(
       .x_pac      (x_pac),
       .y_pac      (y_pac)
   );
- orange_mov #(
+  orange_mov #(
       /**AUTOINSTPARAM*/
       // Parameters
       .INITIAL_MEM_FILE(MAP_F)
   ) orange_mov (
       /**AUTOINST*/
       // Outputs
-      .x_orange      (x_orange),
-      .y_orange      (y_orange),
+      .x_orange   (x_orange),
+      .y_orange   (y_orange),
       // Inputs
       .vga_pix_clk(vga_pix_clk),
       .rst        (rst),
@@ -418,7 +418,7 @@ module pacman_game #(
       .y_red   (y_red),
       .x_blue  (x_blue),
       .y_blue  (y_blue),
-      .x_orange (x_orange),
+      .x_orange(x_orange),
       .y_orange(y_orange),
       .x_pink  (x_pink),
       .y_pink  (y_pink),

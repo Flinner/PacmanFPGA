@@ -43,8 +43,8 @@ module enemy_sprite (
   localparam MONSTER_WIDTH = 8;
   localparam MONSTER_HEIGHT = 8;
 
-  logic pixel_in_red_sprite, pixel_in_pink_sprite, pixel_in_blue_sprite,pixel_in_orange_sprite;
-  logic [11:0] R_color, P_color, B_color,O_color;
+  logic pixel_in_red_sprite, pixel_in_pink_sprite, pixel_in_blue_sprite, pixel_in_orange_sprite;
+  logic [11:0] R_color, P_color, B_color, O_color;
   logic [5:0] red_address, pink_address, blue_address, orange_address;
 
   rams_dist #(
@@ -108,7 +108,7 @@ module enemy_sprite (
 
     pixel_in_blue_sprite = (({1'b0,sx} >= x_blue && {1'b0,sx} < x_blue + SPRITE_WIDTH) &&
                        (sy >= y_blue && sy < y_blue + SPRITE_HEIGHT));
-                       
+
     pixel_in_orange_sprite = (({1'b0,sx} >= x_orange && {1'b0,sx} < x_orange + SPRITE_WIDTH) &&
                        (sy >= y_orange && sy < y_orange + SPRITE_HEIGHT));
 

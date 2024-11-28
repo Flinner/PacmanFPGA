@@ -49,7 +49,7 @@ module pacman_sprite (
 
   logic [11:0] color  /*verilator split_var*/, color0, color1;
   //assign color = 12'hFFF;
-  rams_dist #(
+  rams_dist_to_bram #(
 `ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/open_mouth_8.mem"),
 `else
@@ -58,10 +58,11 @@ module pacman_sprite (
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)
   ) pacmanSprite (
+      .clk(clk),
       .a  (pacman_address),
       .spo(color0)
   );
-  rams_dist #(
+  rams_dist_to_bram #(
 `ifdef VERILATOR
       .INITIAL_MEM_FILE("rtl/mem/closed_mouth_8.mem"),
 `else
@@ -70,6 +71,7 @@ module pacman_sprite (
       .DATA_WIDTH(12),
       .DATA_DEPTH(64)
   ) pacmanSprite_closed (
+      .clk(clk),
       .a  (pacman_address),
       .spo(color1)
   );

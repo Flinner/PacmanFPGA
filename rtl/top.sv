@@ -49,14 +49,17 @@ module top (
     input logic BTND,
     input logic BTNR,
     input logic BTNL,
+`ifndef VERILATOR
     input logic [3:0] SW,
+`endif
     output logic [3:0] LED,
 
     output logic [3:0] VGA_R,
     VGA_G,
     VGA_B,
     output logic VGA_HS,
-    output logic AUD_SD, AUD_PWM,
+    output logic AUD_SD,
+    AUD_PWM,
     VGA_VS
 
 );
@@ -84,7 +87,7 @@ module top (
   logic CLK25MHZ;
   // logic frame_stb;  // strobe each new frame
   logic frame_stb_aot;  // strobe each new frame
-    assign LED = SW;
+  assign LED = SW;
   // avoid double declartion
 `ifndef VERILATOR
   logic [H_ADDR_WIDTH-1:0] sx;
@@ -99,6 +102,11 @@ module top (
       .clk_out1(CLK25MHZ),
       .clk_in1 (CLK100MHZ)
   );
+`endif
+
+`ifdef VERILATOR
+  logic [3:0] SW;
+  assign SW = '1;
 `endif
   // FIXME: Assert rst for a few cycles at start
 
@@ -123,7 +131,7 @@ module top (
       .sy(sy_aot),
       .BTNU(BTNU),
       .BTNL(BTNL),
-            .SW(SW),
+      .SW(SW),
       .BTNR(BTNR),
       .BTND(BTND),
       .R(VGA_R),

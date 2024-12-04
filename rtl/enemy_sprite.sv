@@ -22,6 +22,7 @@
 module enemy_sprite (
     input logic clk,
     input logic rst,
+    input logic [3:0] SW,
     input logic [8:0] x_red,
     input logic [8:0] y_red,
     input logic [8:0] x_blue,
@@ -117,19 +118,19 @@ module enemy_sprite (
     pink_address = {1'b0, sx} - x_pink + (sy - y_pink) * MONSTER_WIDTH;
     blue_address = {1'b0, sx} - x_blue + (sy - y_blue) * MONSTER_WIDTH;
     orange_address = {1'b0, sx} - x_orange + (sy - y_orange) * MONSTER_WIDTH;
-    if (pixel_in_red_sprite) begin
+    if (pixel_in_red_sprite & SW[0]) begin
       R = R_color[11:8];
       G = R_color[7:4];
       B = R_color[3:0];
-    end else if (pixel_in_pink_sprite) begin
+    end else if (pixel_in_pink_sprite & SW[1] ) begin
       R = P_color[11:8];
       G = P_color[7:4];
       B = P_color[3:0];
-    end else if (pixel_in_blue_sprite) begin
+    end else if (pixel_in_blue_sprite & SW[2]) begin
       R = B_color[11:8];
       G = B_color[7:4];
       B = B_color[3:0];
-    end else if (pixel_in_orange_sprite) begin
+    end else if (pixel_in_orange_sprite & SW[3]) begin
       R = O_color[11:8];
       G = O_color[7:4];
       B = O_color[3:0];

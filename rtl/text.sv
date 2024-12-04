@@ -143,9 +143,11 @@ module text (
   // .BCD_DIGITS(4)
   ) decimal_to_bcd_score0 (  /**AUTOINST*/
       // Outputs
-      .bcd   ({BCDSCORE[0], BCDSCORE[1], BCDSCORE[2], BCDSCORE[3]}),
+      /* verilator lint_off WIDTHTRUNC */  // TODO: Actally fix this
+      .bcd   ({BCDSCORE[3], BCDSCORE[2], BCDSCORE[1], BCDSCORE[0]}),
       // Inputs
       .binary(score)
+      /* verilator lint_on WIDTHTRUNC */
   );
 
 

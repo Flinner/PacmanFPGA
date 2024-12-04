@@ -44,6 +44,7 @@ module drawing_logic #(
     localparam H_ADDR_WIDTH = $clog2(H_WHOLE_LINE),
     localparam V_ADDR_WIDTH = $clog2(V_WHOLE_LINE)
 ) (
+    input logic [3:0] SW,
     output logic [3:0] R,
     G,
     B,
@@ -147,6 +148,7 @@ module drawing_logic #(
       .BTND(BTND),
       .BTNR(BTNR),
       .BTNL(BTNL),
+      .SW(SW),
       .display_enabled(game_display_enabled)
   );
 

@@ -47,6 +47,7 @@ module pacman_game #(
     parameter SPRITE_HEIGHT = 8
 
 ) (
+    input logic [3:0] SW,
     output logic [3:0] R,
     output logic [3:0] G,
     output logic [3:0] B,
@@ -396,10 +397,10 @@ module pacman_game #(
   // COLLISION //
   ///////////////
   logic collided_with_enemy;
-  assign collided_with_enemy = (x_pac == x_red    && y_pac == y_red)    || 
-                               (x_pac == x_blue   && y_pac == y_blue)   || 
-                               (x_pac == x_orange && y_pac == y_orange) || 
-                               (x_pac == x_pink   && y_pac == y_pink);
+  assign collided_with_enemy = (x_pac == x_red    && y_pac == y_red && SW[0])    || 
+                               (x_pac == x_blue   && y_pac == y_blue && SW[2])   || 
+                               (x_pac == x_orange && y_pac == y_orange && SW[3]) || 
+                               (x_pac == x_pink   && y_pac == y_pink && SW[1]);
 
 
 
@@ -420,6 +421,7 @@ module pacman_game #(
       .R       (R_enemy),
       .G       (G_enemy),
       .B       (B_enemy),
+      .SW(SW),
       // Inputs
       .x_red   (x_red),
       .y_red   (y_red),

@@ -156,6 +156,9 @@ set_property -name "webtalk.vcs_export_sim" -value "11" -objects $obj
 set_property -name "webtalk.xcelium_export_sim" -value "11" -objects $obj
 set_property -name "webtalk.xsim_export_sim" -value "11" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC" -objects $obj
+set_property AUTO_INCREMENTAL_CHECKPOINT 1 [get_runs synth_1]
+set_property AUTO_INCREMENTAL_CHECKPOINT.DIRECTORY "${origin_dir}/vivado_project/Pacman.srcs/utils_1/imports/synth_1" [get_runs synth_1]
+
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -610,6 +613,8 @@ create_dashboard_gadget -name {utilization_2} -type utilization
 }
 set obj [get_dashboard_gadgets [ list "utilization_2" ] ]
 set_property -name "reports" -value "impl_1#impl_1_place_report_utilization_0" -objects $obj
+
+
 
 move_dashboard_gadget -name {utilization_1} -row 0 -col 0
 move_dashboard_gadget -name {power_1} -row 1 -col 0

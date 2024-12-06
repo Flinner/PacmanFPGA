@@ -1,25 +1,36 @@
 # Simulation
 To Run VGA simulator (VERY SLOW, around 0.3 frames/second!):
 
-```
-❯ cmake -B build -G Ninja && ninja -C build && ./build/Vour
+```bash
+cmake -B build -G Ninja 
+ninja -C build
+
+# Run it
+./build/Vour
 ```
 
 # Synthesis
+To generate bitstream:
 
+1. Launch Vivado (Yikes!)
+2. Select Tools Menu
+3. Run TCL Scripts
+4. Run `Pacman.tcl`
 
-Tools, Run TCL Scripts, Run `Pacman.tcl`
+# Scripts
+## Generate `font.sv` from `.ttf`:
 
-# Working on this Project
-Install this https://github.com/barbedo/vivado-git
-
-
-
-# Gen font:
-
+```bash
 python scripts/ttf_to_sv.py > rtl/ip/font.sv
-
-# Format code
 ```
+
+## Generate `.mem` for audio.wav:
+```bash
+# It will overwite the .mem files
+python scripts/convert_wav_to_mem.py 
+```
+
+# Format All code:
+```bash
 find . -name "*.sv" -exec verible-verilog-format --inplace {} \;
 ```

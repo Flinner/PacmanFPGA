@@ -122,7 +122,7 @@ module enemy_sprite (
       R = R_color[11:8];
       G = R_color[7:4];
       B = R_color[3:0];
-    end else if (pixel_in_pink_sprite & SW[1] ) begin
+    end else if (pixel_in_pink_sprite & SW[1]) begin
       R = P_color[11:8];
       G = P_color[7:4];
       B = P_color[3:0];

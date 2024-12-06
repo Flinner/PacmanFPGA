@@ -421,7 +421,7 @@ module pacman_game #(
       .R       (R_enemy),
       .G       (G_enemy),
       .B       (B_enemy),
-      .SW(SW),
+      .SW      (SW),
       // Inputs
       .x_red   (x_red),
       .y_red   (y_red),

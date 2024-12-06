@@ -1,3 +1,6 @@
+
+![Pacman Game Image](https://ammar.engineer/posts/2024/12/04/pacman-on-an-fpga-in-systemverilog/images/pacman_game.png)
+
 # Simulation
 To Run VGA simulator (VERY SLOW, around 0.3 frames/second!):
 

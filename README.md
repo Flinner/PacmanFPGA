@@ -18,7 +18,8 @@ To generate bitstream:
 1. Launch Vivado (Yikes!)
 2. Select Tools Menu
 3. Run TCL Scripts
-4. Run `Pacman.tcl`
+4. Navigate to cloned repo, Run `Pacman.tcl`
+5. Write Bitstream
 
 # Scripts
 ## Generate `font.sv` from `.ttf`:
